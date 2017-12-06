@@ -12,7 +12,7 @@ const RouterComponent = () => {
     <Router>
     <Scene key='root' >
       <Scene key='login'
-      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0, shadowOpacity: 0 }}
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0, elevation: 0 }}
       component={LoginForm}
       back='false'
       hideBackImage
