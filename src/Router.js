@@ -10,8 +10,7 @@ import { Actions } from 'react-native-router-flux';
 const RouterComponent = () => {
   return (
     <Router>
-    <Scene key='root' hideNavBar>
-    <Scene key='auth'>
+    <Scene key='root' >
       <Scene key='login'
       navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0, elevation: 0 }}
       component={LoginForm}
@@ -46,7 +45,6 @@ const RouterComponent = () => {
       back='false'
       hideBackImage
       />
-    </Scene>
     </Scene>
     </Router>
   );

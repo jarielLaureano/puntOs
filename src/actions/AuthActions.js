@@ -38,3 +38,17 @@ const loginUserSuccess = (dispatch, user) => {
     { type: LOGIN_USER_SUCCESS, payload: user }
   );
 };
+
+export const forgotPassword = (email) => {
+  return (dispatch) => {
+  dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: true}});
+  firebase.auth().sendPasswordResetEmail(email)
+  .then((response) => {
+    console.log(response)
+    dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Go to email to reset password.'}});
+    dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false}});})
+  .catch(() => {
+    dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Cannot find email.'}});
+    dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false}});}
+  );};
+};
