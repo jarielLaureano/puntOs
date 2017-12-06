@@ -1,4 +1,4 @@
-import { BUSINESS_SIGNUP_UPDATE, SIGNUP_BUSINESS, SIGNUP_BUSINESS_FAIL, SIGNUP_BUSINESS_SUCCESS } from '../actions/types';
+import { BUSINESS_SIGNUP_UPDATE, SIGNUP_BUSINESS, SIGNUP_BUSINESS_FAIL, SIGNUP_BUSINESS_SUCCESS, BUSINESS_SIGNUP_RESET } from '../actions/types';
 
 const INITIAL_STATE = {
   businessName: '',
@@ -13,7 +13,9 @@ const INITIAL_STATE = {
   gMaps: false,
   error: '',
   loading: '',
-  step: 1
+  type: 'Business',
+  step: 1,
+  size: 'Small'
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -24,9 +26,11 @@ export default (state = INITIAL_STATE, action) => {
     case SIGNUP_BUSINESS:
         return { ...state, loading: true, error: '' };
     case SIGNUP_BUSINESS_SUCCESS:
-        return { ...state, ...INITIAL_STATE, user: action.payload , error: ''};
+        return { ...state, user: action.payload , error: ''};
     case SIGNUP_BUSINESS_FAIL:
-        return { ...state, error: 'Email Already Registered', loading: false, password: '' };
+        return { ...state, error: action.payload, loading: false, password: '' };
+    case BUSINESS_SIGNUP_RESET:
+        return INITIAL_STATE;
     default:
       return state;
   }

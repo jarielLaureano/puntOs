@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm';
 import PreSignUp from './components/PreSignUp';
 import BusinessSignUpForm from './components/BusinessSignUpForm';
 import UserSignUpForm from './components/UserSignUpForm';
+import SuccessBusinessView from './components/SuccessBusinessView';
 import { Actions } from 'react-native-router-flux';
 
 const RouterComponent = () => {
@@ -38,6 +39,12 @@ const RouterComponent = () => {
       onBack={() => Actions.preSignUp()}
       component={UserSignUpForm}
       title='Sign Up'
+      />
+      <Scene key='signUpSuccessBusiness'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
+      component={SuccessBusinessView}
+      back='false'
+      hideBackImage
       />
     </Scene>
     </Scene>
