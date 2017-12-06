@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, Image, ScrollView, LayoutAnimation } from 'react-native';
+import { View, Text, Image, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 import { InputLine, Button, Spinner } from './common';
-import { businessFormUpdate, businessSignUp } from '../actions';
+import { businessFormUpdate, businessSignUp, businessSignUpReset } from '../actions';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 
 class BusinessSignUpForm extends Component {
+
+  componentWillMount(){
+    this.props.businessSignUpReset();
+  }
   componentWillUpdate() {
   LayoutAnimation.spring();
   }
@@ -130,14 +134,47 @@ class BusinessSignUpForm extends Component {
       <Text style={{ fontSize: 20,color: 'black', fontWeight: 'bold', paddingTop: 30 }}>
       Business Size
       </Text>
+      <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'center', alignItems: 'center'}}>
+        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 20, paddingBottom: 10}}>
+        <TouchableOpacity onPress={() => this.props.businessFormUpdate({ prop: 'size', value: 'Small'})} >
+        <Image
+          style={styles.thumbnailStyle}
+          source={require('../assets/smallRadIcon.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.businessFormUpdate({ prop: 'size', value: 'Medium'})}>
+          <Image
+          style={styles.thumbnailStyle}
+          source={require('../assets/mediumRadIcon.png')}
+          />
+        </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 10, paddingBottom: 10}}>
+        <TouchableOpacity onPress={() => this.props.businessFormUpdate({ prop: 'size', value: 'Large'})}>
+          <Image
+            style={styles.thumbnailStyle}
+            source={require('../assets/largeRadIcon.png')}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.businessFormUpdate({ prop: 'size', value: 'XLarge'})}>
+          <Image
+            style={styles.thumbnailStyle}
+            source={require('../assets/xlargeRadIcon.png')}
+          />
+        </TouchableOpacity>
+        </View>
+        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
+          <Text style={styles.normalTextStyle}>{this.props.size}</Text>
+        </View>
+      </View>
       </View>
     );
-    }
+  }
   }
 
   onNextPress(){
     if (this.props.step === 1) {
-      if (this.props.email != '' && this.props.password != '' && this.props.username != '' && this.props.businessName != ''){
+      if (this.props.email != '' && this.props.password != '' && this.props.username != '' && this.props.businessName != '' ){
         this.props.businessFormUpdate({ prop: 'step', value: 2})
         this.props.businessFormUpdate({ prop: 'error', value: ''})
       }
@@ -253,6 +290,13 @@ bigStyle: {
   fontSize: 50,
   fontFamily: 'Futura',
   color: '#0084b4'
+},
+thumbnailStyle: {
+height: 110,
+width: 110,
+flex:1,
+alignSelf: 'center',
+resizeMode: 'contain'
 }
 }
 
@@ -270,7 +314,8 @@ const mapStateToProps = state => {
     gMaps,
     error,
     loading,
-    step } = state.businessSignUp;
+    step,
+    size} = state.businessSignUp;
   return {
       businessName,
       username,
@@ -284,7 +329,8 @@ const mapStateToProps = state => {
       gMaps,
       error,
       loading,
-      step };
+      step,
+      size};
 };
 
-export default connect(mapStateToProps, { businessFormUpdate, businessSignUp})(BusinessSignUpForm);
+export default connect(mapStateToProps, { businessFormUpdate, businessSignUp, businessSignUpReset})(BusinessSignUpForm);

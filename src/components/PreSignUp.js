@@ -16,7 +16,7 @@ class PreSignUp extends Component {
                 <View style={typeContainerStyle}>
                   <Image
                   style={thumbnailStyle}
-                  source={{ uri: '/Users/hectorgarcia/Documents/ReactProjects/manager/src/assets/userImage.png' }}
+                  source={require('../assets/userImage.png')}
                   />
                   <Text style={typeTextStyle}>User</Text>
                 </View>
@@ -26,7 +26,7 @@ class PreSignUp extends Component {
               <View style={typeContainerStyle}>
                 <Image
                 style={thumbnailStyle}
-                source={{ uri:'/Users/hectorgarcia/Documents/ReactProjects/manager/src/assets/pinImage.png' }}
+                source={require('../assets/pinImage.png')}
                 />
                 <Text style={typeTextStyle}>Business</Text>
               </View>
