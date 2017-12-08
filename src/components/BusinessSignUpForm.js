@@ -163,7 +163,7 @@ class BusinessSignUpForm extends Component {
         </TouchableOpacity>
         </View>
         <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
-          <Text style={styles.normalTextStyle}>{size}</Text>
+          <Text style={styles.sizeTextStyle}>{size}</Text>
         </View>
       </View>
       </View>
@@ -173,7 +173,7 @@ class BusinessSignUpForm extends Component {
 
   onNextPress(){
     const { businessName,username,email,addressLine,city, country, zipCode, phoneNumber,
-    password,step,error,type,businessFormUpdate, businessSignUp } = this.props;
+    password,step,error,type,size,businessFormUpdate, businessSignUp } = this.props;
     if (step === 1) {
       if (email != '' && password != '' && username != '' && businessName != '' ){
         businessFormUpdate({ prop: 'step', value: 2})
@@ -189,7 +189,7 @@ class BusinessSignUpForm extends Component {
     }
     else {
       businessSignUp({businessName,username,addressLine,city,country,zipCode,phoneNumber,email,
-      password,type});
+      password,type,size});
     }
   }
 
@@ -245,13 +245,13 @@ class BusinessSignUpForm extends Component {
     if (step === 3){
       switch(size){
         case 'Small':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>40 ft. radius</Text>
+          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold', marginBottom: -4 }}>40 ft. radius</Text>
         case 'Medium':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>60 ft. radius</Text>
+          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold', marginBottom: -4  }}>60 ft. radius</Text>
         case 'Large':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>80 ft. radius</Text>
+          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold', marginBottom: -4  }}>80 ft. radius</Text>
         case 'XLarge':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>100 ft. radius</Text>
+          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold', marginBottom: -4  }}>100 ft. radius</Text>
         default:
           return;
       }
@@ -307,6 +307,10 @@ const styles = {
     flexDirection: 'column'
   },
   normalTextStyle: {
+    fontSize: 20,
+    color: 'black'
+  },
+  sizeTextStyle: {
     fontSize: 20,
     color: 'black',
     marginBottom: -10

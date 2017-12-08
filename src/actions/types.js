@@ -7,3 +7,6 @@ export const BUSINESS_SIGNUP_RESET = 'business_signup_reset';
 export const SIGNUP_BUSINESS = 'signup_business';
 export const SIGNUP_BUSINESS_FAIL = 'signup_business_fail';
 export const SIGNUP_BUSINESS_SUCCESS = 'signup_business_success';
+export const SET_PROFILE_UPDATE = 'set_profile_update';
+export const GETTING_PROFILE = 'getting_profile';
+export const ACCOUNT_NOT_ACTIVE = 'account_not_active';
