@@ -240,24 +240,6 @@ class BusinessSignUpForm extends Component {
     }
   }
 
-  renderSizeValue() {
-    const { step, size } = this.props;
-    if (step === 3){
-      switch(size){
-        case 'Small':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>40 ft. radius</Text>
-        case 'Medium':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>60 ft. radius</Text>
-        case 'Large':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>80 ft. radius</Text>
-        case 'XLarge':
-          return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold' }}>100 ft. radius</Text>
-        default:
-          return;
-      }
-    }
-  }
-
   render() {
     return (
       <ScrollView style={{ backgroundColor: '#fff' }}>
@@ -273,7 +255,6 @@ class BusinessSignUpForm extends Component {
       <View style={styles.containerStyle}>
           {this.renderContent()}
           {this.renderError()}
-          {this.renderSizeValue()}
           {this.renderButtons()}
       </View>
       </View>
@@ -308,8 +289,7 @@ const styles = {
   },
   normalTextStyle: {
     fontSize: 20,
-    color: 'black',
-    marginBottom: -10
+    color: 'black'
   },
 bigStyle: {
   fontSize: 50,
