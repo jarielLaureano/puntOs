@@ -7,7 +7,7 @@ class UserMain extends Component {
   render() {
     return (
       <View>
-        <Text>SignUpForm User</Text>
+        <Text>Main View User</Text>
       </View>
     );
   }
