@@ -31,10 +31,11 @@ export const userSignUpReset = () => {
 
 export const signUpUser = (props) => {
     return (dispatch) => {
-        dispatch({ type: signUpUser });
+        dispatch({ type: SIGNUP_USER });
+        console.log("email:"+props.email);
         firebase.auth().createUserWithEmailAndPassword(props.email, props.password)
             .then((user) => {
-                firebase.database().ref('/users/${user.uid}')
+                firebase.database().ref(`/users/${user.uid}`)
                     .set(props)
                         .then((response) => {
                             signUpUserSuccess(dispatch, user)
@@ -45,7 +46,7 @@ export const signUpUser = (props) => {
                     signUpUserFail(dispatch, 'Invalid Email')
                 }
                 else {
-                    signUpUserFail(dispatch, 'Email Already Registered')
+                    signUpUserFail(dispatch, response.code)
                 }
             });
                         

@@ -1,3 +1,3 @@
 export * from './AuthActions.js';
 export * from './BusinessSignUpActions';
-export * from './UserSignUpAction';
+export * from './UserSignUpActions';
