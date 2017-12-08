@@ -273,7 +273,6 @@ class BusinessSignUpForm extends Component {
       <View style={styles.containerStyle}>
           {this.renderContent()}
           {this.renderError()}
-          {this.renderSizeValue()}
           {this.renderButtons()}
       </View>
       </View>

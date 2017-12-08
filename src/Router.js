@@ -8,6 +8,7 @@ import SuccessBusinessView from './components/SuccessBusinessView';
 import SettingProfile from './components/SettingProfile';
 import BusinessMain from './components/BusinessMain';
 import UserMain from './components/UserMain';
+import UserMainView from './components/UserMainView';
 import { Actions } from 'react-native-router-flux';
 
 const RouterComponent = () => {
@@ -48,6 +49,7 @@ const RouterComponent = () => {
       back='false'
       hideBackImage
       />
+<<<<<<< HEAD
       <Scene key='settingProfile'
       navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
       back='false'
@@ -68,6 +70,13 @@ const RouterComponent = () => {
       back='false'
       hideBackImage
       component={UserMain}
+=======
+      <Scene key='userMainView'
+      navigationBarStyle={{ backgroundColor: '#008b4', borderBottomWidth: 0 }}
+      component={UserMainView}
+      back='false'
+      hideBackImage
+>>>>>>> upstream/dev
       />
     </Scene>
     </Router>
