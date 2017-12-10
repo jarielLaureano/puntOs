@@ -1,5 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const https = require("https");
+const google_api = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+const google_api_key = 'AIzaSyBLDLO4nbnylcU90AD-XFn0fZdcLxnHGsY';
 var nodemailer = require('nodemailer');
 var serviceAccount = require("./puntOs-Capstone2017-4ab872953b34.json");
 admin.initializeApp({
@@ -74,42 +77,36 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
 exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
   return admin.database().ref(`users/${req.query.id}`).once('value', snapshot => {
     var radius_size = '0';
-    if (req.query.size === 'Small')
-      radius_size= '40';
-    else if( req.query.size === 'Medium')
-        radius_size = '60';
-    else if( req.query.size === 'Large')
-        radius_size = '80';
-    else if( req.query.size === 'XLarge')
-        radius_size = '100';
-    const activate_account = { active: true, longitude: 'somevalue', latitude: 'somevalue', radius: radius_size };
-    snapshot.ref.update(activate_account).catch((error) => console.log(error));
-  }).then(snapshot => res.status(200).end());
-});
-// The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
+    var address = snapshot.val().addressLine.split(' ').join('+') + ',+' + snapshot.val().city.split(' ').join('+') + ',+' + 'Puerto+Rico&';
+    var req_url = google_api + address + 'key=' + google_api_key;
+    //console.log('address: ' + address)
+    //console.log('url: ' + req_url)
+    https.get(req_url, res => {
+      let body = '';
+      res.setEncoding('utf8');
+      res.on('data', data => {
+      body += data;
+      });
+      res.on('end', () => {
+        let longitude = '';
+        let lattitude = '';
+        body = JSON.parse(body);
+        lattitude += body.results[0].geometry.location.lat;
+        longitude += body.results[0].geometry.location.lng;
+        //console.log(body.results[0])
+        //console.log(lattitude)
+        //console.log(longitude)
+        if (req.query.size === 'Small')
+          radius_size= '40';
+        else if( req.query.size === 'Medium')
+            radius_size = '60';
+        else if( req.query.size === 'Large')
+            radius_size = '80';
+        else if( req.query.size === 'XLarge')
+            radius_size = '100';
 
-// Take the text parameter passed to this HTTP endpoint and insert it into the
-// Realtime Database under the path /messages/:pushId/original
-exports.addMessage = functions.https.onRequest((req, res) => {
-  // Grab the text parameter.
-  const original = req.query.text;
-  // Push the new message into the Realtime Database using the Firebase Admin SDK.
-  admin.database().ref('/messages').push({original: original}).then(snapshot => {
-    // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-    res.redirect(303, snapshot.ref);
-  });
-});
+        const activate_account = { active: true, longitude: longitude, latitude: lattitude, radius: radius_size };
+        snapshot.ref.update(activate_account).catch((error) => console.log(error));
+    });});
 
-// Listens for new messages added to /messages/:pushId/original and creates an
-// uppercase version of the message to /messages/:pushId/uppercase
-exports.makeUppercase = functions.database.ref('/messages/{pushId}/original')
-    .onWrite(event => {
-      // Grab the current value of what was written to the Realtime Database.
-      const original = event.data.val();
-      console.log('Uppercasing', event.params.pushId, original);
-      const uppercase = original.toUpperCase();
-      // You must return a Promise when performing asynchronous tasks inside a Functions such as
-      // writing to the Firebase Realtime Database.
-      // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
-      return event.data.ref.parent.child('uppercase').set(uppercase);
-    });
+  }).then(snapshot => res.status(200).end());});
