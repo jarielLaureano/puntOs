@@ -7,6 +7,13 @@ import UserSignUpForm from './components/UserSignUpForm';
 import SuccessBusinessView from './components/SuccessBusinessView';
 import SettingProfile from './components/SettingProfile';
 import BusinessMain from './components/BusinessMain';
+import BusinessProfile from './components/BusinessProfile';
+import ValidateCoupon from './components/ValidateCoupon';
+import CouponsView from './components/CouponsView';
+import CreateCoupon from './components/CreateCoupon';
+import CreatePromo from './components/CreatePromo';
+import PromosView from './components/PromosView';
+import ReviewsView from './components/ReviewsView';
 import UserMain from './components/UserMain';
 import { Actions } from 'react-native-router-flux';
 
@@ -19,6 +26,7 @@ const RouterComponent = () => {
       component={LoginForm}
       back='false'
       hideBackImage
+      panHandlers={null}
       initial
       />
       <Scene key='preSignUp'
@@ -47,6 +55,7 @@ const RouterComponent = () => {
       component={SuccessBusinessView}
       back='false'
       hideBackImage
+      panHandlers={null}
       />
       <Scene key='settingProfile'
       navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
@@ -54,13 +63,16 @@ const RouterComponent = () => {
       hideBackImage
       component={SettingProfile}
       title=' '
+      panHandlers={null}
       />
       <Scene key='BusinessMain'
       navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
       navBarButtonColor='white'
+      hideNavBar
       back='false'
       hideBackImage
       component={BusinessMain}
+      panHandlers={null}
       />
       <Scene key='UserMain'
       navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
@@ -68,6 +80,56 @@ const RouterComponent = () => {
       back='false'
       hideBackImage
       component={UserMain}/>
+      <Scene key='BusinessProfile'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      hideNavBar
+      back='false'
+      hideBackImage
+      component={BusinessProfile}
+      />
+      <Scene key='ReviewsView'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={ReviewsView}
+      title='My Reviews'
+      />
+      <Scene key='CouponsView'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={CouponsView}
+      title='My Coupons'
+      />
+      <Scene key='PromosView'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={PromosView}
+      title='My Promos'
+      />
+      <Scene key='CreateCoupon'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={CreateCoupon}
+      title='Create Coupon'
+      />
+      <Scene key='CreatePromo'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={CreatePromo}
+      title='Create Promo'
+      />
+      <Scene key='ValidateCoupon'
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+      navBarButtonColor='white'
+      onBack={() => Actions.BusinessMain()}
+      component={ValidateCoupon}
+      title='Validate Coupon'
+      />
     </Scene>
     </Router>
   );
