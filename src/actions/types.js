@@ -17,3 +17,4 @@ export const SIGNUP_USER_SUCCESS = 'signup_user_success';
 export const SIGNUP_USER_FAIL = 'signup_user_fail';
 export const USER_SIGNUP_UPDATE = 'user_signup_update';
 export const USER_SIGNUP_RESET = 'user_signup_reset';
+export const VALIDATE_STATE_UPDATE = 'validate_state_update';
