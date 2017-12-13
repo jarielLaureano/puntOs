@@ -127,7 +127,8 @@ class BusinessMain extends Component {
               <View style={{ flex: 1, justifyContent: 'center'}}>
               <Image
               style={styles.thumbnailStyle}
-              source={require('../assets/jarana.jpg')}
+              source={{uri: user.image }}
+              defaultSource={require('../assets/no-user-image.gif')}
               />
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>

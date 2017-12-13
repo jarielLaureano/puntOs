@@ -1,4 +1,4 @@
-import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET } from '../actions/types';
+import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET, REVIEWS_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
 user: {},
@@ -38,7 +38,15 @@ export default (state = INITIAL_STATE, action) => {
     case CREATE_COUPON_RESET:
     {
     const new_state = INITIAL_STATE.createCouponState;
-    return { ...state, createCouponState: new_state}
+    return { ...state, createCouponState: new_state};
+    }
+    case REVIEWS_UPDATE:
+    {
+    //console.log(state.reviews)
+    //console.log(action)
+    const new_reviews = {...state.reviews, ...action.payload};
+    //console.log('new_reviews: ' + new_reviews)
+    return { ...state, reviews: new_reviews};
     }
     default:
       return state;
