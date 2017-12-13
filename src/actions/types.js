@@ -18,3 +18,6 @@ export const SIGNUP_USER_FAIL = 'signup_user_fail';
 export const USER_SIGNUP_UPDATE = 'user_signup_update';
 export const USER_SIGNUP_RESET = 'user_signup_reset';
 export const VALIDATE_STATE_UPDATE = 'validate_state_update';
+export const CREATE_PROMO_UPDATE = 'create_promo_update';
+export const CREATE_COUPON_UPDATE = 'create_coupon_update';
+export const CREATE_COUPON_RESET = 'create_coupon_reset';

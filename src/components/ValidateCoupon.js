@@ -8,13 +8,6 @@ import { Actions } from 'react-native-router-flux';
 
 class ValidateCoupon extends Component {
 
-/*  renderPicker(){
-    let coupon_items = this.props.validateState.coupons.map((value, key) => (
-      <Picker.item label={value.title} value={key} />
-    ))
-    return coupon_items;
-  } */
-
   onPress(){
     this.props.validateCoupon(this.props.validateState.code, this.props.uid);
   }
