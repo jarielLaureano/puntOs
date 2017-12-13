@@ -1,4 +1,5 @@
-import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET, REVIEWS_UPDATE } from '../actions/types';
+import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
+  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
 user: {},
@@ -13,7 +14,8 @@ checkin_count: 0,
 validateState: { loading: false, code: '', error: ''},
 createPromoState: { loading: false, promo_text: '', promo_media: '', error: '' },
 createCouponState: { loading: false, coupon_text: '', coupon_media: '', coupon_expiration_type: 'minutes', coupon_expiration: 10, points_value: 50,
-claim_limit: 10, coupon_title: '', expiration_max: 59, expiration_step: 10 }
+claim_limit: 10, coupon_title: '', expiration_max: 59, expiration_step: 10 },
+businessProfileState: { tab_selected: 'Promos' }
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,6 +36,11 @@ export default (state = INITIAL_STATE, action) => {
     {
       const new_state = { ...state.createCouponState, [action.payload.prop]: action.payload.value };
       return { ...state, createCouponState: new_state};
+    }
+    case BUSINESS_PROFILE_UPDATE:
+    {
+      const new_state = { ...state.businessProfileState, [action.payload.prop]: action.payload.value };
+      return { ...state, businessProfileState: new_state};
     }
     case CREATE_COUPON_RESET:
     {

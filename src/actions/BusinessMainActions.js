@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import { Alert } from 'react-native';
-import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET, REVIEWS_UPDATE } from './types';
+import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
+  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
@@ -28,6 +29,13 @@ export const createPromoStateUpdate = ({ prop, value }) => {
 export const createCouponStateUpdate = ({ prop, value }) => {
   return {
     type: CREATE_COUPON_UPDATE,
+    payload: { prop, value }
+  };
+};
+
+export const businessProfileUpdate = ({ prop, value }) => {
+  return {
+    type: BUSINESS_PROFILE_UPDATE,
     payload: { prop, value }
   };
 };

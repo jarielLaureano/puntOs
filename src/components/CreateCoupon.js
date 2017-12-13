@@ -27,7 +27,7 @@ class CreateCoupon extends Component {
       );
     }
     else {
-      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#ecedee' }}>Create</Button>;
+      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#fff' }}>Create</Button>;
     }
   }
 
@@ -178,7 +178,7 @@ class CreateCoupon extends Component {
 const styles ={
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#ecedee'
+  backgroundColor: '#fff'
 },
 textStyle:{
   fontSize: 25,
