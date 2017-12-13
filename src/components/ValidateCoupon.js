@@ -39,10 +39,11 @@ class ValidateCoupon extends Component {
       <View style={styles.backgroundStyle}>
         <View style={{ flex: 5, justifyContent: 'center'}}>
               <View style={{ flex: 8, justifyContent: 'center'}}>
-                <Image
-                style={styles.thumbnailStyle}
-                source={require('../assets/jarana.jpg')}
-                />
+              <Image
+              style={styles.thumbnailStyle}
+              source={{uri: user.image }}
+              defaultSource={require('../assets/no-user-image.gif')}
+              />
               </View>
               <View style={{ flex: 2 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: -30 }}>
               <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>

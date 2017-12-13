@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { Alert } from 'react-native';
-import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET } from './types';
+import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE, CREATE_COUPON_RESET, REVIEWS_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
@@ -41,6 +41,22 @@ export const getBusinessProfile = (uid) => {
         };
       };
 
+export const getReviews = (uid) => {
+  return (dispatch) => {
+    //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+    firebase.database().ref(`/Reviews`).orderByChild(`businessID`).on('value', snapshot => {
+      let reviewList = [];
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        reviewList.push({...child_node.val(), id: counter});
+        counter++;
+      });
+      //console.log(reviewList)
+      dispatch({ type: REVIEWS_UPDATE, payload: reviewList});
+  });
+};
+};
+
 export const getCheckinsToday = (uid) => {
       return (dispatch) => {
       const _today = new Date().toISOString().substring(0,10);
@@ -72,8 +88,8 @@ export const createPromo = (promo_text, promo_media, business_name, uid) => {
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: '' }});
     firebase.database().ref(`/posts`).once('value', snapshot => {
-    const _today = new Date().toISOString().substring(0,10);
-    const new_post = { text: promo_text, image: promo_media, businessID: uid, date: _today, name: business_name, icon: '', likedBy: [], sharedBy: [] };
+    const _today = new Date().toISOString();
+    const new_post = { text: promo_text, image: promo_media, businessID: uid, date: _today, name: business_name, icon: '', likedBy: '', sharedBy: '' };
     snapshot.ref.push(new_post).then(() => {
       dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
       Alert.alert('Promotion Posted!','', {text: 'OK'})
@@ -93,7 +109,7 @@ export const createCoupon = (coupon_state, business_name, uid) => {
   return (dispatch) => {
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: '' }});
-    firebase.database().ref(`/Coupons/${uid}`).once('value', snapshot => {
+    firebase.database().ref(`/Coupons`).once('value', snapshot => {
     const _today = new Date();
     const post_date = _today.toISOString();
     //console.log(post_date.toISOString())
@@ -102,7 +118,7 @@ export const createCoupon = (coupon_state, business_name, uid) => {
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'm');
     } else if( coupon_state.coupon_expiration_type === 'hours'){
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'h');
-    } else if( type_selected === 'days') {
+    } else if( coupon_state.coupon_expiration_type === 'days') {
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'd');
     }
     const expire_coupon = expiration_date.toISOString();
@@ -122,8 +138,6 @@ export const createCoupon = (coupon_state, business_name, uid) => {
     });
   };
 };
-
-
 
 export const validateCoupon = (coupon_code, uid) => {
   return (dispatch) => {

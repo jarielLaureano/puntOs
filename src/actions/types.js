@@ -21,3 +21,4 @@ export const VALIDATE_STATE_UPDATE = 'validate_state_update';
 export const CREATE_PROMO_UPDATE = 'create_promo_update';
 export const CREATE_COUPON_UPDATE = 'create_coupon_update';
 export const CREATE_COUPON_RESET = 'create_coupon_reset';
+export const REVIEWS_UPDATE = 'reviews_update';
