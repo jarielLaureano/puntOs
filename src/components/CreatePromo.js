@@ -19,7 +19,7 @@ class CreatePromo extends Component {
       );
     }
     else {
-      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#ecedee' }}>Post</Button>;
+      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#fff' }}>Post</Button>;
     }
   }
 
@@ -85,7 +85,7 @@ class CreatePromo extends Component {
 const styles ={
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#ecedee'
+  backgroundColor: '#fff'
 },
 textStyle:{
   fontSize: 25,
