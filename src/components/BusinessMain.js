@@ -109,7 +109,7 @@ class BusinessMain extends Component {
     const { user, coupon_count, checkin_count } = this.props;
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, marginBottom: 5, borderBottomWidth: 1, borderColor: 'gray', backgroundColor:'#ecedee' }}>
+        <View style={{ flex:4, marginBottom: 5, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
@@ -127,7 +127,8 @@ class BusinessMain extends Component {
               <View style={{ flex: 1, justifyContent: 'center'}}>
               <Image
               style={styles.thumbnailStyle}
-              source={require('../assets/jarana.jpg')}
+              source={{uri: user.image }}
+              defaultSource={require('../assets/no-user-image.gif')}
               />
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
@@ -151,7 +152,7 @@ class BusinessMain extends Component {
           </View>
         </View>
         {this.renderContent()}
-        <View style={{ flex:1, flexDirection: 'row', borderColor: 'grey', borderTopWidth:1 , marginTop: 5, backgroundColor: '#ecedee' }}>
+        <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderTopWidth:0.5 , marginTop: 5, backgroundColor: '#fff' }}>
           <View style={{ flex: 1, justifyContent: 'center'}}>
           {this.renderHomeIcon()}
           </View>

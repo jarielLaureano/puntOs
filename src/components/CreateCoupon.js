@@ -27,7 +27,7 @@ class CreateCoupon extends Component {
       );
     }
     else {
-      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#ecedee' }}>Create</Button>;
+      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#fff' }}>Create</Button>;
     }
   }
 
@@ -69,10 +69,11 @@ class CreateCoupon extends Component {
         <View style={styles.backgroundStyle}>
             <View style={{ flex: 5, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#000'}}>
                   <View style={{ flex: 8, justifyContent: 'center'}}>
-                    <Image
-                    style={styles.thumbnailStyle}
-                    source={require('../assets/jarana.jpg')}
-                    />
+                  <Image
+                  style={styles.thumbnailStyle}
+                  source={{uri: user.image }}
+                  defaultSource={require('../assets/no-user-image.gif')}
+                  />
                   </View>
                   <View style={{ flex: 2 , flexDirection: 'column', justifyContent: 'center', marginTop: -30 }}>
                     <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
@@ -177,7 +178,7 @@ class CreateCoupon extends Component {
 const styles ={
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#ecedee'
+  backgroundColor: '#fff'
 },
 textStyle:{
   fontSize: 25,
