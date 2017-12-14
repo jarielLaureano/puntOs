@@ -6,6 +6,7 @@ import UserSignUpReducer from './UserSignUpReducer';
 import BusinessMainReducer from './BusinessMainReducer';
 import PostDetailReducer from './PostDetailReducer';
 import LikeDetailsReducer from './LikeDetailsReducer';
+import UserMainReducer from './UserMainReducer';
 
 export default combineReducers({
   auth: AuthReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
   userSignUp: UserSignUpReducer,
   businessMain: BusinessMainReducer,
   postDetails: PostDetailReducer,
+  userMain: UserMainReducer,
   likeDetails: LikeDetailsReducer
 });

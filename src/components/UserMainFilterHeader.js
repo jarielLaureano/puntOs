@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const UserMainFilterHeader = (props) => {
     const { viewStyle,
@@ -58,7 +59,7 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'space-around',
         height: 50,
-        backgroundColor: '#0084b4',
+        backgroundColor: '#00b0f0',
         alignItems: 'center',
         shadowColor: 'white',
         shadowOffset: { width: 0, height: 2 },

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { userLikePost, userUnlikePost } from '../actions';
 import { Card, CardSection } from './common/index';
+import * as actions from '../actions';
 
 class PostDetail extends Component {
     hasUniqueIconImage(image) {
