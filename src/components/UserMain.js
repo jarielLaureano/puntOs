@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
-import { InputLine } from './common';
+import { InputLine, Button } from './common';
 import { Actions } from 'react-native-router-flux';
 
 class UserMain extends Component {
@@ -8,6 +8,9 @@ class UserMain extends Component {
     return (
       <View>
         <Text>Main View User</Text>
+        <Button onPress={() => Actions.PostReviewView()}>
+          Post Review
+        </Button>
       </View>
     );
   }

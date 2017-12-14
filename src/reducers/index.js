@@ -4,11 +4,13 @@ import BusinessSignUpReducer from './BusinessSignUpReducer';
 import SettingProfileReducer from './SettingProfileReducer';
 import UserSignUpReducer from './UserSignUpReducer';
 import BusinessMainReducer from './BusinessMainReducer';
+import PostReviewReducer from './PostReviewReducer'
 
 export default combineReducers({
   auth: AuthReducer,
   businessSignUp: BusinessSignUpReducer,
   profileSet: SettingProfileReducer,
   userSignUp: UserSignUpReducer,
-  businessMain: BusinessMainReducer
+  businessMain: BusinessMainReducer,
+  postReview: PostReviewReducer
 });
