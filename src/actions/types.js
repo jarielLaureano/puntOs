@@ -24,3 +24,13 @@ export const POST_DETAIL_UPDATE = 'post_detail_update';
 export const POST_DETAIL_FETCH = 'post_detail_fetch';
 export const LIKE_DETAIL_UPDATE = 'like_detail_update';
 export const LIKE_POST = "like_post";
+export const VALIDATE_STATE_UPDATE = 'validate_state_update';
+export const CREATE_PROMO_UPDATE = 'create_promo_update';
+export const CREATE_COUPON_UPDATE = 'create_coupon_update';
+export const CREATE_COUPON_RESET = 'create_coupon_reset';
+export const SUBMIT_REVIEW = 'submit_review';
+export const POST_REVIEW_CHANGE = 'post_review_change';
+export const SET_POST_PROFILE = 'set_post_profile';
+export const REVIEWS_UPDATE = 'reviews_update';
+export const BUSINESS_PROFILE_UPDATE = 'business_profile_update';
+

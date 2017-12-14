@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image } from 'react-native';
-import { InputLine } from './common';
+import { InputLine, Button } from './common';
 import { Actions } from 'react-native-router-flux';
 import PostFeed from './PostFeed';
 import UserMainFilterHeader from './UserMainFilterHeader';

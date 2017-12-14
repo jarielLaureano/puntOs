@@ -16,6 +16,7 @@ import PromosView from './components/PromosView';
 import ReviewsView from './components/ReviewsView';
 import UserMain from './components/UserMain';
 import UserProfile from './components/UserProfile';
+import PostReviewView from './components/PostReviewView';
 import { Actions } from 'react-native-router-flux';
 
 const RouterComponent = () => {
@@ -145,6 +146,13 @@ const RouterComponent = () => {
       onBack={() => Actions.BusinessMain()}
       component={ValidateCoupon}
       title='Validate Coupon'
+      />
+      <Scene key="PostReviewView"
+      navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
+      navBarButtonColor='white'
+      onBack={() => Actions.UserMain()}
+      component={PostReviewView}
+      tittle="PostReviewView"
       />
     </Scene>
     </Router>
