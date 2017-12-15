@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import firebase from 'firebase'
 import { 
     View, 
     Text, 
@@ -9,7 +8,6 @@ import {
     ScrollView,
     CameraRoll,
     TouchableOpacity,
-    Platform,
 } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import { InputBox, InputLine, Button, Spinner } from './common';
@@ -18,39 +16,7 @@ import { connect } from 'react-redux';
 import PhotoGrid from 'react-native-photo-grid';
 import Modal from 'react-native-modal';
 import { postReviewChange, submitReview, resetPostReview } from '../actions';
-import RNFetchBlob from 'react-native-fetch-blob';
-
-const Blob = RNFetchBlob.polyfill.Blob
-const fs = RNFetchBlob.fs
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-window.Blob = Blob
-
-const uploadImage = (uri, imageName, mime = 'image/jpg') => {
-    return new Promise((resolve, reject) => {
-        const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-        let uploadBlob = null
-        const imageRef = firebase.storage().ref('images').child(imageName)
-        fs.readFile(uploadUri, 'base64' )
-            .then((data) => {
-                return Blob.build(data, {type:`${mime};BASE64`})
-            })
-            .then((blob) => {
-                uploadBlob = blob
-                return imageRef.put(blob, {contentType: mime})
-            })
-            .then(() => {
-                uploadBlob.close()
-                return imageRef.getDownloadURL()
-            })
-            .then((url) => {
-                resolve(url)
-            })
-            .catch((error) => {
-                reject(error)
-            })
-    })
-}
-
+var Utils = require('./common/Utils');
 
 class PostReviewView extends Component {
 
@@ -61,104 +27,6 @@ class PostReviewView extends Component {
 
  componentWillUpdate() {
         LayoutAnimation.spring();
-  }
-
-  onReviewSubmission () {
-     this.props.postReviewChange({ prop: 'error', value: ''})
-     this.props.postReviewChange({ prop: 'message', value: ''})
-     this.props.postReviewChange({ prop: 'loading', value: true})
-     if(this.props.selectedImage && this.props.caption && this.props.text){
-         uploadImage(this.props.selectedImage.src, `${this.props.uid+this.businessID}.jpg` )
-            .then((responseData) => {
-                this.props.submitReview({
-                    businessID: this.props.businessID,
-                    uid: this.props.uid,
-                    username: this.props.username,
-                    image: responseData,
-                    rating: this.props.rating,
-                    date: this.props.date,
-                    caption: this.props.caption,
-                    text: this.props.text,
-                    tallied: this.props.tallied,
-                    userIcon: this.props.userIcon,
-                    businessName: this.props.businessName
-                })
-                this.props.resetPostReview()
-                this.props.postReviewChange({ prop: 'message', value: 'Review Posted Successfully'})
-            })
-     } else {
-         this.props.postReviewChange({ prop: 'error', value: 'Missing Fields'})
-         this.props.postReviewChange({ prop: 'loading', value: false })
-     }
-  }
-
-
-
-  _handleUploadPress = () => {
-      CameraRoll.getPhotos({
-          first: 20,
-          assetType: 'All',
-      })
-      .then(r => {
-          this.props.postReviewChange({ prop: 'images', value: r.edges });
-          this.FetchPhotosArray();
-          this.togleModal();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  FetchPhotosArray () {
-      var images = [];
-      images = this.props.images.map((p,i) => {
-        return {id: i, src: p.node.image.uri }
-      });
-      this.props.postReviewChange({ prop: 'images', value: images });
-  }
-
-  togleModal = () => {
-      this.props.postReviewChange({ prop: 'modalIsVisible', value: !this.props.modalIsVisible });
-  }
-
-  setSelected = (selectedImage) => {
-    this.props.postReviewChange({ prop: 'selectedImage', value: selectedImage });
-    this.togleModal();
-    this.props.postReviewChange({ prop: 'message', value: 'Photo Selected!'});
-  }
-
-
-
-  renderItem( item, itemSize ) {
-      return (
-          <TouchableOpacity
-            key = { item.id }
-            style = {{ width: itemSize, height: itemSize}}
-            onPress = {() => this.setSelected(item)}
-          >
-            <Image
-                resizeMode = 'cover'
-                style = {{ flex: 1 }}
-                source = {{ uri: item.src }} 
-            />
-          </TouchableOpacity>
-      );
-  }
-
-  renderFooter() {
-    if(this.props.loading){
-      return (
-        <View>
-          <Spinner size='large'  />
-        </View>
-      );
-    } else {
-      return (
-        <View>
-          <Button onPress={() => this.onReviewSubmission()  }>Post It</Button>
-        </View>
-      );
-    }
   }
 
   render() {
@@ -175,7 +43,9 @@ class PostReviewView extends Component {
           modalStyle,
           headerStyle,
           gridStyle,
-          buttonOverstyle
+          buttonOverstyle,
+          messageStyle,
+          errorStyle
          } = styles;
 
       const {
@@ -270,8 +140,8 @@ class PostReviewView extends Component {
                 </View>
             </View>
             <View style={{ flex: 6 }}>
-                    <Text>{this.props.message}</Text>
-                    <Text>{this.props.error}</Text> 
+                    <Text style={messageStyle}>{this.props.message}</Text>
+                    <Text style={errorStyle}>{this.props.error}</Text> 
             </View>
             <View style={{ flex: 7 }}>
                 {this.renderFooter()}
@@ -280,9 +150,120 @@ class PostReviewView extends Component {
       </ScrollView>
     );
   }
+
+
+// =============================== Redering Methods ================================
+renderItem( item, itemSize ) {
+    return (
+        <TouchableOpacity
+          key = { item.id }
+          style = {{ width: itemSize, height: itemSize}}
+          onPress = {() => this.setSelected(item)}
+        >
+          <Image
+              resizeMode = 'cover'
+              style = {{ flex: 1 }}
+              source = {{ uri: item.src }} 
+          />
+        </TouchableOpacity>
+    );
 }
 
-//Stylesheet
+renderFooter() {
+  if(this.props.loading){
+    return (
+      <View>
+        <Spinner size='large'  />
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Button onPress={() => this.onReviewSubmission()  }>Post It</Button>
+      </View>
+    );
+  }
+}
+
+
+
+
+
+//================================= Camera Roll Helper Functions =====================================
+
+_handleUploadPress = () => {
+    CameraRoll.getPhotos({
+        first: 20,
+        assetType: 'All',
+    })
+    .then(r => {
+        this.props.postReviewChange({ prop: 'images', value: r.edges });
+        this.FetchPhotosArray();
+        this.togleModal();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+FetchPhotosArray () {
+    var images = [];
+    images = this.props.images.map((p,i) => {
+      return {id: i, src: p.node.image.uri }
+    });
+    this.props.postReviewChange({ prop: 'images', value: images });
+}
+
+togleModal = () => {
+    this.props.postReviewChange({ prop: 'modalIsVisible', value: !this.props.modalIsVisible });
+}
+
+setSelected = (selectedImage) => {
+  this.props.postReviewChange({ prop: 'selectedImage', value: selectedImage });
+  this.togleModal();
+  this.props.postReviewChange({ prop: 'message', value: 'Photo Selected!'});
+}
+
+
+
+
+
+
+// =================================== Helper Submission Method =====================================
+onReviewSubmission () {
+    this.props.postReviewChange({ prop: 'error', value: ''})
+    this.props.postReviewChange({ prop: 'message', value: ''})
+    this.props.postReviewChange({ prop: 'loading', value: true})
+    if(this.props.selectedImage && this.props.caption && this.props.text){
+        Utils.uploadImage(this.props.selectedImage.src, `${this.props.uid+this.businessID}.jpg` )
+           .then((responseData) => {
+               this.props.submitReview({
+                   businessID: this.props.businessID,
+                   uid: this.props.uid,
+                   username: this.props.username,
+                   image: responseData,
+                   rating: this.props.rating,
+                   date: this.props.date,
+                   caption: this.props.caption,
+                   text: this.props.text,
+                   tallied: this.props.tallied,
+                   userIcon: this.props.userIcon,
+                   businessName: this.props.businessName
+               })
+               this.props.resetPostReview()
+               this.props.postReviewChange({ prop: 'message', value: 'Review Posted Successfully'})
+           })
+    } else {
+        this.props.postReviewChange({ prop: 'loading', value: false })
+    }
+ }
+
+}
+
+
+
+
+//====================================Stylesheets=============================================
 const styles = {
     thumbnailStyle: {
         height: 100,
@@ -359,6 +340,14 @@ const styles = {
         marginBottom: 15,
         width: 150,
         borderRadius: 10
+    },
+    messageStyle: {
+        fontSize: 18,
+        color: '#0084b4'
+    },
+    errorStyle: {
+        fontSize: 18, 
+        color: 'red'
     }
 }
 

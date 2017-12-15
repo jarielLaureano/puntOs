@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { SET_PROFILE_UPDATE, GETTING_PROFILE, ACCOUNT_NOT_ACTIVE, ERROR_SETTING_CATEGORY, BUSINESS_MAIN_UPDATE } from './types';
+import { SET_PROFILE_UPDATE, GETTING_PROFILE, ACCOUNT_NOT_ACTIVE, ERROR_SETTING_CATEGORY, BUSINESS_MAIN_UPDATE, USER_MAIN_UPDATE, USER_MAIN_SET_PROFILE } from './types';
 import { Actions } from 'react-native-router-flux';
 
 export const settingProfileUpdate = ({ prop, value }) => {
@@ -52,6 +52,7 @@ export const getProfile = (uid) => {
           accountNotActive(dispatch);
         }
     } else if(user.type === 'user'){
+          dispatch({ type: USER_MAIN_SET_PROFILE, payload: {user, uid}});
           Actions.UserMain();
     }
     }).catch((error) => {
