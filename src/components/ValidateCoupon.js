@@ -36,6 +36,7 @@ class ValidateCoupon extends Component {
   render() {
     const { user, validateState } = this.props;
     return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.backgroundStyle}>
         <View style={{ flex: 5, justifyContent: 'center'}}>
               <View style={{ flex: 8, justifyContent: 'center'}}>
@@ -68,6 +69,7 @@ class ValidateCoupon extends Component {
         </View>
         </View>
       </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

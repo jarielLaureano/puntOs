@@ -88,7 +88,7 @@ const RouterComponent = () => {
         <Scene
           key='UserMain'
           navigationBarStyle=
-          {{ 
+          {{
           flexDirection: 'row',
           backgroundColor: '#00b0f0',
           justifyContent: 'space-around',
@@ -103,7 +103,7 @@ const RouterComponent = () => {
         <Scene
           key='UserProfile'
           navigationBarStyle=
-          {{ 
+          {{
           flexDirection: 'row',
           backgroundColor: '#00b0f0',
           justifyContent: 'space-around',
@@ -178,7 +178,6 @@ const RouterComponent = () => {
         />
         
       </Scene>
-
     </Router>
   );
 };

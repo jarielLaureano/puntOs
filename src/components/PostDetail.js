@@ -80,7 +80,7 @@ class PostDetail extends Component {
 
     // TODO
     renderClaimButton(coupon) {
-            
+
     }
 
     // TODO
@@ -90,7 +90,7 @@ class PostDetail extends Component {
 
     render() {
         const {
-            pid, 
+            pid,
             uid,
             icon,
             name,
@@ -103,7 +103,7 @@ class PostDetail extends Component {
             sharedBy
         } = this.props
 
-        const { 
+        const {
             authorIconStyle,
             authorNameStyle,
             postDateTextStyle,
@@ -170,7 +170,7 @@ const styles = {
         fontWeight: 'bold',
         marginLeft: 10,
         marginTop: 10
-        
+
     },
     postDateTextStyle: {
         fontSize: 14,

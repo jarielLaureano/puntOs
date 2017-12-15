@@ -28,8 +28,10 @@ export default (state = INITIAL_STATE, action) => {
     case USER_MAIN_UPDATE:
       return { ...state, [action.payload.prop]: action.payload.value };
     case USER_PROFILE_UPDATE:
+    {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
       return { ...state, userProfileState: new_state};
+    }
     case USER_REVIEWS_UPDATE:
       const new_reviews = { ...state.reviews, ...action.payload };
       return { ...state, reviews: new_reviews };
@@ -37,6 +39,7 @@ export default (state = INITIAL_STATE, action) => {
       const new_checkins = { ...state.checkins, ...action.payload };
       return { ...state, checkins: new_checkins };
     case USER_MAIN_SET_PROFILE:
+    {
       const new_state = {
         ...state,
         name: action.payload.user.name,
@@ -49,6 +52,7 @@ export default (state = INITIAL_STATE, action) => {
         uid: action.payload.uid
       }
       return new_state;
+    }
     default:
       return state;
   }
