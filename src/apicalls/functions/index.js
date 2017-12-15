@@ -110,3 +110,62 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
     });});
 
   }).then(snapshot => res.status(200).end());});
+
+  exports.aggregateReviews = functions.https.onRequest((req, res) => {
+        var votes_count = {};
+        var update_obj = {};
+        var tallied_update = {};
+    admin.database().ref(`/Reviews`).orderByChild('tallied').equalTo(false).once('value', snapshot => {
+      snapshot.forEach(review => {
+        reviewObj = review.val();
+        reviewObj['tallied'] = true;
+        tallied_update[review.key] = reviewObj;
+        businessID = reviewObj.businessID;
+        rating = reviewObj.rating;
+        if(votes_count.hasOwnProperty(businessID)){
+          votes_count[businessID].accumulated += rating;
+          votes_count[businessID].possible += 5;
+        } else {
+          votes_count[businessID] = { accumulated: 0, possible: 0 };
+          votes_count[businessID].accumulated += rating;
+          votes_count[businessID].possible += 5;
+        }
+      });
+      }).then(() => {
+        admin.database().ref('/users').orderByChild('type').equalTo('Business').once('value', users =>{
+          users.forEach(child_node => {
+              var businessObj = child_node.val();
+              var id = child_node.key;
+              if(!businessObj.accumulated){
+                if(votes_count.hasOwnProperty(id)){
+                  var score = ((votes_count[id].accumulated/votes_count[id].possible)*5).toFixed(2);
+                  //console.log(score)
+                  businessObj['rating'] = score;
+                  businessObj['accumulated'] = votes_count[id].accumulated;
+                  businessObj['possible'] = votes_count[id].possible;
+                  update_obj[id] = businessObj;
+                }
+              } else {
+                if(votes_count.hasOwnProperty(id)){
+                  var accumulated_current = businessObj['accumulated'];
+                  var possible_current = businessObj['possible'];
+                  var new_accumulated = votes_count[id].accumulated+accumulated_current;
+                  var new_possible = possible_current+votes_count[id].possible;
+                  var score = ((new_accumulated/new_possible)*5).toFixed(2);
+                  businessObj['rating'] = score;
+                  businessObj['accumulated'] = new_accumulated;
+                  businessObj['possible'] = new_possible;
+                  update_obj[id] = businessObj;
+                }
+              }
+          });
+          console.log(update_obj)
+          console.log(tallied_update)
+        }).then(() => {
+          admin.database().ref('/users').update(update_obj);
+          admin.database().ref('/Reviews').update(tallied_update);
+        });
+        res.status(200).send('Reviews Aggregated');
+      });
+
+    });

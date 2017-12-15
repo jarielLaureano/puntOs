@@ -17,6 +17,8 @@ export const SIGNUP_USER_SUCCESS = 'signup_user_success';
 export const SIGNUP_USER_FAIL = 'signup_user_fail';
 export const USER_SIGNUP_UPDATE = 'user_signup_update';
 export const USER_SIGNUP_RESET = 'user_signup_reset';
+export const PROMOS_UPDATE = 'promos_update';
+export const COUPONS_UPDATE = 'coupons_update';
 
 export const USER_MAIN_UPDATE = 'user_main_update';
 export const USER_PROFILE_UPDATE = 'user_profile_update';
@@ -36,4 +38,5 @@ export const POST_REVIEW_CHANGE = 'post_review_change';
 export const SET_POST_PROFILE = 'set_post_profile';
 export const REVIEWS_UPDATE = 'reviews_update';
 export const BUSINESS_PROFILE_UPDATE = 'business_profile_update';
-
+export const RESET_POST_REVIEW = 'reset_post_review';
+export const USER_MAIN_SET_PROFILE = 'user_main_set_profile';

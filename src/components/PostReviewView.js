@@ -7,32 +7,26 @@ import {
     LayoutAnimation, 
     ScrollView,
     CameraRoll,
-    Modal
+    TouchableOpacity,
 } from 'react-native';
 import StarRating from 'react-native-star-rating';
-import { InputBox, InputLine, Button } from './common';
+import { InputBox, InputLine, Button, Spinner } from './common';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { postReviewChange, submitReview } from '../actions'
+import PhotoGrid from 'react-native-photo-grid';
+import Modal from 'react-native-modal';
+import { postReviewChange, submitReview, resetPostReview } from '../actions';
+var Utils = require('./common/Utils');
 
 class PostReviewView extends Component {
 
+ constructor(props){
+     super(props);
+     this.renderItem = this.renderItem.bind(this);
+ }
 
  componentWillUpdate() {
         LayoutAnimation.spring();
-  }
-
-  onReviewSubmission () {
-      this.props.submitReview({
-          businessID: this.props.businessID,
-          uid: this.props.uid,
-          username: this.props.username,
-          image: this.props.image,
-          rating: this.props.rating,
-          date: this.props.date,
-          caption: this.props.caption,
-          text: this.props.text
-      })
   }
 
   render() {
@@ -46,7 +40,12 @@ class PostReviewView extends Component {
           lineInputOverstyle,
           inputBoxOverstyle,
           scrollStyle,
-          modalStyle
+          modalStyle,
+          headerStyle,
+          gridStyle,
+          buttonOverstyle,
+          messageStyle,
+          errorStyle
          } = styles;
 
       const {
@@ -57,8 +56,19 @@ class PostReviewView extends Component {
     return (
       <ScrollView style={backgroundStyle}>
         <View style={containerStyle}>
-            <View style={{ flex: 1 }}>
-                <TouchableWithoutFeedback>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text
+                    style={{ 
+                        fontSize: 25,
+                        paddingTop: 10,
+                        paddingBottom: 15,
+                    }}
+                >
+                    Post Review
+                </Text>
+            </View>
+            <View style={{ flex: 2 }}>
+                <TouchableWithoutFeedback onPress={this._handleUploadPress}>
                     <Image
                         style={thumbnailStyle} 
                         source={require('../assets/uploadImageVector.png')}
@@ -66,7 +76,36 @@ class PostReviewView extends Component {
                 </TouchableWithoutFeedback>
                 <Text style={textStyle}>Upload Image</Text>         
             </View>
-            <View style={{ flex: 2, flexDirection: 'row', marginTop: 10}}>
+            <View style={{ flex: 3 }}>
+                <Modal 
+                    isVisible={this.props.modalIsVisible}
+                >
+                    <ScrollView>
+                        <View style={modalStyle}>
+                            <View style={headerStyle}>
+                                <Text style={{fontSize: 25, color: 'white'}}>Choose Picture</Text>
+                            </View>
+                            <View style={gridStyle}>
+                                <PhotoGrid 
+                                    data = { this.props.images }
+                                    itemsPerRow = { 3 }
+                                    itemMargin = { 1 }
+                                    renderItem = {this.renderItem}
+                                />  
+                            </View>
+                            <View style={ {flex:3} }>
+                                <Button
+                                    overStyle={buttonOverstyle}
+                                    onPress ={this.togleModal}
+                                >
+                                    Close
+                                </Button>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </Modal>
+            </View>
+            <View style={{ flex: 4, flexDirection: 'row', marginTop: 10}}>
                 <StarRating
                 disabled={false}
                 maxStars={5}
@@ -79,7 +118,7 @@ class PostReviewView extends Component {
                 />
                 <Text style={{ fontSize: 23, paddingLeft: 5 }}>{this.props.rating}</Text>
             </View>
-            <View style={{ flex: 3, alignSelf: 'stretch', marginTop: 10 }}>
+            <View style={{ flex: 5, alignSelf: 'stretch', marginTop: 10 }}>
                <View style={{ alignSelf: 'stretch' }}>
                 <InputLine
                     onChangeText={value => postReviewChange({ prop: 'caption', value })}
@@ -100,18 +139,131 @@ class PostReviewView extends Component {
                 />
                 </View>
             </View>
-            <View style={{ flex: 4 }}>
-                <Button onPress={() => this.onReviewSubmission()  }>
-                    Post It 
-                </Button>
+            <View style={{ flex: 6 }}>
+                    <Text style={messageStyle}>{this.props.message}</Text>
+                    <Text style={errorStyle}>{this.props.error}</Text> 
+            </View>
+            <View style={{ flex: 7 }}>
+                {this.renderFooter()}
             </View>
        </View>   
       </ScrollView>
     );
   }
+
+
+// =============================== Redering Methods ================================
+renderItem( item, itemSize ) {
+    return (
+        <TouchableOpacity
+          key = { item.id }
+          style = {{ width: itemSize, height: itemSize}}
+          onPress = {() => this.setSelected(item)}
+        >
+          <Image
+              resizeMode = 'cover'
+              style = {{ flex: 1 }}
+              source = {{ uri: item.src }} 
+          />
+        </TouchableOpacity>
+    );
 }
 
-//Stylesheet
+renderFooter() {
+  if(this.props.loading){
+    return (
+      <View>
+        <Spinner size='large'  />
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Button onPress={() => this.onReviewSubmission()  }>Post It</Button>
+      </View>
+    );
+  }
+}
+
+
+
+
+
+//================================= Camera Roll Helper Functions =====================================
+
+_handleUploadPress = () => {
+    CameraRoll.getPhotos({
+        first: 20,
+        assetType: 'All',
+    })
+    .then(r => {
+        this.props.postReviewChange({ prop: 'images', value: r.edges });
+        this.FetchPhotosArray();
+        this.togleModal();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
+FetchPhotosArray () {
+    var images = [];
+    images = this.props.images.map((p,i) => {
+      return {id: i, src: p.node.image.uri }
+    });
+    this.props.postReviewChange({ prop: 'images', value: images });
+}
+
+togleModal = () => {
+    this.props.postReviewChange({ prop: 'modalIsVisible', value: !this.props.modalIsVisible });
+}
+
+setSelected = (selectedImage) => {
+  this.props.postReviewChange({ prop: 'selectedImage', value: selectedImage });
+  this.togleModal();
+  this.props.postReviewChange({ prop: 'message', value: 'Photo Selected!'});
+}
+
+
+
+
+
+
+// =================================== Helper Submission Method =====================================
+onReviewSubmission () {
+    this.props.postReviewChange({ prop: 'error', value: ''})
+    this.props.postReviewChange({ prop: 'message', value: ''})
+    this.props.postReviewChange({ prop: 'loading', value: true})
+    if(this.props.selectedImage && this.props.caption && this.props.text){
+        Utils.uploadImage(this.props.selectedImage.src, `${this.props.uid+this.businessID}.jpg` )
+           .then((responseData) => {
+               this.props.submitReview({
+                   businessID: this.props.businessID,
+                   uid: this.props.uid,
+                   username: this.props.username,
+                   image: responseData,
+                   rating: this.props.rating,
+                   date: this.props.date,
+                   caption: this.props.caption,
+                   text: this.props.text,
+                   tallied: this.props.tallied,
+                   userIcon: this.props.userIcon,
+                   businessName: this.props.businessName
+               })
+               this.props.resetPostReview()
+               this.props.postReviewChange({ prop: 'message', value: 'Review Posted Successfully'})
+           })
+    } else {
+        this.props.postReviewChange({ prop: 'loading', value: false })
+    }
+ }
+
+}
+
+
+
+
+//====================================Stylesheets=============================================
 const styles = {
     thumbnailStyle: {
         height: 100,
@@ -163,6 +315,39 @@ const styles = {
          borderBottomColor: '#0084b4',
          borderRightWidth: 3,
          borderLeftWidth: 3,
+    },
+    modalStyle: {
+        borderRadius: 5,
+        backgroundColor: '#fff'
+    },
+    headerStyle: {
+        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 5,
+        borderBottomWidth: 3,
+        borderBottomColor: '#0084b4',
+        flex: 1,
+        backgroundColor: '#0084b4'
+    },
+    gridStyle: {
+        backgroundColor: 'gray',
+        borderBottomWidth: 3,
+        borderBottomColor: '#0084b4',
+        flex: 2
+    },
+    buttonOverstyle: {
+        marginBottom: 15,
+        width: 150,
+        borderRadius: 10
+    },
+    messageStyle: {
+        fontSize: 18,
+        color: '#0084b4'
+    },
+    errorStyle: {
+        fontSize: 18, 
+        color: 'red'
     }
 }
 
@@ -175,9 +360,15 @@ const mapStateToProps = state => {
     caption,
     uid,
     username,
-    image,
+    images,
     loading,
-    error
+    error,
+    modalIsVisible,
+    selectedImage,
+    tallied,
+    message,
+    userIcon,
+    businessName
  } = state.postReview;
 
  return {
@@ -188,9 +379,15 @@ const mapStateToProps = state => {
     caption,
     uid,
     username,
-    image,
-    loading
+    images,
+    loading,
+    modalIsVisible,
+    selectedImage,
+    tallied,
+    message,
+    businessName,
+    userIcon
  }
 
 }
-export default connect(mapStateToProps, { postReviewChange, submitReview })(PostReviewView);
+export default connect(mapStateToProps, { postReviewChange, submitReview, resetPostReview })(PostReviewView);

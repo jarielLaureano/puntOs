@@ -142,7 +142,7 @@ class BusinessMain extends Component {
             <StarRating
             disabled={true}
             maxStars={5}
-            rating={user.rating}
+            rating={parseFloat(user.rating)}
             starSize={25}
             starColor={'#f2d733'}
             />
