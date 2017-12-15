@@ -39,8 +39,7 @@ export default (state = INITIAL_STATE, action) => {
       const new_checkins = { ...state.checkins, ...action.payload };
       return { ...state, checkins: new_checkins };
     case USER_MAIN_SET_PROFILE:
-    {
-      const new_state = {
+      {const new_state = {
         ...state,
         name: action.payload.user.name,
         birthdate: action.payload.user.birthdate,
