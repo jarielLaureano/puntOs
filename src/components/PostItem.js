@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likePost, unlikePost, setExpired } from '../actions';
+import { likeItem, unlikeItem, setExpired } from '../actions';
 import { Card, CardSection, Button } from './common';
+import { Alert } from 'react-native';
 var moment = require('moment');
 
 class PostItem extends Component {
@@ -30,14 +31,14 @@ class PostItem extends Component {
         }
     }
 
-    getLikes(likedBy, uid, pid) {
+    getLikes(likedBy, uid, pid, isCoupon) {
         if (this.isLikedByUser(likedBy, uid)) {
             return (
                 <Icon.Button
                 name="heart"
                 color="red"
                 backgroundColor="white"
-                onPress={() => this.props.unlikePost(uid, pid)}
+                onPress={() => this.props.unlikeItem(uid, pid, isCoupon)}
                 >
                     <Text style={styles.postFooterButtonTextStyle}>{this.renderLikes(likedBy)}</Text>
                 </Icon.Button>
@@ -45,7 +46,7 @@ class PostItem extends Component {
         }
         return (
             <Icon.Button name="heart-o" color="red" backgroundColor="white"
-            onPress={() => this.props.likePost(uid, pid)}
+            onPress={() => this.props.likeItem(uid, pid, isCoupon)}
             >
                 <Text style={styles.postFooterButtonTextStyle}>{this.renderLikes(likedBy)}</Text>
             </Icon.Button>
@@ -66,7 +67,12 @@ class PostItem extends Component {
     }
 
     renderLikes(likes) {
+      if(likes){
       return Object.keys(likes).length;
+    }
+    else{
+      return 0;
+    }
     }
 
     renderClaims(claimedBy, isCoupon){
@@ -81,7 +87,7 @@ class PostItem extends Component {
       }
       else{
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginRight: 5, marginTop: 15, marginBottom: 10 }}>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10 }}>
           <Text style={{ alignSelf: 'center', fontSize: 30 }}>Object.keys(claimedBy).length</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
@@ -116,7 +122,7 @@ class PostItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=> Alert.alert('Error','Business cannot claim coupons!', {text: 'OK'})}>
                 <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
                 <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
@@ -177,23 +183,19 @@ class PostItem extends Component {
                         </View>
                     </View>
                 </CardSection>
-
                 <CardSection>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
                         {this.renderClaims(claimedBy, isCoupon)}
                         <Text style={postTextStyle}>
                             {text}
                         </Text>
-                    </View>
                 </CardSection>
-
                 <CardSection style={{ borderBottomWidth: 1, padding: 5 }}>
                     {this.renderImage(image)}
                 </CardSection>
 
                 <CardSection>
                     <View style={postFooterStyle}>
-                        {this.getLikes(likedBy, uid, pid)}
+                        {this.getLikes(likedBy, uid, pid, isCoupon)}
                         <Icon.Button name="share" color="black" backgroundColor="white">
                             <Text style={postFooterButtonTextStyle}>Share</Text>
                         </Icon.Button>
@@ -227,7 +229,9 @@ const styles = {
     postTextStyle: {
         fontSize: 16,
         marginLeft: 10,
-        marginTop: 5
+        marginTop: 5,
+        flexWrap: 'wrap',
+        flex: 1
     },
     postImageStyle: {
         flex: 1,
@@ -253,4 +257,4 @@ const mapStateToProps = state => {
   return { uid, type };
 }
 
-export default connect(mapStateToProps, { likePost, unlikePost, setExpired }) (PostItem);
+export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired }) (PostItem);

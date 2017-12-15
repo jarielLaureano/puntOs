@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Slider, ScrollView, LayoutAnimation } from 'react-native';
+import { View, Text, Image, Slider, ScrollView, LayoutAnimation, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { InputBox, Button, Spinner } from './common';
 import { connect } from 'react-redux';
 import { createCouponStateUpdate, createCoupon } from '../actions';
@@ -16,7 +16,7 @@ class CreateCoupon extends Component {
       this.props.createCouponStateUpdate({ prop: 'error', value: 'Missing inputs'})
     }
     else{
-    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName, this.props.uid);
+    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName, this.props.uid, this.props.user.category);
   }
   }
 
@@ -84,6 +84,7 @@ class CreateCoupon extends Component {
     const { user, createCouponState } = this.props;
     options = ['minutes', 'hours', 'days'];
     return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.backgroundStyle}>
             <View style={{ flex: 5, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#000'}}>
                   <View style={{ flex: 8, justifyContent: 'center'}}>
@@ -185,6 +186,7 @@ class CreateCoupon extends Component {
                 </ScrollView>
             </View>
         </View>
+        </TouchableWithoutFeedback>
     );
   }
 }
