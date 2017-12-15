@@ -1,6 +1,7 @@
 import {
 SUBMIT_REVIEW,
-POST_REVIEW_CHANGE
+POST_REVIEW_CHANGE,
+RESET_POST_REVIEW
 } from '../actions/types';
 
 
@@ -12,18 +13,25 @@ const INITIAL_STATE = {
     caption: '',
     uid: 'zttXtdJ4KMT7eor77y0CFDQGLpO2',
     username: 'Jariel Laureano',
-    image: 'http://rec-eph.gfrcdn.net/images/2016/04/12/capture_7.jpg',
+    images: [],
     loading: false,
-    error: ''
+    error: '',
+    message: '',
+    modalIsVisible: false,
+    selectedImage: {},
+    tallied: false,
+    businessName: '',
+    userIcon: ''
 };
 
 export default ( state=INITIAL_STATE, action ) => {
-    console.log(action);
     switch(action.type){
         case SUBMIT_REVIEW:
             return { ...state, loading: true};
         case POST_REVIEW_CHANGE:
-            return { ...state, [action.payload.prop]: action.payload.value }
+            return { ...state, [action.payload.prop]: action.payload.value };
+        case RESET_POST_REVIEW:
+            return INITIAL_STATE;
         default:
         return state;
     }
