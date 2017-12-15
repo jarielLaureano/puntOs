@@ -68,8 +68,11 @@ export const getReviews = (uid) => {
 export const getCheckinsToday = (uid) => {
       return (dispatch) => {
       const _today = new Date().toISOString().substring(0,10);
-      firebase.database().ref(`/Checkins/${uid}`).orderByChild(`date`).equalTo(_today).on('value', snapshot => {
+      firebase.database().ref(`/Checkins`).orderByChild(`queryparam`).equalTo(uid+_today).on('value', snapshot => {
+        //console.log(snapshot.val())
         const checkins_today = snapshot.val();
+        var start = moment().startOf('day');
+        console.log(start.toDate().toISOString())
         if (checkins_today != null){
         dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'checkin_count', value: Object.keys(checkins_today).length }});
       }
@@ -81,7 +84,7 @@ export const getCheckinsToday = (uid) => {
 export const getCouponsToday = (uid) => {
       return (dispatch) => {
       const _today = new Date().toISOString().substring(0,10);
-      firebase.database().ref(`/Redeems/${uid}`).orderByChild(`date`).equalTo(_today).on('value', snapshot => {
+      firebase.database().ref(`/Redeems`).orderByChild(`queryparam`).equalTo(uid+_today).on('value', snapshot => {
         const coupons_today = snapshot.val();
         if ( coupons_today != null){
         dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'coupon_count', value: Object.keys(coupons_today).length }});

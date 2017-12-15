@@ -5,14 +5,14 @@ import StarRating from 'react-native-star-rating';
 class ReviewItem extends Component {
 
   render () {
-    const { date, rating, text, username, image } = this.props.review;
+    const { date, rating, text, username, icon } = this.props.review;
     return (
         <View style={{ flexDirection: 'column', backgroundColor:'#fff', borderColor: 'grey', borderRightWidth: 0, borderLeftWidth: 0, borderWidth: 0.5 }}>
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 1, alignSelf: 'flex-start', justifyContent: 'center', flexDirection: 'column', paddingLeft: 5, paddingTop: 10 }}>
             <Image
             style={styles.thumbnailStyle}
-            source={{ uri: image }}
+            source={{ uri: icon }}
             defaultSource={require('../assets/no-user-image.gif')}
             />
             </View>

@@ -8,8 +8,6 @@ import { connect } from 'react-redux';
 class ReviewList extends Component {
   componentWillMount() {
     this.props.getReviews(this.props.uid);
-    console.log('the id is: ' + this.props.uid)
-    console.log(this.props.reviews)
   }
 
   render() {
@@ -23,8 +21,6 @@ class ReviewList extends Component {
 }
 const mapStateToProps = state => {
   var { uid } = state.businessMain;
-  console.log(uid)
-  console.log(state.businessMain.reviews)
   const reviews = _.map(state.businessMain.reviews, (val, key) => {
     return {...val, key};
   });
