@@ -26,4 +26,5 @@ export const POST_REVIEW_CHANGE = 'post_review_change';
 export const SET_POST_PROFILE = 'set_post_profile';
 export const REVIEWS_UPDATE = 'reviews_update';
 export const BUSINESS_PROFILE_UPDATE = 'business_profile_update';
+export const RESET_POST_REVIEW = 'reset_post_review';
 
