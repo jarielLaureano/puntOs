@@ -17,7 +17,10 @@ import ReviewsView from './components/ReviewsView';
 import UserMain from './components/UserMain';
 import UserProfile from './components/UserProfile';
 import PostReviewView from './components/PostReviewView';
+import NotificationsView from './components/NotificationsView';
+import QRCheckInView from './components/QRCheckInView';
 import { Actions } from 'react-native-router-flux';
+import UserNavBar from './components/UserNavBar';
 
 const RouterComponent = () => {
   return (
@@ -153,6 +156,8 @@ const RouterComponent = () => {
         {/* Tab Container */}
         <Scene
           hideNavBar
+          hideBackImage
+          back='false'
           key="tabbar"
           tabs={true}
           tabBarStyle=
@@ -166,23 +171,42 @@ const RouterComponent = () => {
             alignItems: 'center'
           }}
           tabBarPosition="bottom"
+          navBar = {UserNavBar}
+          swipeEnabled={false}
         >
-          {/* User Main Tab and its scenes */}
+          {/* User Main Tab(Promo Feed) and its scenes */}
           <Scene key="Main" title="Promo Feed">
             <Scene
               key='UserMain'
-              navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
               component={UserMain}
-              hideBackImage
+            />
+          </Scene>
+          {/* User Social Feed Tab and its scenes */}
+          <Scene key="Social Feed" title="Social Feed">
+            <Scene
+              key='UserMainSocial'
+              component={UserMain}
+            />
+          </Scene>
+          {/* User QR Check In Tab and its scenes */}
+          <Scene key="QR-Check-In" title="Check-In">
+            <Scene
+              key='QRCheckInView'
+              component={QRCheckInView}
+            />
+          </Scene>
+          {/* User Notifications Tab and its scenes */}
+          <Scene key="Notifications" title="Notifications">
+            <Scene
+              key='NotificationsView'
+              component={NotificationsView}
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
           <Scene key="Profile" title="My Profile">
             <Scene
               key='UserProfile'
-              navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
               component={UserProfile}
-              hideBackImage
             />
           </Scene>
 
