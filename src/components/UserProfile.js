@@ -39,23 +39,20 @@ class UserProfile extends Component {
     const { userProfileState } = this.props;
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
     var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
-    var promo_tab = null;
-    var coupon_tab = null;
+    var checkin_tab = null;
     var review_tab = null;
     if (userProfileState.tab_selected === 'Checkins'){
-      promo_tab = selectedStyle;
-      coupon_tab = notSelectedStyle;
+      checkin_tab = selectedStyle;
       review_tab = notSelectedStyle;
     } 
     else if(userProfileState.tab_selected === 'Reviews'){
-      promo_tab = notSelectedStyle;
-      coupon_tab = notSelectedStyle;
+      checkins_tab = notSelectedStyle;
       review_tab = selectedStyle;
     }
     return(
     <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderBottomWidth: 0.5, backgroundColor: '#299cc5' }}>
     <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={coupon_tab} >Check-Ins</Text>
+    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={checkin_tab} >Check-Ins</Text>
     </View>
     <View style={{ flex: 1, justifyContent: 'center'}}>
     <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>

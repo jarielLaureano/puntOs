@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import PostList from './PostList';
+import CouponsList from './CouponsList';
 
 class BusinessProfile extends Component {
 

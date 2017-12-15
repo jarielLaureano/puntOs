@@ -18,10 +18,10 @@ class UserMain extends Component {
   }
   render() {
     return (
-      
-      //<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-        <UserProfile />
-      //</View>
+      <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+        <UserMainFilterHeader />
+        <PostFeed />
+      </View>
     );
   }
 }

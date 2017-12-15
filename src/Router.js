@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scene, Router } from 'react-native-router-flux';
+import { Scene, Router, Drawer } from 'react-native-router-flux';
 import LoginForm from './components/LoginForm';
 import PreSignUp from './components/PreSignUp';
 import BusinessSignUpForm from './components/BusinessSignUpForm';
@@ -24,6 +24,8 @@ const RouterComponent = () => {
     <Router>
 
       <Scene key='root' >
+
+        {/*These are Login Related Views}*/}
 
         <Scene
           initial
@@ -75,6 +77,9 @@ const RouterComponent = () => {
           title=' '
           panHandlers={null}
         />
+
+        {/*These are Business Related Views}*/}
+        
         <Scene
           key='BusinessMain'
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
@@ -85,32 +90,6 @@ const RouterComponent = () => {
           component={BusinessMain}
           panHandlers={null}
         />
-        <Scene
-          key='UserMain'
-          navigationBarStyle=
-          {{ 
-          flexDirection: 'row',
-          backgroundColor: '#00b0f0',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          height: 50,
-          }}
-          navBarButtonColor='white'
-          onLeft={() => Actions.UserProfile()}
-          leftTitle="Profile"
-          component={UserMain}
-        />
-        <Scene
-          key='UserProfile'
-          navigationBarStyle=
-          {{ 
-          flexDirection: 'row',
-          backgroundColor: '#00b0f0',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          height: 50,
-          }}
-          component={UserProfile}/>
         <Scene
           key='BusinessProfile'
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
@@ -168,15 +147,54 @@ const RouterComponent = () => {
           component={ValidateCoupon}
           title='Validate Coupon'
         />
+
+        {/*These are User Related Views*/}
+
+        {/* Tab Container */}
+        <Scene
+          hideNavBar
+          key="tabbar"
+          tabs={true}
+          tabBarStyle=
+          {{
+            backgroundColor: 'white',
+            borderTopColor: '#ababab',
+            borderTopWidth: 2,
+            height: 50,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'center'
+          }}
+          tabBarPosition="bottom"
+        >
+          {/* User Main Tab and its scenes */}
+          <Scene key="Main" title="Promo Feed">
+            <Scene
+              key='UserMain'
+              navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+              component={UserMain}
+              hideBackImage
+            />
+          </Scene>
+          {/* User Profile Tab and its scenes */}
+          <Scene key="Profile" title="My Profile">
+            <Scene
+              key='UserProfile'
+              navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+              component={UserProfile}
+              hideBackImage
+            />
+          </Scene>
+
+        </Scene>
+
         <Scene
           key="PostReviewView"
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
           navBarButtonColor='white'
-          onBack={() => Actions.UserMain()}
           component={PostReviewView}
-          title="PostReviewView"
         />
-        
+
       </Scene>
 
     </Router>
