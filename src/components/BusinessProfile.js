@@ -6,6 +6,7 @@ import { businessProfileUpdate } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
+import PostList from './PostList';
 
 class BusinessProfile extends Component {
 
@@ -17,12 +18,12 @@ class BusinessProfile extends Component {
     const { businessProfileState } = this.props;
     if (businessProfileState.tab_selected === 'Promos'){
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
-      <Text>Promos View</Text>
-      </View>);
+    <PostList />
+    </View>);
     } else if( businessProfileState.tab_selected === 'Coupons'){
       return (
       <View style= {{ flex: 8, flexDirection: 'column' }}>
-      <Text>Coupons View</Text>
+      <CouponsList />
       </View>);
     } else if(businessProfileState.tab_selected === 'Reviews'){
         return (<View style= {{ flex: 8, flexDirection: 'column' }}>
@@ -102,7 +103,7 @@ class BusinessProfile extends Component {
             <StarRating
             disabled={true}
             maxStars={5}
-            rating={user.rating}
+            rating={parseFloat(user.rating)}
             starSize={25}
             starColor={'#f2d733'}
             />

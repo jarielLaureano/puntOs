@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import { Alert } from 'react-native';
 import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
-  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE } from './types';
+  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
@@ -52,11 +52,11 @@ export const getBusinessProfile = (uid) => {
 export const getReviews = (uid) => {
   return (dispatch) => {
     //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
-    firebase.database().ref(`/Reviews`).orderByChild(`businessID`).on('value', snapshot => {
+    firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
       let reviewList = [];
       let counter = 0;
       snapshot.forEach(child_node => {
-        reviewList.push({...child_node.val(), id: counter});
+        reviewList.push({...child_node.val(), id: counter, isCoupon: false});
         counter++;
       });
       //console.log(reviewList)
@@ -65,10 +65,34 @@ export const getReviews = (uid) => {
 };
 };
 
+export const getCoupons = (uid) => {
+  return (dispatch) => {
+    //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+    firebase.database().ref(`/Coupons`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+      let couponsList = [];
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        couponsList.push({...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+      //console.log(couponsList)
+      dispatch({ type: COUPONS_UPDATE, payload: couponsList});
+  });
+};
+};
+
+export const setExpired = (pid) => {
+  return (dispatch) => {
+    firebase.database().ref(`/Coupons/${pid}`).update({expired: true});
+};
+};
+
 export const getCheckinsToday = (uid) => {
       return (dispatch) => {
       const _today = new Date().toISOString().substring(0,10);
-      firebase.database().ref(`/Checkins/${uid}`).orderByChild(`date`).equalTo(_today).on('value', snapshot => {
+      firebase.database().ref(`/Checkins`).orderByChild(`queryparam`).equalTo(uid+_today).on('value', snapshot => {
+        //console.log(snapshot.val())
         const checkins_today = snapshot.val();
         if (checkins_today != null){
         dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'checkin_count', value: Object.keys(checkins_today).length }});
@@ -81,7 +105,7 @@ export const getCheckinsToday = (uid) => {
 export const getCouponsToday = (uid) => {
       return (dispatch) => {
       const _today = new Date().toISOString().substring(0,10);
-      firebase.database().ref(`/Redeems/${uid}`).orderByChild(`date`).equalTo(_today).on('value', snapshot => {
+      firebase.database().ref(`/Redeems`).orderByChild(`queryparam`).equalTo(uid+_today).on('value', snapshot => {
         const coupons_today = snapshot.val();
         if ( coupons_today != null){
         dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'coupon_count', value: Object.keys(coupons_today).length }});
@@ -131,8 +155,8 @@ export const createCoupon = (coupon_state, business_name, uid) => {
     }
     const expire_coupon = expiration_date.toISOString();
     const new_coupon = { text: coupon_state.coupon_text , image: coupon_state.coupon_media , businessID: uid,
-      date: post_date, businessName: business_name, icon: 'null', likedBy: 'null', sharedBy: 'null', expires: expire_coupon, expired: false,
-      pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit };
+      date: post_date, name: business_name, icon: '', likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
+      pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
     snapshot.ref.push(new_coupon).then(() => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: {prop: 'loading', value: false}});
       Alert.alert('Coupon Posted!','Coupon will expire on ' + expire_coupon.substring(0,10) + ' at ' + expire_coupon.substring(11,16), {text: 'OK'})
@@ -145,6 +169,39 @@ export const createCoupon = (coupon_state, business_name, uid) => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
     });
   };
+};
+
+export const likePost = (uid, pid) => {
+  const like_obj = {[uid]: 1};
+  return (dispatch) => {
+    firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
+    Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
+  });};
+
+};
+
+export const unlikePost = (uid, pid) => {
+  return (dispatch) => {
+    firebase.database().ref(`/posts/${pid}`).child('likedBy').child(uid).remove().catch((error) => {
+    Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
+  });};
+};
+
+export const getPosts = (uid) => {
+  return (dispatch) => {
+    //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+    firebase.database().ref(`/posts`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+      let promoList = [];
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        promoList.push({...child_node.val(), id: counter, pid: child_key});
+        counter++;
+      });
+      console.log(promoList)
+      dispatch({ type: PROMOS_UPDATE, payload: promoList});
+  });
+};
 };
 
 export const validateCoupon = (coupon_code, uid) => {
