@@ -11,16 +11,12 @@ class UserMain extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
         <UserMainFilterHeader />
-        <Button onPress={() =>{
-          Actions.PostReviewView()
-        }}
-        >
-        Review</Button>
+        <PostFeed />
         <UserMainFooter />
       </View>
     );
   }
 }
 
-//<PostFeed />
+
 export default UserMain;
