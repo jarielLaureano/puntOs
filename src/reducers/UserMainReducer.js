@@ -1,4 +1,9 @@
-import { USER_MAIN_UPDATE, USER_MAIN_SET_PROFILE } from '../actions/types';
+import {
+  USER_MAIN_UPDATE,
+  USER_PROFILE_UPDATE,
+  USER_CHECKINS_UPDATE,
+  USER_REVIEWS_UPDATE,
+  USER_MAIN_SET_PROFILE } from '../actions/types';
 
 const INITIAL_STATE = {
     name: '',
@@ -9,16 +14,28 @@ const INITIAL_STATE = {
     loading: '',
     error: '',
     telephone: '',
-    user: null,
+    user: {},
     type: 'user',
-    userProfileState: {tab_selected: 'CheckIns'},
-    uid: ''
+    uid:'',
+    checkins: {},
+    coupons: {},
+    reviews: {},
+    userProfileState: { tab_selected: 'Checkins' }
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case USER_MAIN_UPDATE:
       return { ...state, [action.payload.prop]: action.payload.value };
+    case USER_PROFILE_UPDATE:
+      const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
+      return { ...state, userProfileState: new_state};
+    case USER_REVIEWS_UPDATE:
+      const new_reviews = { ...state.reviews, ...action.payload };
+      return { ...state, reviews: new_reviews };
+    case USER_CHECKINS_UPDATE:
+      const new_checkins = { ...state.checkins, ...action.payload };
+      return { ...state, checkins: new_checkins };
     case USER_MAIN_SET_PROFILE:
       const new_state = {
         ...state,
