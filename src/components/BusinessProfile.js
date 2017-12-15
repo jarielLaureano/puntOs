@@ -6,6 +6,7 @@ import { businessProfileUpdate } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
+import CouponsList from './CouponsList';
 import PostList from './PostList';
 
 class BusinessProfile extends Component {
@@ -31,6 +32,23 @@ class BusinessProfile extends Component {
       </View>);
     }
   }
+
+  renderIcon(image) {
+          if (image) {
+              return (
+                <Image
+                style={styles.thumbnailStyle}
+                source={{uri: image }}
+                />
+              );
+          }
+          else {
+            return(<Image
+            style={styles.thumbnailStyle}
+            source={require('../assets/no-user-image.gif')}
+            />);
+          }
+      }
 
   renderTabs() {
     const { businessProfileState } = this.props;
@@ -86,11 +104,7 @@ class BusinessProfile extends Component {
               <Text style={{ alignSelf: 'center' }}>coupons</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>
-              <Image
-              style={styles.thumbnailStyle}
-              source={{uri: user.image }}
-              defaultSource={require('../assets/no-user-image.gif')}
-              />
+              {this.renderIcon(user.image)}
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>{checkin_count}</Text>
