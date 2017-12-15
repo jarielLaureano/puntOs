@@ -2,12 +2,20 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { userProfileUpdate } from '../actions';
+import { userProfileUpdate, getUserProfile } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
+import firebase from 'firebase';
 import UserMainFilterHeader from './UserMainFilterHeader';
+import UserReviewsView from './UserReviewsView';
+import CheckinsView from './CheckinsView';
 
 class UserProfile extends Component {
+
+  componentWillMount() {
+    currentUser = firebase.auth().currentUser.uid;
+    this.props.getUserProfile(currentUser);
+  }
 
   componentWillUpdate(){
     LayoutAnimation.spring();
@@ -15,17 +23,14 @@ class UserProfile extends Component {
 
   renderContent(){
     const { userProfileState } = this.props;
-    if (userProfileState.tab_selected === 'Promos'){
+    if (userProfileState.tab_selected === 'Checkins'){
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
-      <Text>Promos View</Text>
+      <CheckinsView />
       </View>);
-    } else if( userProfileState.tab_selected === 'Coupons'){
-      return (
-      <View style= {{ flex: 8, flexDirection: 'column' }}>
-      <Text>Coupons View</Text>
-      </View>);
-    } else if(userProfileState.tab_selected === 'Reviews'){
-        return (<View style= {{ flex: 8, flexDirection: 'column' }}>
+    } 
+    else if(userProfileState.tab_selected === 'Reviews'){
+      return (<View style= {{ flex: 8, flexDirection: 'column' }}>
+      <UserReviewsView />
       </View>);
     }
   }
@@ -37,15 +42,12 @@ class UserProfile extends Component {
     var promo_tab = null;
     var coupon_tab = null;
     var review_tab = null;
-    if (userProfileState.tab_selected === 'Promos'){
+    if (userProfileState.tab_selected === 'Checkins'){
       promo_tab = selectedStyle;
       coupon_tab = notSelectedStyle;
       review_tab = notSelectedStyle;
-    } else if( UserProfileState.tab_selected === 'Coupons'){
-      promo_tab = notSelectedStyle;
-      coupon_tab = selectedStyle;
-      review_tab = notSelectedStyle;
-    } else if(UserProfileState.tab_selected === 'Reviews'){
+    } 
+    else if(userProfileState.tab_selected === 'Reviews'){
       promo_tab = notSelectedStyle;
       coupon_tab = notSelectedStyle;
       review_tab = selectedStyle;
@@ -53,10 +55,7 @@ class UserProfile extends Component {
     return(
     <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderBottomWidth: 0.5, backgroundColor: '#299cc5' }}>
     <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'CheckIns'})} style={coupon_tab} >Check-Ins</Text>
-    </View>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Trophies'})} style={promo_tab} >Trophies</Text>
+    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={coupon_tab} >Check-Ins</Text>
     </View>
     <View style={{ flex: 1, justifyContent: 'center'}}>
     <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
@@ -86,7 +85,6 @@ class UserProfile extends Component {
               <View style={{ flex: 1, justifyContent: 'center'}}>
               <Image
               style={styles.thumbnailStyle}
-              source={{uri: user.image }}
               defaultSource={require('../assets/userImage.png')}
               />
               </View>
@@ -151,7 +149,8 @@ resizeMode: 'contain'
 }
 }
 const mapStateToProps = state => {
-  const { name, email, birthdate, hometown, loading, userProfileState } = state.userMain;
-  return { name, email, birthdate, hometown, loading, userProfileState };
+  const { user, email, birthdate, hometown, loading, userProfileState } = state.userMain;
+  console.log(state.userMain);
+  return { user, email, birthdate, hometown, loading, userProfileState };
 };
-export default connect(null,{ userProfileUpdate })(UserProfile);
+export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile })(UserProfile);

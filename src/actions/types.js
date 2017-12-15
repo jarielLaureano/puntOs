@@ -21,6 +21,9 @@ export const PROMOS_UPDATE = 'promos_update';
 export const COUPONS_UPDATE = 'coupons_update';
 
 export const USER_MAIN_UPDATE = 'user_main_update';
+export const USER_PROFILE_UPDATE = 'user_profile_update';
+export const USER_CHECKINS_UPDATE = "user_checkins_update";
+export const USER_REVIEWS_UPDATE = "user_reviews_update";
 
 export const POST_DETAIL_UPDATE = 'post_detail_update';
 export const POST_DETAIL_FETCH = 'post_detail_fetch';
@@ -36,3 +39,4 @@ export const SET_POST_PROFILE = 'set_post_profile';
 export const REVIEWS_UPDATE = 'reviews_update';
 export const BUSINESS_PROFILE_UPDATE = 'business_profile_update';
 export const RESET_POST_REVIEW = 'reset_post_review';
+export const USER_MAIN_SET_PROFILE = 'user_main_set_profile';
