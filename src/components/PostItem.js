@@ -24,9 +24,7 @@ class PostItem extends Component {
         if (image) {
             return (
                 <View style={postImageStyle}>
-                    <Image source={{uri: image }}
-                    defaultSource={require('../assets/no-user-image.gif')}
-                    />
+                    <Image source={{uri: image }} />
                 </View>
             );
         }
