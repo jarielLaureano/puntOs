@@ -9,13 +9,13 @@ const INITIAL_STATE = {
     loading: '',
     error: '',
     telephone: '',
-    user: null,
+    user: {},
     type: 'user',
     uid:'',
     checkins: {},
     coupons: {},
     reviews: {},
-    userProfileState: { tab_selected: 'CheckIns' }
+    userProfileState: { tab_selected: 'Checkins' }
 };
 
 export default (state = INITIAL_STATE, action) => {

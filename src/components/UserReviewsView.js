@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import CheckinList from './CheckinList';
+import UserReviewList from './UserReviewList';
 
-class CheckinsView extends Component {
+class UserReviewsView extends Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <CheckinList />
+        <UserReviewList />
       </View>
     );
   }
 }
 
-export default CheckinsView;
+export default UserReviewsView;

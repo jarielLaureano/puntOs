@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 
 class CheckinList extends Component {
   componentWillMount() {
-    currentUser  = firebase.auth().currentUser.uid;
+    currentUser = firebase.auth().currentUser.uid;
     this.props.getCheckins(currentUser);
-    console.log('the id is: ' + currentUser)
+    console.log('the id is: ' + currentUser);
     console.log(this.props.checkins)
   }
 
@@ -24,13 +24,13 @@ class CheckinList extends Component {
   }
 }
 const mapStateToProps = state => {
-  var { name } = state.userMain;
-  console.log(name)
+  var { user } = state.userMain;
+  console.log(user)
   console.log(state.userMain.checkins)
   const checkins = _.map(state.userMain.checkins, (val, key) => {
     return {...val, key};
   });
-  return { name, checkins };
+  return { user, checkins };
 }
 
 export default connect(mapStateToProps, { getCheckins })(CheckinList);

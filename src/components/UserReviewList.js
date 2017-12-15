@@ -3,12 +3,14 @@ import { ListView, FlatList } from 'react-native';
 import ReviewItem from './ReviewItem';
 import { getMyReviews } from '../actions';
 import _ from 'lodash';
+import firebase from 'firebase';
 import { connect } from 'react-redux';
 
 class UserReviewList extends Component {
   componentWillMount() {
-    this.props.getMyReviews(this.props.uid);
-    console.log('the id is: ' + this.props.uid)
+    currentUser = firebase.auth().currentUser.uid;
+    this.props.getMyReviews(currentUser);
+    console.log('the id is: ' + currentUser)
     console.log(this.props.reviews)
   }
 

@@ -18,10 +18,17 @@ export const getUserProfile = (uid) => {
   };
 };
 
+export const userProfileUpdate = ({ prop, value }) => {
+  return {
+    type: USER_PROFILE_UPDATE,
+    payload: { prop, value }
+  };
+};
+
 export const getCheckins = (uid) => {
   return (dispatch) => {
     //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
-    console.log(user);
+    console.log(uid);
     firebase.database().ref(`/Checkins`).orderByChild(`uid`).equalTo(uid).once('value', snapshot => {
       console.log(snapshot.val());
       let checkinList = [];
