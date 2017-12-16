@@ -115,13 +115,14 @@ export const getCouponsToday = (uid) => {
         };
       };
 
-export const createPromo = (promo_text, promo_media, business_name, uid) => {
+export const createPromo = (promo_text, promo_media, business_name, uid, category) => {
   return (dispatch) => {
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: '' }});
     firebase.database().ref(`/posts`).once('value', snapshot => {
     const _today = new Date().toISOString();
-    const new_post = { text: promo_text, image: promo_media, businessID: uid, date: _today, name: business_name, icon: '', likedBy: '', sharedBy: '' };
+    const new_post = { text: promo_text, image: promo_media, businessID: uid, date: _today,
+      name: business_name, icon: '', likedBy: '', sharedBy: '', category: category };
     snapshot.ref.push(new_post).then(() => {
       dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
       Alert.alert('Promotion Posted!','', {text: 'OK'})
@@ -137,7 +138,7 @@ export const createPromo = (promo_text, promo_media, business_name, uid) => {
   };
 };
 
-export const createCoupon = (coupon_state, business_name, uid) => {
+export const createCoupon = (coupon_state, business_name, uid, category) => {
   return (dispatch) => {
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: '' }});
@@ -154,7 +155,7 @@ export const createCoupon = (coupon_state, business_name, uid) => {
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'd');
     }
     const expire_coupon = expiration_date.toISOString();
-    const new_coupon = { text: coupon_state.coupon_text , image: coupon_state.coupon_media , businessID: uid,
+    const new_coupon = { text: coupon_state.coupon_text , image: coupon_state.coupon_media , businessID: uid, category: category,
       date: post_date, name: business_name, icon: '', likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
       pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
     snapshot.ref.push(new_coupon).then(() => {
@@ -171,20 +172,32 @@ export const createCoupon = (coupon_state, business_name, uid) => {
   };
 };
 
-export const likePost = (uid, pid) => {
+export const likeItem = (uid, pid, isCoupon) => {
   const like_obj = {[uid]: 1};
+  if (isCoupon){
+    return (dispatch) => {
+      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
+      Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
+    });};
+  } else {
   return (dispatch) => {
     firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
     Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-  });};
+  });};}
 
 };
 
-export const unlikePost = (uid, pid) => {
+export const unlikeItem = (uid, pid, isCoupon) => {
+  if(isCoupon){
+    return (dispatch) => {
+      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').child(uid).remove().catch((error) => {
+      Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
+    });};
+  }else {
   return (dispatch) => {
     firebase.database().ref(`/posts/${pid}`).child('likedBy').child(uid).remove().catch((error) => {
     Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
-  });};
+  });};}
 };
 
 export const getPosts = (uid) => {

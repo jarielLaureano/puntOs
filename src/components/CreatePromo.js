@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { InputBox, Button, Spinner } from './common';
 import { connect } from 'react-redux';
 import { createPromoStateUpdate, createPromo } from '../actions';
@@ -9,7 +9,12 @@ import { Actions } from 'react-native-router-flux';
 class CreatePromo extends Component {
 
   onPress(){
-    this.props.createPromo(this.props.createPromoState.promo_text, this.props.createPromoState.promo_media, this.props.user.businessName, this.props.uid);
+    if (this.props.createPromoState.promo_text === ''){
+      this.props.createPromoStateUpdate({ prop: 'error', value: 'Missing inputs'})
+    }else {
+    this.props.createPromo(this.props.createPromoState.promo_text,
+      this.props.createPromoState.promo_media, this.props.user.businessName, this.props.uid, this.props.user.category);
+}
   }
 
   renderButton(){
@@ -23,6 +28,23 @@ class CreatePromo extends Component {
     }
   }
 
+  renderIcon(image) {
+          if (image) {
+              return (
+                <Image
+                style={styles.thumbnailStyle}
+                source={{uri: image }}
+                />
+              );
+          }
+          else {
+            return(<Image
+            style={styles.thumbnailStyle}
+            source={require('../assets/no-user-image.gif')}
+            />);
+          }
+      }
+
   renderError() {
     if (this.props.createPromoState.error) {
       return (
@@ -35,14 +57,11 @@ class CreatePromo extends Component {
   render() {
     const { user, createPromoState } = this.props;
     return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.backgroundStyle}>
         <View style={{ flex: 5, justifyContent: 'center'}}>
               <View style={{ flex: 8, justifyContent: 'center'}}>
-              <Image
-              style={styles.thumbnailStyle}
-              source={{uri: user.image }}
-              defaultSource={require('../assets/no-user-image.gif')}
-              />
+              {this.renderIcon(user.image)}
               </View>
               <View style={{ flex: 2 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: -30 }}>
               <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
@@ -78,6 +97,7 @@ class CreatePromo extends Component {
         </View>
         </View>
         </View>
+        </TouchableWithoutFeedback>
     );
   }
 }

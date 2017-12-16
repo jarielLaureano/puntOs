@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Slider, ScrollView, LayoutAnimation } from 'react-native';
+import { View, Text, Image, Slider, ScrollView, LayoutAnimation, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { InputBox, Button, Spinner } from './common';
 import { connect } from 'react-redux';
 import { createCouponStateUpdate, createCoupon } from '../actions';
@@ -16,7 +16,7 @@ class CreateCoupon extends Component {
       this.props.createCouponStateUpdate({ prop: 'error', value: 'Missing inputs'})
     }
     else{
-    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName, this.props.uid);
+    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName, this.props.uid, this.props.user.category);
   }
   }
 
@@ -52,6 +52,24 @@ class CreateCoupon extends Component {
     }
   }
 
+
+  renderIcon(image) {
+          if (image) {
+              return (
+                <Image
+                style={styles.thumbnailStyle}
+                source={{uri: image }}
+                />
+              );
+          }
+          else {
+            return(<Image
+            style={styles.thumbnailStyle}
+            source={require('../assets/no-user-image.gif')}
+            />);
+          }
+      }
+
   renderError() {
     if (this.props.createCouponState.error) {
       return (
@@ -66,14 +84,11 @@ class CreateCoupon extends Component {
     const { user, createCouponState } = this.props;
     options = ['minutes', 'hours', 'days'];
     return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.backgroundStyle}>
             <View style={{ flex: 5, justifyContent: 'center', borderBottomWidth: 1, borderBottomColor: '#000'}}>
                   <View style={{ flex: 8, justifyContent: 'center'}}>
-                  <Image
-                  style={styles.thumbnailStyle}
-                  source={{uri: user.image }}
-                  defaultSource={require('../assets/no-user-image.gif')}
-                  />
+                  {this.renderIcon(user.image)}
                   </View>
                   <View style={{ flex: 2 , flexDirection: 'column', justifyContent: 'center', marginTop: -30 }}>
                     <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
@@ -171,6 +186,7 @@ class CreateCoupon extends Component {
                 </ScrollView>
             </View>
         </View>
+        </TouchableWithoutFeedback>
     );
   }
 }
