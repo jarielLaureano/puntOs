@@ -4,7 +4,9 @@ import {
   USER_CHECKINS_UPDATE,
   USER_PROMOS_UPDATE,
   USER_REVIEWS_UPDATE,
-  USER_MAIN_SET_PROFILE } from '../actions/types';
+  USER_MAIN_SET_PROFILE,
+  USER_PRIMARY_FILTER_UPDATE,
+  USER_SECONDARY_FILTER_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
     name: '',
@@ -20,10 +22,11 @@ const INITIAL_STATE = {
     uid:'',
     checkins: {},
     promos: {},
-    orderedPromos: {},
     coupons: {},
     reviews: {},
-    userProfileState: { tab_selected: 'Checkins' }
+    userProfileState: { tab_selected: 'Checkins' },
+    userPrimaryFilterState: { primaryFilterSelected: 'Promos' },
+    userSecondaryFilterState: { secondaryFilterSelected: 'All'}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,6 +37,16 @@ export default (state = INITIAL_STATE, action) => {
     {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
       return { ...state, userProfileState: new_state};
+    }
+    case USER_PRIMARY_FILTER_UPDATE:
+    {
+      const new_state = { ...state.userPrimaryFilterState, [action.payload.prop]: action.payload.value };
+      return { ...state, userPrimaryFilterState: new_state};
+    }
+    case USER_SECONDARY_FILTER_UPDATE:
+    {
+      const new_state = { ...state.userSecondaryFilterState, [action.payload.prop]: action.payload.value };
+      return { ...state, userSecondaryFilterState: new_state};
     }
     case USER_REVIEWS_UPDATE:
       const new_reviews = { ...state.reviews, ...action.payload };
@@ -58,7 +71,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    const new_promos = {...state.promos, ...action.payload};
+    const new_promos = action.payload;
+    console.log(new_promos);
     return { ...state, promos: new_promos};
     }
     default:

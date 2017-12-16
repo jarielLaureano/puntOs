@@ -8,7 +8,6 @@ import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
-import CouponsList from './CouponsList';
 
 class BusinessProfile extends Component {
 

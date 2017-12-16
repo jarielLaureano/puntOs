@@ -24,6 +24,7 @@ const UserMainFilterHeader = (props) => {
             <View>
                 <ScrollView 
                 horizontal={true}
+                pagingEnabled={true}
                 showsHorizontalScrollIndicator={false}
                 centerContent={true}
                 contentContainerStyle={carouselStyle}

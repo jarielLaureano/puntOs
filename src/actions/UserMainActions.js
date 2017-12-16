@@ -6,7 +6,9 @@ import {
   USER_MAIN_SET_PROFILE,
   USER_CHECKINS_UPDATE,
   USER_REVIEWS_UPDATE,
-  USER_PROMOS_UPDATE } from './types';
+  USER_PROMOS_UPDATE,
+  USER_PRIMARY_FILTER_UPDATE,
+  USER_SECONDARY_FILTER_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 
 export const userMainUpdate = ({ prop, value }) => {
@@ -28,6 +30,20 @@ export const getUserProfile = (uid) => {
 export const userProfileUpdate = ({ prop, value }) => {
   return {
     type: USER_PROFILE_UPDATE,
+    payload: { prop, value }
+  };
+};
+
+export const userPrimaryFilterUpdate = ({ prop, value }) => {
+  return {
+    type: USER_PRIMARY_FILTER_UPDATE,
+    payload: { prop, value }
+  };
+};
+
+export const userSecondaryFilterUpdate = ({ prop, value }) => {
+  return {
+    type: USER_SECONDARY_FILTER_UPDATE,
     payload: { prop, value }
   };
 };
@@ -77,29 +93,81 @@ export const userSetExpired = (pid) => {
   };
 };
 
-export const userGetPromos = (uid) => {
+export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
     let promoList = [];
-    //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
+    if (pf == 'Promos') {
+      if (sf == 'All') {
+        firebase.database().ref(`/posts`).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+      else {
+        firebase.database().ref(`/posts`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+    }
+
+    else {
+      if (sf == 'All') {
+        firebase.database().ref(`/Coupons`).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+      else {
+        firebase.database().ref(`/Coupons`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+    }
+    /*
     firebase.database().ref(`/posts`).on('value', snapshot => {
       let counter = 0;
       snapshot.forEach(child_node => {
         var child_key = child_node.key;
-        promoList.splice(0,0,{ ...child_node.val(), id: counter , pid: child_key});
+        promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: false , pid: child_key});
         counter++;
       });
-      console.log(promoList)
     });
     firebase.database().ref(`/Coupons`).on('value', snapshot => {
       let counter = 0;
       snapshot.forEach(child_node => {
-        var child_key_e = child_node.key;
-        promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true ,pid: child_key_e});
+        var child_key = child_node.key;
+        promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true ,pid: child_key});
         counter++;
       });
-      dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
-  });
-}
+      console.log(promoList)
+      */
+  }
 }
 
 export const userLikeItem = (uid, pid, isCoupon) => {
