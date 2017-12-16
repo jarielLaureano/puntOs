@@ -2,6 +2,7 @@ import {
   USER_MAIN_UPDATE,
   USER_PROFILE_UPDATE,
   USER_CHECKINS_UPDATE,
+  USER_PROMOS_UPDATE,
   USER_REVIEWS_UPDATE,
   USER_MAIN_SET_PROFILE } from '../actions/types';
 
@@ -18,6 +19,8 @@ const INITIAL_STATE = {
     type: 'user',
     uid:'',
     checkins: {},
+    promos: {},
+    orderedPromos: {},
     coupons: {},
     reviews: {},
     userProfileState: { tab_selected: 'Checkins' }
@@ -52,6 +55,11 @@ export default (state = INITIAL_STATE, action) => {
         uid: action.payload.uid
       }
       return new_state;
+    }
+    case USER_PROMOS_UPDATE:
+    {
+    const new_promos = {...state.promos, ...action.payload};
+    return { ...state, promos: new_promos};
     }
     default:
       return state;

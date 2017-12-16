@@ -6,6 +6,7 @@ import { userMainUpdate, getUserProfile } from '../actions';
 
 import UserMainFilterHeader from './UserMainFilterHeader';
 import PostFeed from './PostFeed';
+import UserPromoList from './UserPromoList';
 import UserMainFooter from './UserMainFooter';
 import CheckinsView from './CheckinsView';
 import UserReviewsView from './UserReviewsView';
@@ -20,7 +21,7 @@ class UserMain extends Component {
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
         <UserMainFilterHeader />
-        <PostFeed />
+        <UserPromoList />
       </View>
     );
   }
