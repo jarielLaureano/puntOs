@@ -9,7 +9,7 @@ import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
 import { Button } from './common';
-import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
+//import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
 
 
 class UserBusinessProfile extends Component {

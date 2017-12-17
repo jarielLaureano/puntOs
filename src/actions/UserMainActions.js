@@ -7,6 +7,7 @@ import {
   USER_CHECKINS_UPDATE,
   USER_REVIEWS_UPDATE,
   USER_PROMOS_UPDATE,
+  USER_SOCIALS_UPDATE,
   USER_PRIMARY_FILTER_UPDATE,
   USER_SECONDARY_FILTER_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
@@ -158,7 +159,11 @@ export const userLikeItem = (uid, pid, isCoupon) => {
     return (dispatch) => {
       firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
       Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-    });};
+      });
+      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
+      Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
+      });
+    };
   } else {
   return (dispatch) => {
     firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
@@ -183,7 +188,25 @@ export const userUnlikeItem = (uid, pid, isCoupon) => {
 export const getSocialPosts = () => {
   return (dispatch) => {
     let socialList =[];
-    firebase.database().ref(`/Checkins`).on('value', snapshot =>  {
+    firebase.database().ref(`/Events`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+      socialList = sortObj(socialList, 'date');
+      socialList.reverse();
+      console.log(socialList);
+      dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
+    });
+  }
+} 
+/*
+export const getSocialPosts = () => {
+  return (dispatch) => {
+    let socialList =[];
+    firebase.database().ref(`/Events`).on('value', snapshot =>  {
       let counter = 0;
       snapshot.forEach(child_node => {
         var child_key = child_node.key;
@@ -223,8 +246,12 @@ export const getSocialPosts = () => {
         counter++;
       });
     });
+    socialList = sortObj(socialList, 'date');
+    socialList.reverse();
+    dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
   }
 } 
+*/
 
 function sortObj(list, key) {
   function compare(a, b) {

@@ -25,6 +25,7 @@ export const USER_PROFILE_UPDATE = 'user_profile_update';
 export const USER_CHECKINS_UPDATE = "user_checkins_update";
 export const USER_REVIEWS_UPDATE = "user_reviews_update";
 export const USER_PROMOS_UPDATE = "user_promos_update";
+export const USER_SOCIALS_UPDATE = "user_socials_update";
 export const USER_PRIMARY_FILTER_UPDATE = "user_primary_filter_update";
 export const USER_SECONDARY_FILTER_UPDATE = "user_secondary_filter_update";
 
@@ -46,3 +47,4 @@ export const USER_MAIN_SET_PROFILE = 'user_main_set_profile';
 export const SET_COUPON_PROFILE = 'set_coupon_profile';
 export const CLAIM_COUPON = 'claim_coupon';
 export const UPDATE_COUPON_PROFILE = 'update_coupon_profile';
+export const BUSINESS_METRICS_UPDATE = 'business_metrics_update';
