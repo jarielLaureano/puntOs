@@ -5,6 +5,15 @@ import firebase from 'firebase';
 import { userMainUpdate, getUserProfile } from '../actions';
 import UserPromoList from './UserPromoList';
 
+import UserMainFilterHeader from './UserMainFilterHeader';
+import PostFeed from './PostFeed';
+import UserMainFooter from './UserMainFooter';
+import CheckinsView from './CheckinsView';
+import UserReviewsView from './UserReviewsView';
+import UserProfile from './UserProfile';
+import { Actions }  from 'react-native-router-flux';
+import {Button} from './common';
+
 class UserMain extends Component {
   componentWillMount(){
     currentUser = firebase.auth().currentUser.uid;

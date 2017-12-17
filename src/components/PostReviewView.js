@@ -60,7 +60,7 @@ class PostReviewView extends Component {
                 <Text
                     style={{ 
                         fontSize: 25,
-                        paddingTop: 10,
+                        paddingTop: 5,
                         paddingBottom: 15,
                     }}
                 >

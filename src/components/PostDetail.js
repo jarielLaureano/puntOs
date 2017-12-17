@@ -1,13 +1,15 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userLikePost, userUnlikePost } from '../actions';
+import { userLikePost, userUnlikePost, businessMainUpdate } from '../actions';
 import { Card, CardSection } from './common/index';
 import * as actions from '../actions';
+import { Actions } from 'react-native-router-flux';
 
 class PostDetail extends Component {
+    
     hasUniqueIconImage(image) {
         if (image) {
             return (
@@ -120,9 +122,15 @@ class PostDetail extends Component {
                             {this.hasUniqueIconImage(this.props.icon)}
                         </View>
                         <View style={{flex:1, flexDirection: 'column'}}>
+                            <TouchableOpacity
+                                onPress={() =>{
+                                    Actions.UserBusinessProfile()
+                                }}
+                            >
                             <Text style={authorNameStyle}>
                                 {this.props.name}
                             </Text>
+                            </TouchableOpacity>
                             <Text style={postDateTextStyle}>
                                 {this.props.date}
                             </Text>
