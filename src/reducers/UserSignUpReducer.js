@@ -16,7 +16,8 @@ const INITIAL_STATE = {
     error: '',
     telephone: '',
     user: null,
-    type: 'user'
+    type: 'user',
+    points: 1000,
 };
 
 export default (state = INITIAL_STATE, action) => {

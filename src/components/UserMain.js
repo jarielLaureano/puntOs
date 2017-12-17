@@ -10,6 +10,8 @@ import UserMainFooter from './UserMainFooter';
 import CheckinsView from './CheckinsView';
 import UserReviewsView from './UserReviewsView';
 import UserProfile from './UserProfile';
+import { Actions }  from 'react-native-router-flux';
+import {Button} from './common';
 
 class UserMain extends Component {
   componentWillMount(){
@@ -20,7 +22,7 @@ class UserMain extends Component {
     return (
       
       //<View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-        <UserProfile />
+      <PostFeed />
       //</View>
     );
   }

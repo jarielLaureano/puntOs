@@ -40,3 +40,6 @@ export const REVIEWS_UPDATE = 'reviews_update';
 export const BUSINESS_PROFILE_UPDATE = 'business_profile_update';
 export const RESET_POST_REVIEW = 'reset_post_review';
 export const USER_MAIN_SET_PROFILE = 'user_main_set_profile';
+export const SET_COUPON_PROFILE = 'set_coupon_profile';
+export const CLAIM_COUPON = 'claim_coupon';
+export const UPDATE_COUPON_PROFILE = 'update_coupon_profile';

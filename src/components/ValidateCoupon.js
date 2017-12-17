@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import { InputLine, Button, Spinner } from './common';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
