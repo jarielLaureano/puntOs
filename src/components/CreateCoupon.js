@@ -1,22 +1,129 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Slider, ScrollView, LayoutAnimation, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, Slider, ScrollView, LayoutAnimation, Keyboard, TouchableWithoutFeedback,
+TouchableHighlight, CameraRoll, Modal } from 'react-native';
 import { InputBox, Button, Spinner } from './common';
 import { connect } from 'react-redux';
-import { createCouponStateUpdate, createCoupon } from '../actions';
+import { createCouponStateUpdate, createCoupon, businessMainUpdate } from '../actions';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { SegmentedControls } from 'react-native-radio-buttons'
+import { SegmentedControls } from 'react-native-radio-buttons';
+import PhotoGrid from 'react-native-photo-grid';
 import { Actions } from 'react-native-router-flux';
 
 class CreateCoupon extends Component {
-  componentWillUpdate(){
-    LayoutAnimation.spring();
+
+  constructor(props){
+        super(props);
+        this.renderItem = this.renderItem.bind(this);
+}
+
+  setSelected(key){
+    this.props.businessMainUpdate({prop: 'photoSelectedKey', value: key});
+    this.props.businessMainUpdate({prop: 'photoSelected', value: this.props.photos[key-1]});
   }
+
+
+  renderItem(item, itemSize){
+//    this.props.photos.map((photo, key) => {
+  if(item){
+      return (
+        <TouchableHighlight
+        style={{opacity: item.id === this.props.photoSelectedKey ? 0.5 : 1, width: itemSize, height: itemSize}}
+        key={item.id}
+        underlayColor='transparent'
+        onPress={()=> this.setSelected(item.id)}>
+          <Image resizeMode = 'cover' style = {{ flex: 1 }} source = {{ uri: item.src }}  />
+        </TouchableHighlight>
+      );
+    }
+  //  })
+}
+
+modalContinue(option){
+  this.props.createCouponStateUpdate({prop: 'coupon_media', value: this.props.photoSelected.src});
+  //this.props.businessMainUpdate({prop: 'showPhotosCoupon', value: false});
+  this.closeModal(option);
+
+}
+
+renderPhotosButtons(){
+  const { photoSelectedKey, uploadLoading } = this.props;
+ if (photoSelectedKey){
+    return (
+      <View style={{ width: 100, flexDirection: 'row', justifyContent: 'center', paddingTop: 10, paddingBottom: 10}}>
+                  <Button onPress={() => {this.closeModal('cancel')}} overStyle={{ width: 150 }}>Cancel</Button>
+                  <Button onPress={() => {this.modalContinue('selected')}} overStyle={{ width: 150 }}>Continue</Button>
+      </View>
+    );} else {
+    return (
+      <View style={{ width: 100, flexDirection: 'row', justifyContent: 'center', paddingTop: 10, paddingBottom: 10}}>
+        <Button overStyle={{  width: 150 }} onPress={()=> this.closeModal('cancel')} >
+        Cancel
+        </Button>
+        <Button disbaled overStyle={{ backgroundColor: 'gray', borderColor: 'gray', width: 150 }} >
+        Continue
+        </Button>
+      </View>
+          );
+  }
+}
+
+  renderCamModal(){
+    return (
+      <Modal transparent={false} animationType={'slide'} visible={this.props.showPhotosCoupon}>
+        <View style={{ flex:1, paddingTop: 20, flexDirection: 'column', alignItems: 'center' }}>
+          <Text style={{fontSize: 20, color: '#000', paddingBottom:10}}>Camera Roll</Text>
+          <ScrollView style={{flexWrap: 'wrap', flexDirection: 'row'}}>
+            <PhotoGrid
+                data = { this.props.photos }
+                itemsPerRow = { 3 }
+                itemMargin = { 1 }
+                renderItem = {this.renderItem}
+            />
+          </ScrollView>
+          {this.renderPhotosButtons()}
+        </View>
+      </Modal> );
+  }
+
+  openModal(){
+    CameraRoll.getPhotos({
+        first: 20,
+        assetType: 'All',
+    })
+    .then(response => {
+        var paths = response.edges;
+        var photos = [];
+        photos = paths.map((photo , key) => {
+          return { id: key+1, src: photo.node.image.uri }
+        });
+        this.props.businessMainUpdate({prop: 'showPhotosCoupon', value: true});
+        this.props.businessMainUpdate({prop: 'photos', value: photos});
+
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+
+  closeModal(option){
+    if(option === 'cancel'){
+    this.props.businessMainUpdate({prop: 'showPhotosCoupon', value: false});
+    this.props.businessMainUpdate({prop: 'showPhotosCoupon', value: false});
+    this.props.businessMainUpdate({prop: 'photoSelected', value: null});
+    this.props.businessMainUpdate({prop: 'photoSelectedKey', value: null});
+  }
+  else{
+    this.props.businessMainUpdate({prop: 'showPhotosCoupon', value: false});
+  }
+  }
+
   onPress(){
     if (this.props.createCouponState.coupon_text === '' || this.props.createCouponState.coupon_title === '') {
       this.props.createCouponStateUpdate({ prop: 'error', value: 'Missing inputs'})
     }
     else{
-    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName, this.props.uid, this.props.user.category);
+    this.props.createCoupon(this.props.createCouponState, this.props.user.businessName,
+      this.props.uid, this.props.user.category, this.props.user.image);
   }
   }
 
@@ -27,7 +134,7 @@ class CreateCoupon extends Component {
       );
     }
     else {
-      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#fff' }}>Create</Button>;
+      return <Button onPress={this.onPress.bind(this)} overStyle={{ width: 150, marginTop: 15, borderColor: '#fff', marginBottom: 10 }}>Create</Button>;
     }
   }
 
@@ -80,6 +187,14 @@ class CreateCoupon extends Component {
     }
   }
 
+  renderImageAttachedText(){
+    if(this.props.createCouponState.coupon_media){
+      return(
+        <Text style={{ alignSelf: 'flex-end', paddingLeft: 10, paddingBottom: 5 }}>Image Attached</Text>
+      );
+    }
+  }
+
   render() {
     const { user, createCouponState } = this.props;
     options = ['minutes', 'hours', 'days'];
@@ -97,8 +212,11 @@ class CreateCoupon extends Component {
             <View style={{ flex: 12, justifyContent: 'center'}}>
             <ScrollView>
                 <View style={{ flex: 1, flexDirection: 'row', marginBottom: -10, marginTop: 10 }}>
+                    {this.renderImageAttachedText()}
                   <View style={{ flex: 1, justifyContent: 'center'}}>
-                    <Icon name='ios-camera' size= {25} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 15 }} />
+                    <TouchableWithoutFeedback onPress={()=> {this.openModal()}}>
+                      <Icon name='ios-camera' size= {30} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 15 }} />
+                    </TouchableWithoutFeedback>
                   </View>
                 </View>
                 <View style={{ flex: 12, justifyContent: 'center'}}>
@@ -185,6 +303,7 @@ class CreateCoupon extends Component {
                 </View>
                 </ScrollView>
             </View>
+            {this.renderCamModal()}
         </View>
         </TouchableWithoutFeedback>
     );
@@ -217,8 +336,8 @@ errorTextStyle: {
 }
 
 const mapStateToProps = state => {
-  const { createCouponState, user, uid } = state.businessMain;
-  return { createCouponState, user, uid};
+  const { createCouponState, user, uid, photos, photoSelectedKey, showPhotosCoupon, photoSelected } = state.businessMain;
+  return { createCouponState, user, uid, photos, photoSelectedKey, showPhotosCoupon, photoSelected};
 }
 
-export default connect(mapStateToProps, { createCouponStateUpdate, createCoupon })(CreateCoupon);
+export default connect(mapStateToProps, { createCouponStateUpdate, createCoupon, businessMainUpdate })(CreateCoupon);
