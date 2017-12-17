@@ -1,16 +1,18 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeItem, unlikeItem, setExpired, editItem } from '../actions';
+import { likeItem, unlikeItem, setExpired, businessMainUpdate, setCouponProfile } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class PostItem extends Component {
-  hasUniqueIconImage(image) {
+
+
+    hasUniqueIconImage(image) {
         if (image) {
             return (
               <Image style={styles.authorIconStyle} source={{uri: image }} />
@@ -22,10 +24,12 @@ class PostItem extends Component {
         //if not, return default icon
     }
 
-  renderImage(image) {
+    renderImage(image) {
         if (image) {
             return (
-                <Image style={styles.postImageStyle} source={{uri: image }} />
+                <View style={styles.postImageStyle}>
+                    <Image style={{height: 150}}source={{uri: image }} />
+                </View>
             );
         }
     }
@@ -78,7 +82,7 @@ class PostItem extends Component {
       if (isCoupon) {
       if(!claimedBy){
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, width: 100, flex: 1 }}>
           <Text style={{ alignSelf: 'center', fontSize: 30 }}>0</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
@@ -86,8 +90,8 @@ class PostItem extends Component {
       }
       else{
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
-          <Text style={{ alignSelf: 'center', fontSize: 30 }}>{Object.keys(claimedBy).length}</Text>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10 }}>
+          <Text style={{ alignSelf: 'center', fontSize: 30 }}>Object.keys(claimedBy).length</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
         );
@@ -95,6 +99,7 @@ class PostItem extends Component {
     }
   }
 
+    // TODO
     renderClaimButton(isCoupon, expired, expires, pointsValue, pid, uid) {
         if(isCoupon){
           if(expired){
@@ -120,20 +125,17 @@ class PostItem extends Component {
             }
             else {
               return (
-                <TouchableOpacity onPress={() => {
-
-                        if(this.props.userType === 'user'){
-                            this.props.setCouponProfile(this.props.item);
-                            Actions.RedeemCouponView();
-                        }
-
-                    }}
-                >
-                    <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
-                    <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
-                    <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
-                    </View>
-                </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                
+                    this.props.setCouponProfile(this.props.item);
+                    Actions.RedeemCouponView();
+                  
+                }} >
+                <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
+                <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
+                <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
+                </View>
+              </TouchableOpacity>
               );
             }
           }
@@ -187,19 +189,20 @@ class PostItem extends Component {
                                 {this.renderDate(date)}
                             </Text>
                         </View>
-                    <TouchableWithoutFeedback onPress={() => {this.props.editItem(pid, isCoupon, expired)}}>
-                      <Icon name='ellipsis-v' size= {20} color='grey' style={{ paddingRight: 10, paddingTop: 10 }} />
-                    </TouchableWithoutFeedback>
                     </View>
                 </CardSection>
                 <CardSection>
-                        {this.renderClaims(claimedBy, isCoupon)}
-                        <CardSection style={{ flexDirection: 'column', alignItems: 'stretch', flex: 1 }}>
-                        <Text style={postTextStyle}>
-                            {text}
-                        </Text>
-                        {this.renderImage(image)}
-                        </CardSection>
+                    <View>
+                       <View>
+                            <Text style={postTextStyle}>
+                                {text}
+                            </Text>
+                        </View>
+                    </View>
+                </CardSection>
+                <CardSection style={{ borderBottomWidth: 1, padding: 5 }}>
+                         {/* {this.renderClaims(claimedBy, isCoupon)}  */}
+                         {this.renderImage(image)}    
                 </CardSection>
                 <CardSection>
                     <View style={postFooterStyle}>
@@ -245,20 +248,13 @@ const styles = {
     },
     postImageStyle: {
         flex: 1,
-        alignSelf: 'stretch',
         height: 150,
-        marginRight: 10,
-        marginLeft: 10,
-        marginBottom: 5,
-        marginTop: 5
     },
     postFooterStyle: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 10,
-        borderTopWidth: 0.5,
-        borderColor: '#e3e3e3'
     },
     postFooterButtonTextStyle: {
         alignSelf: 'center',
@@ -276,10 +272,10 @@ const mapStateToProps = state => {
   //Check if user authenticated is of type user or business
   if(uid === ''){
       uid = state.businessMain.uid;
-      userType = "";
+      usertype= "";
   }
-
-  return { uid, type, userType };
+  
+  return { uid, type };
 }
 
-export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem }) (PostItem);
+export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, businessMainUpdate, setCouponProfile }) (PostItem);
