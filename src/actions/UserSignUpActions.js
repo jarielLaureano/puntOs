@@ -38,6 +38,17 @@ export const signUpUser = (props) => {
                 firebase.database().ref(`/users/${user.uid}`)
                     .set(props)
                         .then((response) => {
+                            const new_entry = {
+                                username: props.name,
+                                points: 1000,
+                                icon: "",
+                                uid: user.uid
+                            };
+                            firebase.database().ref(`/userRewards/${user.uid}`)
+                                .set(new_entry)
+                                .catch((error) => {
+                                    signUpUserFail(dispatch, 'Error Setting Rewards');
+                                })
                             signUpUserSuccess(dispatch, user)
                             dispatch({ type: USER_SIGNUP_RESET });
                         })})

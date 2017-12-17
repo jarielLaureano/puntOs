@@ -24,6 +24,7 @@
 		"react-native-photo-grid": "0.0.2",
 		"react-native-popup-dialog": "^0.10.44",
 		"react-native-progress": "^3.4.0",
+		"react-native-qrcode-scanner": "0.0.28",
 		"react-native-radio-buttons": "^1.0.0",
 		"react-native-router-flux": "^4.0.0-beta.21",
 		"react-native-star-rating": "^1.0.8",

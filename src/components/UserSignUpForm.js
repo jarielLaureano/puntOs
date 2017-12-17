@@ -144,6 +144,7 @@ class UserSignUpForm extends Component {
       telephone,
       hometown,
       birthdate,
+      points,
       type
     } = this.props
 
@@ -256,7 +257,8 @@ const mapStateToProps = state => {
     loading,
     error,
     user,
-    type
+    type,
+    points
   }
 }
 
