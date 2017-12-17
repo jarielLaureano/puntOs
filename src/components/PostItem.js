@@ -125,17 +125,20 @@ class PostItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity onPress={() => {
-                
-                    this.props.setCouponProfile(this.props.item);
-                    Actions.RedeemCouponView();
-                  
-                }} >
-                <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
-                <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
-                <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
-                </View>
-              </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                    
+                        if(this.props.userType === 'user'){
+                            this.props.setCouponProfile(this.props.item);
+                            Actions.RedeemCouponView();
+                        }
+                      
+                    }}
+                >
+                    <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
+                    <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
+                    <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
+                    </View>
+                </TouchableOpacity>
               );
             }
           }
@@ -272,10 +275,10 @@ const mapStateToProps = state => {
   //Check if user authenticated is of type user or business
   if(uid === ''){
       uid = state.businessMain.uid;
-      usertype= "";
+      userType = "";
   }
   
-  return { uid, type };
+  return { uid, type, userType };
 }
 
 export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, businessMainUpdate, setCouponProfile }) (PostItem);
