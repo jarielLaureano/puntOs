@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userLikeItem, userUnlikeItem, userSetExpired } from '../actions';
+import { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile  } from '../actions';
 import { Card, CardSection, Button } from './common';
+import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class UserPromoItem extends Component {
@@ -23,8 +24,8 @@ class UserPromoItem extends Component {
     renderImage(image) {
         if (image) {
             return (
-                <View style={postImageStyle}>
-                    <Image source={{uri: image }}
+                <View style={styles.postImageStyle}>
+                    <Image style={{ height:200}} source={{uri: image }}
                     defaultSource={require('../assets/no-user-image.gif')}
                     />
                 </View>
@@ -123,7 +124,12 @@ class UserPromoItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                
+                    this.props.setCouponProfile(this.props.item);
+                    Actions.RedeemCouponView();
+                  
+                }}>
                 <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
                 <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
@@ -163,7 +169,7 @@ class UserPromoItem extends Component {
     }
 
     render() {
-        const {pid,icon,name,date,text,image,likedBy,isCoupon,claimedBy,sharedBy, claimLimit,expires, expired, pointsValue } = this.props.item;
+        const {pid,icon,name,date,text,image,likedBy,isCoupon,claimedBy,sharedBy, claimLimit,expires, expired, pointsValue, businessID  } = this.props.item;
         const { uid } = this.props;
 
         const {authorIconStyle,authorNameStyle,postDateTextStyle,postTextStyle,postFooterStyle,overStyle,postFooterButtonTextStyle} = styles;
@@ -175,9 +181,14 @@ class UserPromoItem extends Component {
                             {this.hasUniqueIconImage(icon)}
                         </View>
                         <View style={{flex:1, flexDirection: 'column'}}>
+                        <TouchableOpacity onPress={ () => {
+                            this.props.businessMainUpdate({ prop: 'uid', value: businessID});
+                            Actions.UserBusinessProfile();
+                        }}>
                             <Text style={authorNameStyle}>
                                 {name}
                             </Text>
+                        </TouchableOpacity>
                             <Text style={postDateTextStyle}>
                                 {this.renderDate(date)}
                             </Text>
@@ -238,8 +249,8 @@ const styles = {
     },
     postImageStyle: {
         flex: 1,
-        height: 150,
-        width: null,
+        height: 200,
+        alignItems: 'stretch'
     },
     postFooterStyle: {
         flex: 1,
@@ -260,4 +271,4 @@ const mapStateToProps = state => {
   return { uid, type };
 }
 
-export default connect(mapStateToProps, { userLikeItem, userUnlikeItem, userSetExpired }) (UserPromoItem);
+export default connect(mapStateToProps, { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile }) (UserPromoItem);

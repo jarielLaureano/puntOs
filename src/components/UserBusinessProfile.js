@@ -16,8 +16,8 @@ class UserBusinessProfile extends Component {
   
 
   componentWillMount(){
-    const businessID = 'za47V9Z8DqVPampPGTa0of0Aojy1';
-    this.props.businessProfileUpdate({ prop: 'uid', value: businessID });
+    
+    var businessID = this.props.uid;
     this.props.getBusinessProfile(businessID);
     this.props.getCheckins(businessID);
     this.props.getCheckinsToday(businessID);
@@ -221,6 +221,7 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
+
 
   return { 
     user, 
