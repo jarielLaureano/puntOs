@@ -23,7 +23,7 @@ class UserPromoItem extends Component {
     renderImage(image) {
         if (image) {
             return (
-                <View style={postImageStyle}>
+                <View style={styles.postImageStyle}>
                     <Image source={{uri: image }}
                     defaultSource={require('../assets/no-user-image.gif')}
                     />

@@ -23,6 +23,7 @@ import UserBusinessProfile from './components/UserBusinessProfile';
 import RedeemCouponView from './components/RedeemCouponView';
 import { Actions } from 'react-native-router-flux';
 import UserNavBar from './components/UserNavBar';
+import UserSocialFeed from './components/UserSocialFeed';
 
 const RouterComponent = () => {
   return (
@@ -186,8 +187,8 @@ const RouterComponent = () => {
           {/* User Social Feed Tab and its scenes */}
           <Scene key="Social Feed" title="Social Feed">
             <Scene
-              key='UserMainSocial'
-              component={UserMain}
+              key='UserSocialFeed'
+              component={UserSocialFeed}
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}

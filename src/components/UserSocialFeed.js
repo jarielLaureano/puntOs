@@ -25,4 +25,4 @@ const mapStateToProps = state => {
   return { user, uid };
 };
 
-export default connect(mapStateToProps, { getUserProfile })(UserMain);
+export default connect(mapStateToProps, { getUserProfile })(UserSocialFeed);
