@@ -52,3 +52,22 @@ export const claimCoupon = (props) => {
 
     };
 }
+
+export const updateClaimBy = (uid, pid) => {
+    return (dispatch) => {
+        const claim_objt= {[uid]: 1};
+        firebase.database().ref(`/Coupons/${pid}`).child('claimedBy').update(claim_objt)
+            .catch((error) => {
+                dispatch({ type: UPDATE_COUPON_PROFILE, payload: { prop: 'message', value: error }});
+            });
+    };
+}
+
+export const setCouponToExpired = (pid) => {
+    return (dispatch) => {
+        firebase.database().ref(`/Coupons/${pid}`).update({expired: true})
+            .catch((error) => {
+                dispatch({ type: UPDATE_COUPON_PROFILE, payload: { prop: 'message', value: error}});
+            });
+    }
+}

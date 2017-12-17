@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, TouchableHighlight, LayoutAnimation } fr
 import { Actions } from 'react-native-router-flux';
 import { Button, Spinner } from './common';
 import { connect } from 'react-redux';
-import { claimCoupon, updateCouponProfile } from '../actions'
+import { claimCoupon, updateCouponProfile, updateClaimBy, setCouponToExpired } from '../actions'
 
 class RedeemCouponView extends Component {
     componentWillUpdate(){
@@ -82,6 +82,10 @@ class RedeemCouponView extends Component {
                     const coupon = this.props.coupon
                     if (user.points > pointsValue){
                         this.props.claimCoupon({ uid, coupon, user });
+                        this.props.updateClaimBy(uid, coupon.pid);
+                        if(coupon.claimedBy.length == coupon.claimLimit){
+                            this.props.setCouponToExpired(coupon.pid);
+                        }
                     }
                     else {
                         this.props.updateCouponProfile({ prop: 'message', value:'Not sufficient funds!' });
@@ -188,4 +192,4 @@ const mapStateToProps = state => {
 
 };
 
-export default connect(mapStateToProps,{ claimCoupon, updateCouponProfile })(RedeemCouponView);
+export default connect(mapStateToProps,{ claimCoupon, updateCouponProfile,updateClaimBy, setCouponToExpired })(RedeemCouponView);
