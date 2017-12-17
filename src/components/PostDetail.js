@@ -22,8 +22,8 @@ class PostDetail extends Component {
     renderImage(image) {
         if (image) {
             return (
-                <View style={postImageStyle}>
-                    <Image source={image} />
+                <View style={styles.postImageStyle}>
+                    <Image style={{ height: 200 }} source={image} />
                 </View>
             );
         }
@@ -122,15 +122,9 @@ class PostDetail extends Component {
                             {this.hasUniqueIconImage(this.props.icon)}
                         </View>
                         <View style={{flex:1, flexDirection: 'column'}}>
-                            <TouchableOpacity
-                                onPress={() =>{
-                                    Actions.UserBusinessProfile()
-                                }}
-                            >
                             <Text style={authorNameStyle}>
                                 {this.props.name}
                             </Text>
-                            </TouchableOpacity>
                             <Text style={postDateTextStyle}>
                                 {this.props.date}
                             </Text>
@@ -191,8 +185,8 @@ const styles = {
     },
     postImageStyle: {
         flex: 1,
-        height: 150,
-        width: null,
+        height: 200,
+        alignItems: 'stretch'
     },
     postFooterStyle: {
         flex: 1,
