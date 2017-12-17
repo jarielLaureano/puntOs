@@ -77,21 +77,22 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
 exports.sendRedeemCode = functions.database.ref('/Redeems/{rid}').onWrite(event => {
   const event_data = event.data;
   const value = event_data.val();
-  const user_id = event.params.uid;
+  //console.log(value)
+  const user_id = value.uid;
 
   if(event_data.previous.exists() || !event.data.exists()){
     return null;
   }
 
-  return admin.database().ref(`/users/${user_id}`).once( snapshot => {
+  return admin.database().ref(`/users/${user_id}`).once('value', snapshot => {
      var user = snapshot.val();
-     
+     //console.log(user)
      const code_mail_struct = {
         from: 'puntos Team <noreply@firebase.com>',
         to: user.email,
         subject: 'Here is your Coupon Code!',
         text: `Thank you ${user.name} for using or app!
-        Here is your coupon code: ${event.params.code}!`
+        Here is your coupon code: ${value.code}`
      };
 
      return transport.sendMail(code_mail_struct)
