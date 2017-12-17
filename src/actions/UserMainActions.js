@@ -149,24 +149,6 @@ export const userGetPromos = (uid, pf, sf) => {
         });
       }
     }
-    /*
-    firebase.database().ref(`/posts`).on('value', snapshot => {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: false , pid: child_key});
-        counter++;
-      });
-    });
-    firebase.database().ref(`/Coupons`).on('value', snapshot => {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true ,pid: child_key});
-        counter++;
-      });
-      console.log(promoList)
-      */
   }
 }
 
@@ -197,6 +179,52 @@ export const userUnlikeItem = (uid, pid, isCoupon) => {
     Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
   });};}
 };
+
+export const getSocialPosts = () => {
+  return (dispatch) => {
+    let socialList =[];
+    firebase.database().ref(`/Checkins`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Redeems`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Reviews`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/posts`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Coupons`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+  }
+} 
 
 function sortObj(list, key) {
   function compare(a, b) {

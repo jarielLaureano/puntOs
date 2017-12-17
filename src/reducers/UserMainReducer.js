@@ -24,9 +24,12 @@ const INITIAL_STATE = {
     promos: {},
     coupons: {},
     reviews: {},
+    socials: {},
     userProfileState: { tab_selected: 'Checkins' },
     userPrimaryFilterState: { primaryFilterSelected: 'Promos' },
-    userSecondaryFilterState: { secondaryFilterSelected: 'All'}
+    userSecondaryFilterState: { secondaryFilterSelected: 'All'},
+    points: 0,
+    level: 0
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -36,6 +39,7 @@ export default (state = INITIAL_STATE, action) => {
     case USER_PROFILE_UPDATE:
     {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
+      console.log(new_state);
       return { ...state, userProfileState: new_state};
     }
     case USER_PRIMARY_FILTER_UPDATE:
@@ -65,7 +69,10 @@ export default (state = INITIAL_STATE, action) => {
         telephone: action.payload.user.telephone,
         password: action.payload.user.password,
         user: action.payload.user,
-        uid: action.payload.uid
+        uid: action.payload.uid,
+        points: action.payload.points,
+        level: action.payload.level,
+        checkin_count: action.payload.checkin_count,
       }
       return new_state;
     }

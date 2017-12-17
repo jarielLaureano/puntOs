@@ -1,8 +1,9 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { userProfileUpdate, getUserProfile } from '../actions';
+import { userProfileUpdate, getUserProfile, getCheckins } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import firebase from 'firebase';
@@ -14,6 +15,7 @@ class UserProfile extends Component {
 
   componentWillMount() {
     currentUser = firebase.auth().currentUser.uid;
+    this.props.getCheckins(currentUser);
     this.props.getUserProfile(currentUser);
   }
 
@@ -46,7 +48,7 @@ class UserProfile extends Component {
       review_tab = notSelectedStyle;
     } 
     else if(userProfileState.tab_selected === 'Reviews'){
-      checkins_tab = notSelectedStyle;
+      checkin_tab = notSelectedStyle;
       review_tab = selectedStyle;
     }
     return(
@@ -61,23 +63,20 @@ class UserProfile extends Component {
   );
   }
   render() {
-    const { name, email, birthdate, hometown, loading, userProfileState } = this.props;
     return (
       <View style={styles.backgroundStyle}>
         <View style={{ flex:4, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
-            <Icon name='ios-arrow-back' size= {30} color='#299cc5' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>10,876</Text>
-              <Text style={{ alignSelf: 'center' }}>Puntos</Text>
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.props.user.points}</Text>
+              <Text style={{ alignSelf: 'center' }}>puntOs</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>
               <Image
@@ -86,14 +85,14 @@ class UserProfile extends Component {
               />
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>65</Text>
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{_.size(this.props.checkins)}</Text>
               <Text style={{ alignSelf: 'center'}}>Check-Ins</Text>
               </View>
             </View>
             <View style={{ flex: 3 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: 5 }}>
-            <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>My Name</Text>
+            <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{this.props.user.name}</Text>
             <View style={{ alignSelf: 'center', flexDirection: 'row' }}>
-            <Text>Level 14</Text>
+            <Text>Level {this.props.user.level}</Text>
             </View>
             </View>
           </View>
@@ -146,8 +145,8 @@ resizeMode: 'contain'
 }
 }
 const mapStateToProps = state => {
-  const { user, email, birthdate, hometown, loading, userProfileState } = state.userMain;
+  const { user, name, points, level, checkins, userProfileState } = state.userMain;
   console.log(state.userMain);
-  return { user, email, birthdate, hometown, loading, userProfileState };
+  return { user, name, points, level, checkins, userProfileState };
 };
-export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile })(UserProfile);
+export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile, getCheckins })(UserProfile);
