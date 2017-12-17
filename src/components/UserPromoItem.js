@@ -21,17 +21,14 @@ class UserPromoItem extends Component {
         //if not, return default icon
     }
 
-    renderImage(image) {
-        if (image) {
-            return (
-                <View style={styles.postImageStyle}>
-                    <Image style={{ height:200}} source={{uri: image }}
-                    defaultSource={require('../assets/no-user-image.gif')}
-                    />
-                </View>
-            );
+
+      renderImage(image) {
+            if (image) {
+                return (
+                    <Image style={styles.postImageStyle} source={{uri: image }} />
+                );
+            }
         }
-    }
 
     getLikes(likedBy, uid, pid, isCoupon) {
         if (this.isLikedByUser(likedBy, uid)) {
@@ -81,7 +78,7 @@ class UserPromoItem extends Component {
       if (isCoupon) {
       if(!claimedBy){
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10 }}>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
           <Text style={{ alignSelf: 'center', fontSize: 30 }}>0</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
@@ -89,8 +86,8 @@ class UserPromoItem extends Component {
       }
       else{
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginRight: 5, marginTop: 15, marginBottom: 10 }}>
-          <Text style={{ alignSelf: 'center', fontSize: 30 }}>Object.keys(claimedBy).length</Text>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
+          <Text style={{ alignSelf: 'center', fontSize: 30 }}>{Object.keys(claimedBy).length}</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
         );
@@ -125,10 +122,10 @@ class UserPromoItem extends Component {
             else {
               return (
               <TouchableOpacity onPress={() => {
-                
+
                     this.props.setCouponProfile(this.props.item);
                     Actions.RedeemCouponView();
-                  
+
                 }}>
                 <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
@@ -197,16 +194,13 @@ class UserPromoItem extends Component {
                 </CardSection>
 
                 <CardSection>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
                         {this.renderClaims(claimedBy, isCoupon)}
+                        <CardSection style={{ flexDirection: 'column', alignItems: 'stretch', flex: 1 }}>
                         <Text style={postTextStyle}>
                             {text}
                         </Text>
-                    </View>
-                </CardSection>
-
-                <CardSection style={{ borderBottomWidth: 1, padding: 5 }}>
-                    {this.renderImage(image)}
+                        {this.renderImage(image)}
+                        </CardSection>
                 </CardSection>
 
                 <CardSection>
@@ -245,12 +239,18 @@ const styles = {
     postTextStyle: {
         fontSize: 16,
         marginLeft: 10,
-        marginTop: 5
+        marginTop: 5,
+        flexWrap: 'wrap',
+        flex: 1
     },
     postImageStyle: {
         flex: 1,
-        height: 200,
-        alignItems: 'stretch'
+        alignSelf: 'stretch',
+        height: 150,
+        marginRight: 10,
+        marginLeft: 10,
+        marginBottom: 5,
+        marginTop: 5
     },
     postFooterStyle: {
         flex: 1,
