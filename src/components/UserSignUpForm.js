@@ -153,7 +153,7 @@ class UserSignUpForm extends Component {
             if(PHONE_REGEX.test(telephone)){
               if(PASSWORD_REGEX.test(password)){
                    if(HOMETOWN_REGEX.test(hometown)){
-                       this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type});
+                       this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type,points});
                    }
                    else{
                     this.props.userSignUpUpdate({ prop: 'error', value: 'Not Valid Hometown' });
@@ -242,7 +242,8 @@ const mapStateToProps = state => {
     loading,
     error,
     user,
-    type
+    type,
+    points
   } = state.userSignUp;
 
   return {

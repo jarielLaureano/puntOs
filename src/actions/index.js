@@ -6,3 +6,4 @@ export * from './BusinessMainActions';
 export * from './PostDetailActions';
 export * from './UserMainActions';
 export * from './PostReviewActions';
+export * from './RedeemCouponActions';

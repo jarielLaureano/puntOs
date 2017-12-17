@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeItem, unlikeItem, setExpired } from '../actions';
+import { likeItem, unlikeItem, setExpired, businessMainUpdate, setCouponProfile } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Alert } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class PostItem extends Component {
+
+
     hasUniqueIconImage(image) {
         if (image) {
             return (
@@ -24,8 +27,8 @@ class PostItem extends Component {
     renderImage(image) {
         if (image) {
             return (
-                <View style={postImageStyle}>
-                    <Image source={{uri: image }} />
+                <View style={styles.postImageStyle}>
+                    <Image style={{height: 150}}source={{uri: image }} />
                 </View>
             );
         }
@@ -79,7 +82,7 @@ class PostItem extends Component {
       if (isCoupon) {
       if(!claimedBy){
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10 }}>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, width: 100, flex: 1 }}>
           <Text style={{ alignSelf: 'center', fontSize: 30 }}>0</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
@@ -122,7 +125,12 @@ class PostItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity onPress={()=> Alert.alert('Error','Business cannot claim coupons!', {text: 'OK'})}>
+              <TouchableOpacity onPress={() => {
+                
+                    this.props.setCouponProfile(this.props.item);
+                    Actions.RedeemCouponView();
+                  
+                }} >
                 <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
                 <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
@@ -184,15 +192,18 @@ class PostItem extends Component {
                     </View>
                 </CardSection>
                 <CardSection>
-                        {this.renderClaims(claimedBy, isCoupon)}
-                        <Text style={postTextStyle}>
-                            {text}
-                        </Text>
+                    <View>
+                       <View>
+                            <Text style={postTextStyle}>
+                                {text}
+                            </Text>
+                        </View>
+                    </View>
                 </CardSection>
                 <CardSection style={{ borderBottomWidth: 1, padding: 5 }}>
-                    {this.renderImage(image)}
+                         {/* {this.renderClaims(claimedBy, isCoupon)}  */}
+                         {this.renderImage(image)}    
                 </CardSection>
-
                 <CardSection>
                     <View style={postFooterStyle}>
                         {this.getLikes(likedBy, uid, pid, isCoupon)}
@@ -206,6 +217,8 @@ class PostItem extends Component {
         );
     }
 }
+
+
 
 const styles = {
     authorIconStyle: {
@@ -236,7 +249,6 @@ const styles = {
     postImageStyle: {
         flex: 1,
         height: 150,
-        width: null,
     },
     postFooterStyle: {
         flex: 1,
@@ -253,8 +265,17 @@ const styles = {
 }
 
 const mapStateToProps = state => {
-  var { uid, type } = state.businessMain;
+  var { type } = state.businessMain;
+  var { uid } = state.userMain;
+  var userType = "user";
+
+  //Check if user authenticated is of type user or business
+  if(uid === ''){
+      uid = state.businessMain.uid;
+      usertype= "";
+  }
+  
   return { uid, type };
 }
 
-export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired }) (PostItem);
+export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, businessMainUpdate, setCouponProfile }) (PostItem);
