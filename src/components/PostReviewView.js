@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import firebase from 'firebase';
 import { 
     View, 
     Text, 
@@ -15,7 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import PhotoGrid from 'react-native-photo-grid';
 import Modal from 'react-native-modal';
-import { postReviewChange, submitReview, resetPostReview } from '../actions';
+import { postReviewChange, submitReview, resetPostReview, givePointsForReview } from '../actions';
 var Utils = require('./common/Utils');
 
 class PostReviewView extends Component {
@@ -23,6 +24,10 @@ class PostReviewView extends Component {
  constructor(props){
      super(props);
      this.renderItem = this.renderItem.bind(this);
+ }
+
+ componentWillMount() {
+    this.props.postReviewChange({ prop: 'uid', value: firebase.auth().currentUser.uid});
  }
 
  componentWillUpdate() {
@@ -248,13 +253,14 @@ onReviewSubmission () {
                    text: this.props.text,
                    tallied: this.props.tallied,
                    userIcon: this.props.userIcon,
-                   businessName: this.props.businessName
-               })
-               this.props.resetPostReview()
-               this.props.postReviewChange({ prop: 'message', value: 'Review Posted Successfully'})
+                   businessName: this.props.businessName,
+               });
+               this.props.givePointsForReview(this.props.uid, this.props.user);
+               this.props.resetPostReview();
+               this.props.postReviewChange({ prop: 'message', value: 'Review Posted Successfully'});
            })
     } else {
-        this.props.postReviewChange({ prop: 'loading', value: false })
+        this.props.postReviewChange({ prop: 'loading', value: false });
     }
  }
 
@@ -371,6 +377,8 @@ const mapStateToProps = state => {
     businessName
  } = state.postReview;
 
+  var { user } = state.userMain;
+
  return {
     businessID,
     date,
@@ -386,8 +394,9 @@ const mapStateToProps = state => {
     tallied,
     message,
     businessName,
-    userIcon
+    userIcon,
+    user
  }
 
 }
-export default connect(mapStateToProps, { postReviewChange, submitReview, resetPostReview })(PostReviewView);
+export default connect(mapStateToProps, { postReviewChange, submitReview, resetPostReview, givePointsForReview })(PostReviewView);
