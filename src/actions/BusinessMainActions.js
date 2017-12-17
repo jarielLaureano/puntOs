@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
   CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
+var Utils = require('../components/common/Utils');
 var moment = require('moment');
 
 export const businessMainUpdate = ({ prop, value }) => {
@@ -40,6 +41,32 @@ export const businessProfileUpdate = ({ prop, value }) => {
   };
 };
 
+export const updateProfilePic = (image_path, uid) =>{
+  return (dispatch) => {
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload: {prop: 'uploadLoading', value: true}});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload: {prop: 'uploadError', value: ''}});
+    const _today = new Date().getTime();
+    Utils.uploadImage(image_path, `${_today+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/users/${uid}`).update({image: response}).then(()=>{
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
+      }).catch((error)=>{
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        //dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadError', value: error}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+      });
+
+  }).catch((error)=>{
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+    //dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'uploadError', value: error}});
+  });
+};
+};
+
+
 export const getBusinessProfile = (uid) => {
       return (dispatch) => {
       firebase.database().ref(`/users/${uid}`).on('value', snapshot => {
@@ -56,7 +83,7 @@ export const getReviews = (uid) => {
       let reviewList = [];
       let counter = 0;
       snapshot.forEach(child_node => {
-        reviewList.push({...child_node.val(), id: counter, isCoupon: false});
+        reviewList.splice(0,0,{...child_node.val(), id: counter, isCoupon: false});
         counter++;
       });
       //console.log(reviewList)
@@ -73,7 +100,7 @@ export const getCoupons = (uid) => {
       let counter = 0;
       snapshot.forEach(child_node => {
         var child_key = child_node.key;
-        couponsList.push({...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        couponsList.splice(0,0,{...child_node.val(), id: counter, isCoupon: true, pid: child_key});
         counter++;
       });
       //console.log(couponsList)
@@ -115,14 +142,18 @@ export const getCouponsToday = (uid) => {
         };
       };
 
-export const createPromo = (promo_text, promo_media, business_name, uid, category) => {
+export const createPromo = (promo_text, promo_media, business_name, uid, category, user_image) => {
   return (dispatch) => {
+    const image_path = promo_media;
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: '' }});
+    const _today = new Date();
+    const _todayISO = _today.toISOString();
+    const _todayMil = _today.getTime();
+    Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
     firebase.database().ref(`/posts`).once('value', snapshot => {
-    const _today = new Date().toISOString();
-    const new_post = { text: promo_text, image: promo_media, businessID: uid, date: _today,
-      name: business_name, icon: '', likedBy: '', sharedBy: '', category: category };
+    const new_post = { text: promo_text, image: response, businessID: uid, date: _todayISO,
+      name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
     snapshot.ref.push(new_post).then(() => {
       dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
       Alert.alert('Promotion Posted!','', {text: 'OK'})
@@ -131,20 +162,27 @@ export const createPromo = (promo_text, promo_media, business_name, uid, categor
     }).catch((error) => {
       dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
       dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not post promotion' }});
-    })}).catch((error) => {
+    });}).catch((error) => {
       dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
       dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
+    });}).catch((error) => {
+      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
     });
   };
 };
 
-export const createCoupon = (coupon_state, business_name, uid, category) => {
+export const createCoupon = (coupon_state, business_name, uid, category, user_image) => {
   return (dispatch) => {
+    const image_path = coupon_state.coupon_media;
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: '' }});
-    firebase.database().ref(`/Coupons`).once('value', snapshot => {
     const _today = new Date();
-    const post_date = _today.toISOString();
+    const _todayISO = _today.toISOString();
+    const _todayMil = _today.getTime();
+    Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
+    firebase.database().ref(`/Coupons`).once('value', snapshot => {
+    const post_date = _todayISO;
     //console.log(post_date.toISOString())
     let expiration_date = new Date();
     if( coupon_state.coupon_expiration_type === 'minutes'){
@@ -155,21 +193,27 @@ export const createCoupon = (coupon_state, business_name, uid, category) => {
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'd');
     }
     const expire_coupon = expiration_date.toISOString();
-    const new_coupon = { text: coupon_state.coupon_text , image: coupon_state.coupon_media , businessID: uid, category: category,
-      date: post_date, name: business_name, icon: '', likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
+    const new_coupon = { text: coupon_state.coupon_text , image: response , businessID: uid, category: category,
+      date: post_date, name: business_name, icon: user_image, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
       pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
     snapshot.ref.push(new_coupon).then(() => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: {prop: 'loading', value: false}});
       Alert.alert('Coupon Posted!','Coupon will expire on ' + expire_coupon.substring(0,10) + ' at ' + expire_coupon.substring(11,16), {text: 'OK'})
       dispatch({ type: CREATE_COUPON_RESET });
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
     }).catch((error) => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not post coupon' }});
     });}).catch((error) => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
-    });
-  };
+    });}).catch((error) => {
+  dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
+  dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
+});
+};
 };
 
 export const likeItem = (uid, pid, isCoupon) => {
@@ -200,6 +244,68 @@ export const unlikeItem = (uid, pid, isCoupon) => {
   });};}
 };
 
+export const editItem = (pid, isCoupon, expired) => {
+  return (dispatch) => {
+    if(isCoupon){
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: 'Coupon'}});
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditStatus', value: expired }});
+    } else {
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: 'Promo'}});
+    }
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: pid }});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: true }});
+  };
+};
+
+export const deactivateCoupon = (pid) => {
+  return (dispatch) => {
+    firebase.database().ref(`Coupons/${pid}`).once('value',snapshot=> {
+      const set_expired = { expired: true };
+      snapshot.ref.update(set_expired).then(()=>{
+        Alert.alert('Coupon Deactivated!', 'People are no longer able to claim this coupon.', {text: 'OK'})
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+      }).catch(() => {
+        Alert.alert('Error!', 'We were unable to deactivate your coupon. Try again later.', {text: 'OK'})
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+      });
+    }).catch(()=>{
+      Alert.alert('Error!', 'Unable to access coupon. Try again later.', {text: 'OK'})
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+      dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+    });
+  };
+};
+
+
+export const deletePost = (pid) => {
+  return(dispatch) => {
+  firebase.database().ref(`posts/${pid}`).once('value',snapshot=> {
+  snapshot.ref.remove().then(()=>{
+    Alert.alert('Post Deleted!', 'People are no longer able to see this post.', {text: 'OK'})
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+  }).catch(() => {
+    Alert.alert('Error!', 'We were unable to delete your post. Try again later.', {text: 'OK'})
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+    dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+  });
+}).catch(()=>{
+  Alert.alert('Error!', 'Unable to access post. Try again later.', {text: 'OK'})
+  dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEdit', value: null}});
+  dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'edit', value: false }});
+  dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'itemToEditType', value: ''}});
+});
+};
+};
+
+
 export const getPosts = (uid) => {
   return (dispatch) => {
     //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
@@ -208,7 +314,7 @@ export const getPosts = (uid) => {
       let counter = 0;
       snapshot.forEach(child_node => {
         var child_key = child_node.key;
-        promoList.push({...child_node.val(), id: counter, pid: child_key});
+        promoList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
         counter++;
       });
       console.log(promoList)
