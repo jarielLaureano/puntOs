@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { likeItem, unlikeItem, setExpired, editItem } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Alert } from 'react-native';
+import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class PostItem extends Component {
@@ -119,12 +120,20 @@ class PostItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity onPress={()=> Alert.alert('Error','Business cannot claim coupons!', {text: 'OK'})}>
-                <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
-                <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
-                <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
-                </View>
-              </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+
+                        if(this.props.userType === 'user'){
+                            this.props.setCouponProfile(this.props.item);
+                            Actions.RedeemCouponView();
+                        }
+
+                    }}
+                >
+                    <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
+                    <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
+                    <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
+                    </View>
+                </TouchableOpacity>
               );
             }
           }
@@ -206,6 +215,8 @@ class PostItem extends Component {
     }
 }
 
+
+
 const styles = {
     authorIconStyle: {
         height: 40,
@@ -258,8 +269,17 @@ const styles = {
 }
 
 const mapStateToProps = state => {
-  var { uid, type } = state.businessMain;
-  return { uid, type };
+  var { type } = state.businessMain;
+  var { uid } = state.userMain;
+  var userType = "user";
+
+  //Check if user authenticated is of type user or business
+  if(uid === ''){
+      uid = state.businessMain.uid;
+      userType = "";
+  }
+
+  return { uid, type, userType };
 }
 
 export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem }) (PostItem);

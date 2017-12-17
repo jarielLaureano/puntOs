@@ -31,7 +31,8 @@ validateState: { loading: false, code: '', error: ''},
 createPromoState: { loading: false, promo_text: '', promo_media: '', error: '' },
 createCouponState: { loading: false, error: '', coupon_text: '', coupon_media: '', coupon_expiration_type: 'minutes', coupon_expiration: 10, points_value: 50,
 claim_limit: 10, coupon_title: '', expiration_max: 59, expiration_step: 10 },
-businessProfileState: { tab_selected: 'Promos' }
+businessProfileState: { tab_selected: 'Promos' },
+isCouponClaim: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -55,7 +56,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, createCouponState: new_state};
     }
     case BUSINESS_PROFILE_UPDATE:
-    {
+    { console.log(action);
       const new_state = { ...state.businessProfileState, [action.payload.prop]: action.payload.value };
       return { ...state, businessProfileState: new_state};
     }

@@ -1,13 +1,15 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, TouchableOpacity} from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userLikePost, userUnlikePost } from '../actions';
+import { userLikePost, userUnlikePost, businessMainUpdate } from '../actions';
 import { Card, CardSection } from './common/index';
 import * as actions from '../actions';
+import { Actions } from 'react-native-router-flux';
 
 class PostDetail extends Component {
+    
     hasUniqueIconImage(image) {
         if (image) {
             return (
@@ -20,8 +22,8 @@ class PostDetail extends Component {
     renderImage(image) {
         if (image) {
             return (
-                <View style={postImageStyle}>
-                    <Image source={image} />
+                <View style={styles.postImageStyle}>
+                    <Image style={{ height: 200 }} source={image} />
                 </View>
             );
         }
@@ -183,8 +185,8 @@ const styles = {
     },
     postImageStyle: {
         flex: 1,
-        height: 150,
-        width: null,
+        height: 200,
+        alignItems: 'stretch'
     },
     postFooterStyle: {
         flex: 1,

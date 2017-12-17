@@ -2,8 +2,11 @@ import {
   USER_MAIN_UPDATE,
   USER_PROFILE_UPDATE,
   USER_CHECKINS_UPDATE,
+  USER_PROMOS_UPDATE,
   USER_REVIEWS_UPDATE,
-  USER_MAIN_SET_PROFILE } from '../actions/types';
+  USER_MAIN_SET_PROFILE,
+  USER_PRIMARY_FILTER_UPDATE,
+  USER_SECONDARY_FILTER_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
     name: '',
@@ -18,9 +21,15 @@ const INITIAL_STATE = {
     type: 'user',
     uid:'',
     checkins: {},
+    promos: {},
     coupons: {},
     reviews: {},
-    userProfileState: { tab_selected: 'Checkins' }
+    socials: {},
+    userProfileState: { tab_selected: 'Checkins' },
+    userPrimaryFilterState: { primaryFilterSelected: 'Promos' },
+    userSecondaryFilterState: { secondaryFilterSelected: 'All'},
+    points: 0,
+    level: 0
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -30,7 +39,18 @@ export default (state = INITIAL_STATE, action) => {
     case USER_PROFILE_UPDATE:
     {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
+      console.log(new_state);
       return { ...state, userProfileState: new_state};
+    }
+    case USER_PRIMARY_FILTER_UPDATE:
+    {
+      const new_state = { ...state.userPrimaryFilterState, [action.payload.prop]: action.payload.value };
+      return { ...state, userPrimaryFilterState: new_state};
+    }
+    case USER_SECONDARY_FILTER_UPDATE:
+    {
+      const new_state = { ...state.userSecondaryFilterState, [action.payload.prop]: action.payload.value };
+      return { ...state, userSecondaryFilterState: new_state};
     }
     case USER_REVIEWS_UPDATE:
       const new_reviews = { ...state.reviews, ...action.payload };
@@ -39,8 +59,7 @@ export default (state = INITIAL_STATE, action) => {
       const new_checkins = { ...state.checkins, ...action.payload };
       return { ...state, checkins: new_checkins };
     case USER_MAIN_SET_PROFILE:
-    {
-      const new_state = {
+      {const new_state = {
         ...state,
         name: action.payload.user.name,
         birthdate: action.payload.user.birthdate,
@@ -49,9 +68,18 @@ export default (state = INITIAL_STATE, action) => {
         telephone: action.payload.user.telephone,
         password: action.payload.user.password,
         user: action.payload.user,
-        uid: action.payload.uid
+        uid: action.payload.uid,
+        points: action.payload.points,
+        level: action.payload.level,
+        checkin_count: action.payload.checkin_count,
       }
       return new_state;
+    }
+    case USER_PROMOS_UPDATE:
+    {
+    const new_promos = action.payload;
+    console.log(new_promos);
+    return { ...state, promos: new_promos};
     }
     default:
       return state;

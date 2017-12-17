@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { Text, Image } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Card, CardSection } from './common';
 
 class CheckinItem extends Component {
     render() {
-        const { name, businessID } = this.props.checkin;
+        const { name, businessName, date } = this.props.checkin;
 
         return (
             <Card>
                 <CardSection>
-                    <Text>{name} was in {businessID}.</Text>
-                </CardSection>
-
-                <CardSection>
-                    <Text>Checked in!</Text>
+                    <View style={{flex: 1, flexDirection: 'column'}}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold'}}>
+                        {name} checked into {businessName} on {date}
+                        </Text> 
+                    </View>
                 </CardSection>
 
                 <CardSection>
