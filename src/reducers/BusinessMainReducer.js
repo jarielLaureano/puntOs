@@ -1,5 +1,5 @@
 import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
-  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE } from '../actions/types';
+  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE, BUSINESS_METRICS_UPDATE } from '../actions/types';
 
 const INITIAL_STATE = {
 user: {},
@@ -62,6 +62,14 @@ export default (state = INITIAL_STATE, action) => {
     {
     const new_coupons = {...state.coupons, ...action.payload};
     return { ...state, coupons: new_coupons};
+    }
+    case BUSINESS_METRICS_UPDATE:
+    {
+    console.log(action.payload);
+    //const new_metrics = {...state.metrics, ...action.payload};
+    //console.log({ ...state, metrics: new_metrics })
+    console.log( { ...state, [action.payload.prop]: action.payload.value } )
+    return { ...state, [action.payload.prop]: action.payload.value };;
     }
     default:
       return state;

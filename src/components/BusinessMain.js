@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday } from '../actions';
 import { Actions } from 'react-native-router-flux';
+import BusinessDashboard from './BusinessDashboard';
 
 class BusinessMain extends Component {
   componentWillMount(){
@@ -117,7 +118,7 @@ class BusinessMain extends Component {
   else if (scene==='metrics'){
     return(
       <View style={{ flex: 8 }}>
-      <Text>Metrics Dashboard</Text>
+        <BusinessDashboard />
       </View>
     );
   }

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, TouchableHighlight } from 'react-native'
 import { Actions } from 'react-native-router-flux';
 import { Button } from './common';
 import { connect } from 'react-redux';
-import { claimCoupon, updateCouponProfile } from '../actions'
+import { claimCoupon, updateCouponProfile } from '../actions';
 
 class RedeemCouponView extends Component {
     render() {

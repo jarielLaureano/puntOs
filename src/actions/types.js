@@ -47,3 +47,4 @@ export const USER_MAIN_SET_PROFILE = 'user_main_set_profile';
 export const SET_COUPON_PROFILE = 'set_coupon_profile';
 export const CLAIM_COUPON = 'claim_coupon';
 export const UPDATE_COUPON_PROFILE = 'update_coupon_profile';
+export const BUSINESS_METRICS_UPDATE = 'business_metrics_update';
