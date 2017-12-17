@@ -85,7 +85,7 @@ const RouterComponent = () => {
         />
 
         {/*These are Business Related Views}*/}
-        
+
         <Scene
           key='BusinessMain'
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
@@ -221,7 +221,6 @@ const RouterComponent = () => {
           navBarButtonColor='white'
           component={PostReviewView}
         />
-
         <Scene
           key="UserBusinessProfile"
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}

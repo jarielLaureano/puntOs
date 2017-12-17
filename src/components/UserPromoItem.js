@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userLikeItem, userUnlikeItem, userSetExpired } from '../actions';
+import { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile  } from '../actions';
 import { Card, CardSection, Button } from './common';
+import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class UserPromoItem extends Component {
@@ -20,17 +21,14 @@ class UserPromoItem extends Component {
         //if not, return default icon
     }
 
-    renderImage(image) {
-        if (image) {
-            return (
-                <View style={styles.postImageStyle}>
-                    <Image source={{uri: image }}
-                    defaultSource={require('../assets/no-user-image.gif')}
-                    />
-                </View>
-            );
+
+      renderImage(image) {
+            if (image) {
+                return (
+                    <Image style={styles.postImageStyle} source={{uri: image }} />
+                );
+            }
         }
-    }
 
     getLikes(likedBy, uid, pid, isCoupon) {
         if (this.isLikedByUser(likedBy, uid)) {
@@ -80,7 +78,7 @@ class UserPromoItem extends Component {
       if (isCoupon) {
       if(!claimedBy){
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10 }}>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
           <Text style={{ alignSelf: 'center', fontSize: 30 }}>0</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
@@ -88,8 +86,8 @@ class UserPromoItem extends Component {
       }
       else{
         return (
-          <View style={{ flexDirection: 'column', marginLeft: 5, marginRight: 5, marginTop: 15, marginBottom: 10 }}>
-          <Text style={{ alignSelf: 'center', fontSize: 30 }}>Object.keys(claimedBy).length</Text>
+          <View style={{ flexDirection: 'column', marginLeft: 5, marginTop: 15, marginBottom: 10, justifyContent: 'center' }}>
+          <Text style={{ alignSelf: 'center', fontSize: 30 }}>{Object.keys(claimedBy).length}</Text>
           <Text style={{ alignSelf: 'center', fontSize: 14 }}>claims</Text>
           </View>
         );
@@ -123,7 +121,12 @@ class UserPromoItem extends Component {
             }
             else {
               return (
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+
+                    this.props.setCouponProfile(this.props.item);
+                    Actions.RedeemCouponView();
+
+                }}>
                 <View style={{ flex:1, backgroundColor: '#299cc5', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Claim</Text>
                 <Text style={{ alignSelf: 'center', fontSize: 14, color: 'white' }}>{pointsValue} points</Text>
@@ -163,7 +166,7 @@ class UserPromoItem extends Component {
     }
 
     render() {
-        const {pid,icon,name,date,text,image,likedBy,isCoupon,claimedBy,sharedBy, claimLimit,expires, expired, pointsValue } = this.props.item;
+        const {pid,icon,name,date,text,image,likedBy,isCoupon,claimedBy,sharedBy, claimLimit,expires, expired, pointsValue, businessID  } = this.props.item;
         const { uid } = this.props;
 
         const {authorIconStyle,authorNameStyle,postDateTextStyle,postTextStyle,postFooterStyle,overStyle,postFooterButtonTextStyle} = styles;
@@ -175,9 +178,14 @@ class UserPromoItem extends Component {
                             {this.hasUniqueIconImage(icon)}
                         </View>
                         <View style={{flex:1, flexDirection: 'column'}}>
+                        <TouchableOpacity onPress={ () => {
+                            this.props.businessMainUpdate({ prop: 'uid', value: businessID});
+                            Actions.UserBusinessProfile();
+                        }}>
                             <Text style={authorNameStyle}>
                                 {name}
                             </Text>
+                        </TouchableOpacity>
                             <Text style={postDateTextStyle}>
                                 {this.renderDate(date)}
                             </Text>
@@ -186,16 +194,13 @@ class UserPromoItem extends Component {
                 </CardSection>
 
                 <CardSection>
-                    <View style={{flex: 1, flexDirection: 'row'}}>
                         {this.renderClaims(claimedBy, isCoupon)}
+                        <CardSection style={{ flexDirection: 'column', alignItems: 'stretch', flex: 1 }}>
                         <Text style={postTextStyle}>
                             {text}
                         </Text>
-                    </View>
-                </CardSection>
-
-                <CardSection style={{ borderBottomWidth: 1, padding: 5 }}>
-                    {this.renderImage(image)}
+                        {this.renderImage(image)}
+                        </CardSection>
                 </CardSection>
 
                 <CardSection>
@@ -234,12 +239,18 @@ const styles = {
     postTextStyle: {
         fontSize: 16,
         marginLeft: 10,
-        marginTop: 5
+        marginTop: 5,
+        flexWrap: 'wrap',
+        flex: 1
     },
     postImageStyle: {
         flex: 1,
+        alignSelf: 'stretch',
         height: 150,
-        width: null,
+        marginRight: 10,
+        marginLeft: 10,
+        marginBottom: 5,
+        marginTop: 5
     },
     postFooterStyle: {
         flex: 1,
@@ -260,4 +271,4 @@ const mapStateToProps = state => {
   return { uid, type };
 }
 
-export default connect(mapStateToProps, { userLikeItem, userUnlikeItem, userSetExpired }) (UserPromoItem);
+export default connect(mapStateToProps, { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile }) (UserPromoItem);
