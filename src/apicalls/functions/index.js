@@ -74,6 +74,33 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
   }
 });
 
+exports.sendRedeemCode = functions.database.ref('/Redeems/{rid}').onWrite(event => {
+  const event_data = event.data;
+  const value = event_data.val();
+  const user_id = event.params.uid;
+
+  if(event_data.previous.exists() || !event.data.exists()){
+    return null;
+  }
+
+  return admin.database().ref(`/users/${user_id}`).once( snapshot => {
+     var user = snapshot.val();
+     
+     const code_mail_struct = {
+        from: 'puntos Team <noreply@firebase.com>',
+        to: user.email,
+        subject: 'Here is your Coupon Code!',
+        text: `Thank you ${user.name} for using or app!
+        Here is your coupon code: ${event.params.code}!`
+     };
+
+     return transport.sendMail(code_mail_struct)
+        .then(() => console.log(`email sent to ${user.email}`))
+        .catch((error) => console.error(error));
+  });
+
+});
+
 exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
   return admin.database().ref(`users/${req.query.id}`).once('value', snapshot => {
     var radius_size = '0';
