@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutF
   CameraRoll, ScrollView, Modal, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Button } from './common';
 import { businessProfileUpdate, businessMainUpdate, deactivateCoupon, deletePost } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
@@ -164,6 +165,7 @@ renderProfileButtons(){
   }
 
   openModalProfile(){
+    console.log('estoy aqui')
     CameraRoll.getPhotos({
         first: 20,
         assetType: 'All',
@@ -176,7 +178,7 @@ renderProfileButtons(){
         });
         this.props.businessMainUpdate({prop: 'showPhotosProfile', value: true});
         this.props.businessMainUpdate({prop: 'photos', value: photos});
-
+        console.log(this.props.showPhotosProfile)
     })
     .catch((err) => {
       console.log(err);
@@ -211,7 +213,7 @@ renderProfileButtons(){
   renderIcon(image) {
           if (image) {
               return (
-                <TouchableWithoutFeedback onPress={() => {this.renderProfileModal();this.openModalProfile()}}>
+                <TouchableWithoutFeedback onPress={() => { this.openModalProfile()}}>
                 <Image
                 style={styles.thumbnailStyle}
                 source={{uri: image }}
@@ -269,6 +271,7 @@ renderProfileButtons(){
     const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
     return (
       <View style={styles.backgroundStyle}>
+        {this.renderProfileModal()}
         {this.renderEditItemModal()}
         <View style={{ flex:4, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
