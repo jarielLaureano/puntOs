@@ -1,5 +1,14 @@
 import firebase from 'firebase';
-import { USER_MAIN_UPDATE, USER_PROFILE_UPDATE, USER_MAIN_SET_PROFILE, USER_CHECKINS_UPDATE, USER_REVIEWS_UPDATE } from './types';
+
+import {
+  USER_MAIN_UPDATE,
+  USER_PROFILE_UPDATE,
+  USER_MAIN_SET_PROFILE,
+  USER_CHECKINS_UPDATE,
+  USER_REVIEWS_UPDATE,
+  USER_PROMOS_UPDATE,
+  USER_PRIMARY_FILTER_UPDATE,
+  USER_SECONDARY_FILTER_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 
 export const userMainUpdate = ({ prop, value }) => {
@@ -21,6 +30,20 @@ export const getUserProfile = (uid) => {
 export const userProfileUpdate = ({ prop, value }) => {
   return {
     type: USER_PROFILE_UPDATE,
+    payload: { prop, value }
+  };
+};
+
+export const userPrimaryFilterUpdate = ({ prop, value }) => {
+  return {
+    type: USER_PRIMARY_FILTER_UPDATE,
+    payload: { prop, value }
+  };
+};
+
+export const userSecondaryFilterUpdate = ({ prop, value }) => {
+  return {
+    type: USER_SECONDARY_FILTER_UPDATE,
     payload: { prop, value }
   };
 };
@@ -56,9 +79,163 @@ export const getMyReviews = (uid) => {
     });
   };
 };
+
 export const userMainSetProfile = ({user, uid}) => {
   return {
     type: USER_MAIN_SET_PROFILE,
     payload: {user, uid}
   };
+}
+
+export const userSetExpired = (pid) => {
+  return (dispatch) => {
+    firebase.database().ref(`/Coupons/${pid}`).update({expired: true});
+  };
+};
+
+export const userGetPromos = (uid, pf, sf) => {
+  return (dispatch) => {
+    let promoList = [];
+    if (pf == 'Promos') {
+      if (sf == 'All') {
+        firebase.database().ref(`/posts`).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+      else {
+        firebase.database().ref(`/posts`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+    }
+
+    else {
+      if (sf == 'All') {
+        firebase.database().ref(`/Coupons`).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+      else {
+        firebase.database().ref(`/Coupons`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let counter = 0;
+          snapshot.forEach(child_node => {
+            var child_key = child_node.key;
+            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            counter++;
+          });
+          console.log(promoList)
+          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+        });
+      }
+    }
+  }
+}
+
+export const userLikeItem = (uid, pid, isCoupon) => {
+  const like_obj = {[uid]: 1};
+  if (isCoupon){
+    return (dispatch) => {
+      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
+      Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
+    });};
+  } else {
+  return (dispatch) => {
+    firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
+    Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
+  });};}
+
+};
+
+export const userUnlikeItem = (uid, pid, isCoupon) => {
+  if(isCoupon){
+    return (dispatch) => {
+      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').child(uid).remove().catch((error) => {
+      Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
+    });};
+  }else {
+  return (dispatch) => {
+    firebase.database().ref(`/posts/${pid}`).child('likedBy').child(uid).remove().catch((error) => {
+    Alert.alert('Could not process unlike at this time', 'Sorry', {text: 'OK'});
+  });};}
+};
+
+export const getSocialPosts = () => {
+  return (dispatch) => {
+    let socialList =[];
+    firebase.database().ref(`/Checkins`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Redeems`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Reviews`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/posts`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+    firebase.database().ref(`/Coupons`).on('value', snapshot =>  {
+      let counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+        counter++;
+      });
+    });
+  }
+} 
+
+function sortObj(list, key) {
+  function compare(a, b) {
+      a = a[key];
+      b = b[key];
+      var type = (typeof(a) === 'string' ||
+                  typeof(b) === 'string') ? 'string' : 'number';
+      var result;
+      if (type === 'string') result = a.localeCompare(b);
+      else result = a - b;
+      return result;
+  }
+  return list.sort(compare);
 }

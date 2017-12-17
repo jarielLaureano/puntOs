@@ -3,18 +3,9 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { userMainUpdate, getUserProfile } from '../actions';
-import UserPromoList from './UserPromoList';
+import UserSocialList from './UserSocialList';
 
-import UserMainFilterHeader from './UserMainFilterHeader';
-import PostFeed from './PostFeed';
-import UserMainFooter from './UserMainFooter';
-import CheckinsView from './CheckinsView';
-import UserReviewsView from './UserReviewsView';
-import UserProfile from './UserProfile';
-import { Actions }  from 'react-native-router-flux';
-import {Button} from './common';
-
-class UserMain extends Component {
+class UserSocialFeed extends Component {
   componentWillMount(){
     currentUser = firebase.auth().currentUser.uid;
     this.props.getUserProfile(currentUser);
@@ -23,7 +14,7 @@ class UserMain extends Component {
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
-        <UserPromoList />
+        <UserSocialList />
       </View>
     );
   }
