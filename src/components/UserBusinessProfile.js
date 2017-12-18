@@ -2,21 +2,22 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
 import { Button } from './common';
+import firebase from 'firebase';
 //import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
 
 
 class UserBusinessProfile extends Component {
-  
+
 
   componentWillMount(){
-    
+
     var businessID = this.props.uid;
     this.props.getBusinessProfile(businessID);
     this.props.getCheckins(businessID);
@@ -46,7 +47,7 @@ class UserBusinessProfile extends Component {
     } else if(businessProfileState.tab_selected === 'Reviews'){
         return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <ReviewList />
-        <Button 
+        <Button
             overStyle={styles.reviewButtonOverStyle}
             onPress={() => {
                 this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
@@ -59,7 +60,7 @@ class UserBusinessProfile extends Component {
     }
   }
 
- 
+
 
   renderIcon(image) {
           if (image) {
@@ -112,6 +113,11 @@ class UserBusinessProfile extends Component {
     </View>
   );
   }
+
+  callCheckin(){
+    console.log(this.props.uid)
+    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid);
+  }
   render() {
     const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
     return (
@@ -141,16 +147,21 @@ class UserBusinessProfile extends Component {
             </View>
             <View style={{ flex: 3 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: 5 }}>
             <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
-            <View style={{ alignSelf: 'center', flexDirection: 'row' }}>
-            <StarRating
-            disabled={true}
-            maxStars={5}
-            rating={parseFloat(user.rating)}
-            starSize={25}
-            starColor={'#f2d733'}
-            />
-            <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
-            </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}>
+                <StarRating
+                disabled={true}
+                maxStars={5}
+                rating={parseFloat(user.rating)}
+                starSize={25}
+                starColor={'#f2d733'}
+                />
+                <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
+                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5, marginBottom: 15 }}>
+                  <TouchableOpacity onPress={() => {this.callCheckin()}}>
+                  <Icon name='ios-navigate' size= {25} color='#299cc5' />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -212,33 +223,35 @@ reviewButtonContainer: {
 }
 }
 const mapStateToProps = state => {
-  const { 
-      user, 
-      uid, 
-      metrics, 
-      scene, 
-      coupon_count, 
-      checkin_count, 
+  const {
+      user,
+      uid,
+      metrics,
+      scene,
+      coupon_count,
+      checkin_count,
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
+  const { user_id } = state.userMain.uid;
 
 
-  return { 
-    user, 
-    uid, 
-    metrics, 
-    scene, 
-    coupon_count, 
-    checkin_count, 
+  return {
+    user_id,
+    user,
+    uid,
+    metrics,
+    scene,
+    coupon_count,
+    checkin_count,
     businessProfileState,
     isCouponClaim
  };
 };
-export default connect(mapStateToProps,{ businessProfileUpdate, getReviews,
-   getCheckinsToday, 
+export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
+   getCheckinsToday,
   getCoupons,
-   getBusinessProfile, 
+   getBusinessProfile,
   getCouponsToday,
    getCheckins,
   getPosts,

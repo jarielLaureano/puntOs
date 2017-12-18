@@ -3,8 +3,6 @@ import { View, Text, ScrollView, Image, TouchableHighlight, LayoutAnimation } fr
 import { Actions } from 'react-native-router-flux';
 import { Button, Spinner } from './common';
 import { connect } from 'react-redux';
-
-import { claimCoupon, updateCouponProfile } from '../actions';
 import { claimCoupon, updateCouponProfile, updateClaimBy, setCouponToExpired } from '../actions'
 
 
@@ -14,7 +12,7 @@ class RedeemCouponView extends Component {
       }
 
     render() {
-        const { 
+        const {
             imageContainerStyle,
             couponDescriptionContainerStyle,
             backgroundStyle,
@@ -50,7 +48,7 @@ class RedeemCouponView extends Component {
     }
 
     renderValue(){
-        const { 
+        const {
             pointsStatusContainer,
             pointsStatusStyle,
             touchableStyle,
@@ -119,7 +117,7 @@ const styles = {
         backgroundColor: '#fff'
     },
     imageContainerStyle: {
-        flex: 1, 
+        flex: 1,
         alignItems: 'stretch',
         paddingTop: 15,
         paddingLeft: 15,
@@ -166,7 +164,7 @@ const styles = {
         paddingTop: 15,
         paddingLeft: 10,
         paddingRight: 10,
-        paddingBottom: 20, 
+        paddingBottom: 20,
     },
     buttonStyle: {
         fontSize: 20,

@@ -31,7 +31,8 @@ const styles = {
         backgroundColor: '#00b0f0',
         justifyContent: 'space-around',
         alignItems: 'center',
-        height: 30,
+        height: 50,
+        paddingTop: 20
     },
     textStyle: {
         fontSize: 20,

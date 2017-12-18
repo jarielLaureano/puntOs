@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-
+import { Alert } from 'react-native';
 import {
   USER_MAIN_UPDATE,
   USER_PROFILE_UPDATE,
@@ -7,10 +7,12 @@ import {
   USER_CHECKINS_UPDATE,
   USER_REVIEWS_UPDATE,
   USER_PROMOS_UPDATE,
-  USER_SOCIALS_UPDATE,
   USER_PRIMARY_FILTER_UPDATE,
-  USER_SECONDARY_FILTER_UPDATE } from './types';
+  USER_SECONDARY_FILTER_UPDATE,
+  USER_SOCIALS_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
+
+import axios from 'axios';
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -52,9 +54,9 @@ export const userSecondaryFilterUpdate = ({ prop, value }) => {
 export const getCheckins = (uid) => {
   return (dispatch) => {
     //firebase.database().ref(`/Reviews`).orderByChild(`businessID`).equalTo(uid).on('value', snapshot => {
-    console.log(uid);
+    //console.log(uid);
     firebase.database().ref(`/Checkins`).orderByChild(`uid`).equalTo(uid).once('value', snapshot => {
-      console.log(snapshot.val());
+      //console.log(snapshot.val());
       let checkinList = [];
       let counter = 0;
       snapshot.forEach(child_node => {
@@ -106,7 +108,7 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
             counter++;
           });
-          console.log(promoList)
+          //console.log(promoList)
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -118,7 +120,7 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
             counter++;
           });
-          console.log(promoList)
+          //console.log(promoList)
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -133,7 +135,7 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
             counter++;
           });
-          console.log(promoList)
+          //console.log(promoList)
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -145,7 +147,7 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
             counter++;
           });
-          console.log(promoList)
+          //console.log(promoList)
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -153,17 +155,31 @@ export const userGetPromos = (uid, pf, sf) => {
   }
 }
 
+export const checkin = (user_id, businessID) => {
+  return (dispatch) => {navigator.geolocation.getCurrentPosition(
+  (position) => {
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude;
+    console.log(req_url)
+    axios.get(req_url)
+      .then(response => {
+        let body = '';
+        if( response.data.checkedIn){
+        Alert.alert('Checked In!', 'You Successfully checked in to ' + response.data.businessName + '. Points: '+response.data.pointsEarned, {text: 'OK'});
+      } else {
+        Alert.alert('Error!', response.data.message, {text: 'OK'});
+      }
+    });})
+  };
+};
+
+
 export const userLikeItem = (uid, pid, isCoupon) => {
   const like_obj = {[uid]: 1};
   if (isCoupon){
     return (dispatch) => {
       firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
       Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-      });
-      firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
-      Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-      });
-    };
+    });};
   } else {
   return (dispatch) => {
     firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
@@ -200,58 +216,8 @@ export const getSocialPosts = () => {
       console.log(socialList);
       dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
     });
-  }
-} 
-/*
-export const getSocialPosts = () => {
-  return (dispatch) => {
-    let socialList =[];
-    firebase.database().ref(`/Events`).on('value', snapshot =>  {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
-        counter++;
-      });
-    });
-    firebase.database().ref(`/Redeems`).on('value', snapshot =>  {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
-        counter++;
-      });
-    });
-    firebase.database().ref(`/Reviews`).on('value', snapshot =>  {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
-        counter++;
-      });
-    });
-    firebase.database().ref(`/posts`).on('value', snapshot =>  {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
-        counter++;
-      });
-    });
-    firebase.database().ref(`/Coupons`).on('value', snapshot =>  {
-      let counter = 0;
-      snapshot.forEach(child_node => {
-        var child_key = child_node.key;
-        socialList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
-        counter++;
-      });
-    });
-    socialList = sortObj(socialList, 'date');
-    socialList.reverse();
-    dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
-  }
-} 
-*/
+  };
+};
 
 function sortObj(list, key) {
   function compare(a, b) {
