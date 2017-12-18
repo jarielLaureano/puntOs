@@ -327,7 +327,8 @@ export const validateCoupon = (coupon_code, uid) => {
   return (dispatch) => {
   dispatch({ type: VALIDATE_STATE_UPDATE, payload: { prop: 'loading', value: true }});
   dispatch({ type: VALIDATE_STATE_UPDATE, payload: { prop: 'error', value: '' }});
-  firebase.database().ref(`/Redeems/${uid}`).orderByChild(`code`).equalTo(coupon_code).once('value', snapshot => {
+  firebase.database().ref(`/Redeems`).orderByChild(`code`).equalTo(coupon_code).once('value', snapshot => {
+    //console.log(snapshot.val())
     let redeemObj = '';
     let redeem_id = '';
     let coupon_id = '';
@@ -346,7 +347,7 @@ export const validateCoupon = (coupon_code, uid) => {
     }
     else if(!redeemObj.used){
       snapshot.ref.child(redeem_id).update({ used: true}).then(() => {
-      firebase.database().ref(`/Coupons/${uid}/${coupon_id}`).once('value', snapshot => {
+      firebase.database().ref(`/Coupons/${coupon_id}`).once('value', snapshot => {
         const response = snapshot.val();
         if(response) {
         const description = response.text;

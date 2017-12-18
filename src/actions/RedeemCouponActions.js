@@ -2,19 +2,21 @@ import firebase from 'firebase';
 import { SET_COUPON_PROFILE, CLAIM_COUPON, UPDATE_COUPON_PROFILE } from './types'
 import { Actions } from 'react-native-router-flux';
 var uuid = require('react-native-uuid');
+
+
 export const setCouponProfile = (coupon) => {
     return {
         type: SET_COUPON_PROFILE,
         payload: coupon
     };
-}
+};
 
 export const updateCouponProfile = ({ prop, value }) => {
     return {
         type: UPDATE_COUPON_PROFILE,
         payload: { prop, value }
-    }
-}
+    };
+};
 
 export const claimCoupon = (props) => {
     return (dispatch) => {
@@ -22,7 +24,7 @@ export const claimCoupon = (props) => {
         dispatch({ type: UPDATE_COUPON_PROFILE, payload: { prop: 'message', value: "" } });
         firebase.database().ref(`/Redeems`).once('value', snapshot => {
             const _today = new Date().toISOString();
-            const mycode = uuid.v1();
+            const mycode = uuid.v1().substring(0,8);
             const new_redeem = {
                 businessID: props.coupon.businessID,
                 code: mycode,
@@ -51,7 +53,7 @@ export const claimCoupon = (props) => {
         })
 
     };
-}
+};
 
 export const updateClaimBy = (uid, pid) => {
     return (dispatch) => {
@@ -61,7 +63,7 @@ export const updateClaimBy = (uid, pid) => {
                 dispatch({ type: UPDATE_COUPON_PROFILE, payload: { prop: 'message', value: error }});
             });
     };
-}
+};
 
 export const setCouponToExpired = (pid) => {
     return (dispatch) => {
@@ -69,5 +71,5 @@ export const setCouponToExpired = (pid) => {
             .catch((error) => {
                 dispatch({ type: UPDATE_COUPON_PROFILE, payload: { prop: 'message', value: error}});
             });
-    }
-}
+    };
+};

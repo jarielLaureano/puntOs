@@ -5,6 +5,9 @@ const google_api = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
 const google_api_key = 'AIzaSyBLDLO4nbnylcU90AD-XFn0fZdcLxnHGsY';
 var nodemailer = require('nodemailer');
 var serviceAccount = require("./puntOs-Capstone2017-4ab872953b34.json");
+var haversine = require('haversine');
+var moment = require('moment');
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://puntos-capstone2017.firebaseio.com/"
@@ -77,21 +80,22 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
 exports.sendRedeemCode = functions.database.ref('/Redeems/{rid}').onWrite(event => {
   const event_data = event.data;
   const value = event_data.val();
-  const user_id = event.params.uid;
+  //console.log(value)
+  const user_id = value.uid;
 
   if(event_data.previous.exists() || !event.data.exists()){
     return null;
   }
 
-  return admin.database().ref(`/users/${user_id}`).once( snapshot => {
+  return admin.database().ref(`/users/${user_id}`).once('value', snapshot => {
      var user = snapshot.val();
-     
+     //console.log(user)
      const code_mail_struct = {
         from: 'puntos Team <noreply@firebase.com>',
         to: user.email,
         subject: 'Here is your Coupon Code!',
         text: `Thank you ${user.name} for using or app!
-        Here is your coupon code: ${event.params.code}!`
+        Here is your coupon code: ${value.code}`
      };
 
      return transport.sendMail(code_mail_struct)
@@ -137,6 +141,95 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
     });});
 
   }).then(snapshot => res.status(200).end());});
+
+
+  exports.checkIn = functions.https.onRequest((req, res) => {
+    var checkin_response = {checkedIn: false, pointsEarned: 0, businessName: '', message: '', distance: 0};
+    const businessID = req.query.bid;
+    const user_id = req.query.uid;
+    const lattitude = req.query.lattitude;
+    const longitude = req.query.longitude;
+    var checkinFailed = false;
+    var check_ins_today = 0;
+    const _today = new Date().toISOString().substring(0,10);
+    admin.database().ref(`/Checkins`).orderByChild(`queryparam`).equalTo(businessID+_today).once('value', snapshot => {
+      if(snapshot.val()){
+      check_ins_today = Object.keys(snapshot.val()).length;
+      snapshot.forEach(checkin => {
+        checkinObj = checkin.val();
+        if(checkinObj.uid === user_id){
+          checkin_response.message = 'Unable to checkin, cannot checkin on the same business twice in a day.';
+          checkinFailed = true;
+          return res.status(200).send(checkin_response);
+        }
+      });}}).then(()=>{
+        if(!checkinFailed){
+          if(check_ins_today < 10){
+              admin.database().ref(`users/${businessID}`).once('value', business => {
+                const businessObj = business.val();
+                const businessLat = businessObj.latitude;
+                const businessLong = businessObj.longitude;
+                const businessRad = businessObj.radius;
+                const distance_feet = haversine({latitude: businessLat, longitude: businessLong}, {latitude: lattitude, longitude: longitude}, {unit: 'meter'})*3.28084;
+                checkin_response.distance = distance_feet;
+                //return res.status(200).send(checkin_response);
+                if(distance_feet <= businessRad){
+                  checkin_response.checkedIn = true;
+                  checkin_response.message = 'Successfully checked in.';
+                  checkin_response.businessName = businessObj.businessName;
+                  admin.database().ref(`users/${user_id}`).once('value', user => {
+                    const today = new Date().toISOString().substring(0,10);
+                    const userObj = user.val();
+                    const age = (moment(new Date(today)).diff(moment(new Date(userObj.birthdate)), 'minutes')/525600).toFixed(0);
+                    const checkin_in = {age: age, businessID: businessID, businessName: businessObj.businessName, city: userObj.city,
+                    date: today, name: userObj.name, uid: user_id, queryparam: businessID+today};
+                    admin.database().ref(`/Checkins`).once('value', checkins => {
+                      checkins.ref.push(checkin_in).catch(() => {
+                        checkin_response.message = 'Unable to checkin at this time.';
+                        checkin_response.checkedIn = false;
+                        return res.status(200).send(checkin_response);
+                      });
+                      var current_points = userObj.points;
+                      const new_points = current_points+50;
+                      user.ref.update({points: new_points}).then(()=>{
+                      return res.status(200).send(checkin_response);
+                      }).catch(()=>{
+                        checkin_response.message = 'Could not add points.';
+                        return res.status(200).send(checkin_response);
+                      });
+                    }).catch(()=>{
+                      checkin_response.message = 'Unable to checkin at this time.';
+                      checkin_response.checkedIn = false;
+                      return res.status(200).send(checkin_response);
+                    });
+                  }).catch(()=>{
+                    checkin_response.message = 'Unable to access user data.';
+                    checkin_response.checkedIn = false;
+                    return res.status(200).send(checkin_response);
+                  });
+                } else{
+                  checkin_response.checkedIn = false;
+                  checkin_response.message = 'Out of range';
+                  checkin_response.businessName = businessObj.businessName;
+                  return res.status(200).send(checkin_response);
+                }
+              }).catch(()=>{
+                checkin_response.checkedIn = false;
+                checkin_response.message = 'Unable to access business data.';
+                return res.status(200).send(checkin_response);
+              });
+          }
+          else {
+              checkin_response.message = 'Unable to checkin, cannot checkin more than 10 times a day.';
+              return res.status(200).send(checkin_response);
+          }
+        }
+      }).catch(() => {
+        checkin_response.checkedIn = false;
+        checkin_response.message = 'Unable to access checkin data.';
+        return res.status(200).send(checkin_response);
+      })
+  });
 
   exports.aggregateReviews = functions.https.onRequest((req, res) => {
         var votes_count = {};

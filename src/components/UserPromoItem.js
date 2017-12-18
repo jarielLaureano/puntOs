@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile  } from '../actions';
+import { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class UserPromoItem extends Component {
+
     hasUniqueIconImage(image) {
         if (image) {
             return (
@@ -263,12 +264,12 @@ const styles = {
         color: 'gray',
         fontSize: 15,
         fontWeight: 'bold',
-    },
+    }
 }
 
 const mapStateToProps = state => {
   var { uid, type } = state.userMain;
   return { uid, type };
-}
+};
 
-export default connect(mapStateToProps, { userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile }) (UserPromoItem);
+export default connect(mapStateToProps,{ userLikeItem, userUnlikeItem, userSetExpired, businessMainUpdate, setCouponProfile })(UserPromoItem);
