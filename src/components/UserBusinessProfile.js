@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts } from '../actions';
+import { businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
 import { Button } from './common';
-import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
+//import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
 
 
 class UserBusinessProfile extends Component {
@@ -49,6 +49,7 @@ class UserBusinessProfile extends Component {
         <Button 
             overStyle={styles.reviewButtonOverStyle}
             onPress={() => {
+                this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
                 Actions.PostReviewView()
             }}
         >
@@ -234,4 +235,12 @@ const mapStateToProps = state => {
     isCouponClaim
  };
 };
-export default connect(mapStateToProps,{ businessProfileUpdate, getReviews, getCheckinsToday, getCoupons, getBusinessProfile, getCouponsToday, getCheckins, getPosts })(UserBusinessProfile);
+export default connect(mapStateToProps,{ businessProfileUpdate, getReviews,
+   getCheckinsToday, 
+  getCoupons,
+   getBusinessProfile, 
+  getCouponsToday,
+   getCheckins,
+  getPosts,
+  postReviewChange
+ })(UserBusinessProfile);

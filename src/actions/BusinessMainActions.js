@@ -1,7 +1,7 @@
 import firebase from 'firebase';
 import { Alert } from 'react-native';
 import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREATE_COUPON_UPDATE,
-  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE } from './types';
+  CREATE_COUPON_RESET, REVIEWS_UPDATE, BUSINESS_PROFILE_UPDATE, PROMOS_UPDATE, COUPONS_UPDATE, BUSINESS_METRICS_UPDATE } from './types';
 import { Actions } from 'react-native-router-flux';
 var Utils = require('../components/common/Utils');
 var moment = require('moment');
@@ -367,5 +367,13 @@ export const validateCoupon = (coupon_code, uid) => {
     //dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'user', value: user }});
   });
     };
+};
 
+export const getMetrics = (uid) => {
+  return (dispatch) => {
+    firebase.database().ref(`/Metrics/${uid}`).on('value', snapshot => {
+      const metrics = snapshot.val();
+      dispatch({ type: BUSINESS_METRICS_UPDATE, payload: { prop: 'metrics', value: metrics }});
+    });
+  };
 };

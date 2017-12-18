@@ -5,6 +5,7 @@ import {
   USER_PROMOS_UPDATE,
   USER_REVIEWS_UPDATE,
   USER_MAIN_SET_PROFILE,
+  USER_SOCIALS_UPDATE,
   USER_PRIMARY_FILTER_UPDATE,
   USER_SECONDARY_FILTER_UPDATE } from '../actions/types';
 
@@ -80,6 +81,12 @@ export default (state = INITIAL_STATE, action) => {
     const new_promos = action.payload;
     console.log(new_promos);
     return { ...state, promos: new_promos};
+    }
+    case USER_SOCIALS_UPDATE:
+    {
+    const new_socials = action.payload;
+    console.log(new_socials);
+    return { ...state, socials: new_socials};
     }
     default:
       return state;

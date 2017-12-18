@@ -7,7 +7,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday, updateProfilePic, logoutUser } from '../actions';
 import { Actions } from 'react-native-router-flux';
+
+import BusinessDashboard from './BusinessDashboard';
+
 import PhotoGrid from 'react-native-photo-grid';
+
 
 class BusinessMain extends Component {
   constructor(props){
@@ -284,7 +288,7 @@ renderSignOut(){
   else if (scene==='metrics'){
     return(
       <View style={{ flex: 8 }}>
-      <Text>Metrics Dashboard</Text>
+        <BusinessDashboard />
       </View>
     );
   }
