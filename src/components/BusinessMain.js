@@ -152,7 +152,7 @@ renderSignOut(){
   openModalMain(){
     CameraRoll.getPhotos({
         first: 20,
-        assetType: 'All',
+        assetType: 'All'
     })
     .then(response => {
         var paths = response.edges;
