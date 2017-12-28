@@ -1,6 +1,8 @@
 import firebase from 'firebase';
 import { BUSINESS_SIGNUP_UPDATE, SIGNUP_BUSINESS, SIGNUP_BUSINESS_FAIL, SIGNUP_BUSINESS_SUCCESS, BUSINESS_SIGNUP_RESET } from './types';
+import axios from 'axios';
 import { Actions } from 'react-native-router-flux';
+const DELETE_USER = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/deleteUser';
 
 export const businessFormUpdate = ({ prop, value }) => {
   return {
@@ -20,13 +22,17 @@ export const businessSignUp = (props) => {
       dispatch({ type: SIGNUP_BUSINESS });
       firebase.auth().createUserWithEmailAndPassword(props.email, props.password)
             .then((user) => {
-              firebase.database().ref(`/users/${user.uid}`)
-              .set(props)
-                .then((response) => {
-                  signUpBusinessSuccess(dispatch)
-                  dispatch({ type: BUSINESS_SIGNUP_RESET });
-                  Actions.signUpSuccessBusiness()})})
-            .catch((response) => {
+              user.sendEmailVerification().then(() => {
+                firebase.database().ref(`/users/${user.uid}`)
+                .set(props)
+                  .then((response) => {
+                    signUpBusinessSuccess(dispatch);
+                    dispatch({ type: BUSINESS_SIGNUP_RESET });
+                    Actions.signUpSuccessBusiness();});
+              }).catch(()=>{
+                signUpBusinessFail(dispatch, 'Could not send verification email. Try Again.');
+                axios.get(DELETE_USER+`?uid=${user.uid}`);
+              });}).catch((response) => {
               console.log(response)
               if( response.code === 'auth/invalid-email'){
                 signUpBusinessFail(dispatch, 'Invalid Email')
@@ -48,16 +54,3 @@ const signUpBusinessSuccess = (dispatch, user) => {
     { type: SIGNUP_BUSINESS_SUCCESS, payload: user }
   );
 };
-/*
-const signUpBusinessPush = ({ businessName,username,addressLine,city,country,
-zipCode,phoneNumber,email,password,type }, uid) => {
-      console.log(uid, 'llego')
-  return (dispatch) => {
-  firebase.database().ref(`/users/${uid}`)
-    .push({ businessName,username,addressLine,city,country,zipCode,phoneNumber,
-    email,password,type })
-    .then((response) => {
-      dispatch({ type: BUSINESS_SIGNUP_RESET })})
-    };
-  };
-  */

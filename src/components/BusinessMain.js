@@ -237,49 +237,50 @@ renderSignOut(){
       <View style={{ flex:4, flexDirection: 'row' }}>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.BusinessProfile()} >
       <View>
-          <Text style={styles.textStyle}>My</Text>
-          <Text style={styles.textStyle}>Profile</Text>
+          <Icon name='ios-person' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+          <Text style={[styles.textStyle, {alignSelf: 'center'}]}>My Profile</Text>
       </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.ReviewsView()} >
       <View>
-          <Text style={styles.textStyle}>My</Text>
-          <Text style={styles.textStyle}>Reviews</Text>
+          <Icon name='ios-star-half' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+          <Text style={[styles.textStyle, {alignSelf: 'center'}]}>My Reviews</Text>
       </View>
       </TouchableOpacity>
       </View>
       <View style={{ flex:4, flexDirection: 'row' }}>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.CreatePromo()} >
       <View>
-          <Text style={styles.textStyle}>Create</Text>
-          <Text style={styles.textStyle}>Promo</Text>
+          <Icon name='ios-megaphone' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+          <Text style={[styles.textStyle, {alignSelf: 'center'}]}>Create Promo</Text>
       </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.PromosView()} >
       <View>
-          <Text style={styles.textStyle}>My</Text>
-          <Text style={styles.textStyle}>Promos</Text>
+        <Icon name='ios-paper' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+        <Text style={[styles.textStyle, {alignSelf: 'center'}]}>My Promos</Text>
       </View>
       </TouchableOpacity>
       </View>
       <View style={{ flex:4, flexDirection: 'row' }}>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.CreateCoupon()} >
       <View>
-          <Text style={styles.textStyle}>Create</Text>
-          <Text style={styles.textStyle}>Coupon</Text>
+        <Icon name='ios-create' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+        <Text style={[styles.textStyle, {alignSelf: 'center'}]}>Create Coupon</Text>
       </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.tileStyle} onPress={() => Actions.CouponsView()} >
       <View>
-          <Text style={styles.textStyle}>My</Text>
-          <Text style={styles.textStyle}>Coupons</Text>
+        <Icon name='md-pricetag' size={50} color='#fff' style={{ alignSelf: 'center' }} />
+        <Text style={[styles.textStyle, {alignSelf: 'center'}]}>My Coupons</Text>
       </View>
       </TouchableOpacity>
       </View>
       <View style={{ flex:3, alignSelf: 'stretch', alignItems: 'center' }}>
       <TouchableOpacity style={[styles.tileStyle, {justifyContent: 'center'}]} onPress={() => Actions.ValidateCoupon()} >
       <View>
-          <Text style={ [styles.textStyle, {alignSelf: 'center'}] }>Validate Coupon</Text>
+        <Icon name='md-barcode' size={40} color='#fff' style={{ alignSelf: 'center' }} />
+        <Text style={[styles.textStyle, {alignSelf: 'center'}]}>Validate Coupon</Text>
       </View>
       </TouchableOpacity>
       </View>
@@ -297,7 +298,7 @@ renderSignOut(){
     const { user, coupon_count, checkin_count } = this.props;
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, marginBottom: 5, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
+        <View style={{ flex:4, marginBottom: 5, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff', shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1}}>
           {this.renderPhotosModal()}
           {this.renderSignOut()}
           {this.renderInfo()}
@@ -365,13 +366,13 @@ tileStyle:{
   alignSelf: 'stretch',
   flex:1,
   borderColor:'#000',
-  borderRadius: 5,
   borderWidth:1,
+  borderRadius: 5,
   marginTop: 2,
   marginLeft: 2,
   marginBottom: 2,
   marginRight: 2,
-  paddingTop: 6,
+  paddingTop: 4,
   paddingLeft: 6,
   paddingRight: 4,
   paddingBottom: 4,
@@ -383,7 +384,7 @@ tileStyle:{
   elevation: 2
 },
 textStyle:{
-  fontSize: 25,
+  fontSize: 20,
   color: '#fff'
 },
 thumbnailStyle: {

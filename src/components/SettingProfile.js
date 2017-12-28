@@ -64,7 +64,7 @@ class SettingProfile extends Component {
 }
 
 renderCategoryPicker(){
-  if(!this.category_set&&!this.props.loading){
+  if(!this.category_set&&!this.props.loading&&this.props.active){
     return (
       <View style={{ flex: 1 }}>
       <Text style={{fontSize: 25,
@@ -153,15 +153,17 @@ const mapStateToProps = state => {
     loading,
     error,
     category_set,
-    category} = state.profileSet;
+    category,
+    active} = state.profileSet;
   return {
     user,
     uid,
     loading,
     error,
     category_set,
-    category
+    category,
+    active
   };
 };
 
-export default connect(mapStateToProps, {settingProfileUpdate, getProfile, setCategory})(SettingProfile);
+export default connect(mapStateToProps, {settingProfileUpdate, getProfile, setCategory, logoutUser})(SettingProfile);

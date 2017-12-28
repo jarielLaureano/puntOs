@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import axios from 'axios';
 import {
     USER_SIGNUP_RESET,
     USER_SIGNUP_UPDATE,
@@ -7,6 +8,7 @@ import {
     SIGNUP_USER_SUCCESS
 } from "./types";
 import Actions from 'react-native-router-flux';
+const DELETE_USER = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/deleteUser';
 
 export const userSignUpUpdate = ({ prop, value }) => {
     return {
@@ -35,6 +37,7 @@ export const signUpUser = (props) => {
         console.log("email:"+props.email);
         firebase.auth().createUserWithEmailAndPassword(props.email, props.password)
             .then((user) => {
+              user.sendEmailVerification().then(() => {
                 firebase.database().ref(`/users/${user.uid}`)
                     .set(props)
                         .then((response) => {
@@ -48,11 +51,13 @@ export const signUpUser = (props) => {
                                 .set(new_entry)
                                 .catch((error) => {
                                     signUpUserFail(dispatch, 'Error Setting Rewards');
-                                })
-                            signUpUserSuccess(dispatch, user)
+                                });
+                            signUpUserSuccess(dispatch, user);
                             dispatch({ type: USER_SIGNUP_RESET });
-                        })})
-            .catch( (response) =>{
+                        });}).catch(() => {
+                          signUpBusinessFail(dispatch, 'Could not send verification email. Try Again.');
+                          axios.get(DELETE_USER+`?uid=${user.uid}`);
+                        });}).catch( (response) =>{
                 if( response.code === 'auth/invalid-email'){
                     signUpUserFail(dispatch, 'Invalid Email')
                 }
@@ -60,6 +65,5 @@ export const signUpUser = (props) => {
                     signUpUserFail(dispatch, response.code)
                 }
             });
-                        
     };
 };

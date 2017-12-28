@@ -48,7 +48,7 @@ const styles = {
 
 const mapStateToProps = state => {
   const { user, name, points, level, checkins, userProfileState, uid } = state.userMain;
-  console.log(state.userMain);
+  //console.log(state.userMain);
   return { user, name, points, level, checkins, userProfileState, uid };
 };
 

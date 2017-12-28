@@ -21,6 +21,7 @@ export const setCategory = (category, uid) => {
     const set_category = { category: category };
     snapshot.ref.update(set_category).then(()=>{
     //dispatch({ type: SET_PROFILE_UPDATE, payload: { prop: 'category_set', value: true} });
+    dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'uid', value: uid }});
     Actions.BusinessMain();
     }).catch((error) => {
       dispatch({ type: ERROR_SETTING_CATEGORY });
@@ -42,6 +43,11 @@ export const getProfile = (uid) => {
           if (user.category === '' || user.category === undefined){
             dispatch({ type: SET_PROFILE_UPDATE, payload: { prop: 'loading', value: false} });
             dispatch({ type: SET_PROFILE_UPDATE, payload: { prop: 'category_set', value: false} });
+            dispatch(
+              {
+                type: SET_PROFILE_UPDATE, payload: {prop: 'active', value: true}
+              }
+            );
           } else{
           dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'uid', value: uid }});
           //dispatch({ type: BUSINESS_MAIN_UPDATE, payload: { prop: 'user', value: user }});
@@ -64,5 +70,10 @@ export const getProfile = (uid) => {
 const accountNotActive = (dispatch, user) => {
   dispatch(
     { type: ACCOUNT_NOT_ACTIVE, payload: user }
+  );
+  dispatch(
+    {
+      type: SET_PROFILE_UPDATE, payload: {prop: 'active', value: false}
+    }
   );
 };

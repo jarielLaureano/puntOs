@@ -13,7 +13,8 @@ export default (state = INITIAL_STATE, action) => {
       console.log(action.payload)
       return { ...state, ...INITIAL_STATE, user: action.payload };
     case LOGIN_USER_FAIL:
-      return { ...state, error: 'Authentication Failed', loading: false, password: '' };
+      return { ...state, ...action.payload };
+//      return { ...state, error: 'Authentication Failed', loading: false, password: '' };
     default:
       return state;
   }

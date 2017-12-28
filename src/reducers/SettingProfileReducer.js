@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   loading: false,
   error: '',
   category_set: true,
-  category: 'Restaurant'
+  category: 'Restaurant',
+  active: false
 };
 
 export default (state = INITIAL_STATE, action) => {

@@ -96,6 +96,13 @@ export const userSetExpired = (pid) => {
   };
 };
 
+export const getPromosCoupons = (uid) => {
+  return (dispatch) => {
+
+
+  };
+};
+
 export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
     let promoList = [];
