@@ -13,24 +13,41 @@ export const loginUser = ({ email, password }) => {
   return (dispatch) => {
   dispatch({ type: LOGIN_USER });
   firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(user => loginUserSuccess(dispatch, user))
-    .catch((error) => {
+    .then(user => {
+      if(user.emailVerified){
+      loginUserSuccess(dispatch, user);
+    } else {
+      loginUserFail(dispatch, {error: 'Email not verified', loading: false, password: ''});
+      logoutUser(true);
+    }
+    }).catch((error) => {
+      console.log(error)
       if (error.code === 'auth/user-not-found' && email != '') {
         dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false}});
         Actions.preSignUp();
-      }
-      else if (error.code === 'auth/wrong-password') {
-        loginUserFail(dispatch);
+      }else if (error.code === 'auth/wrong-password') {
+        loginUserFail(dispatch, {error: 'Wrong Password', loading: false, password: ''});
       }
       else {
-        loginUserFail(dispatch);
+        loginUserFail(dispatch, {error: 'Invalid email', loading: false, password: ''});
       }
     });
   };
 };
 
-export const logoutUser = () => {
+export const logoutUser = (error) => {
   return (dispatch) => {
+    if(error){
+      dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: true}});
+      firebase.auth().signOut().then(() => {
+        dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Email not verified'}});
+        dispatch( { type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false }});
+    }).catch(error => {
+      dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Unable to Log Out'}});
+      dispatch( { type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false }});
+      console.log(error)
+    });
+  } else {
     dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: true}});
     firebase.auth().signOut().then(() => {
       dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Logged Out'}});
@@ -39,12 +56,12 @@ export const logoutUser = () => {
     dispatch({ type: AUTH_FORM_UPDATE, payload: { prop: 'error', value: 'Unable to Log Out'}});
     dispatch( { type: AUTH_FORM_UPDATE, payload: { prop: 'loading', value: false }});
     console.log(error)
-  });
-};
+  });}
+  };
 };
 
-const loginUserFail = (dispatch) => {
-  dispatch({ type: LOGIN_USER_FAIL });
+const loginUserFail = (dispatch, newState) => {
+  dispatch({ type: LOGIN_USER_FAIL, payload: newState });
 };
 
 const loginUserSuccess = (dispatch, user) => {

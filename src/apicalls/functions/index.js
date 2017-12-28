@@ -48,8 +48,13 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
       from: 'puntOs Team <noreply@firebase.com>',
       to: admin_email,
       subject: `Approval request from ${value.businessName}!`,
-      text: `Please verify that the following information is correct:
-      ${value} If this information is correct please access this link to approve account creation:
+      text: `Please verify that the following information is correct: \n
+      Business Name: ${value.businessName} \n
+      Business Address: ${value.addressLine} \n
+      Business City: ${value.city} \n
+      Business Zipcode: ${value.zipCode} \n
+      Business Phone Number: ${value.phoneNumber} \n
+      If this information is correct please access this link to approve account creation:
       https://us-central1-puntos-capstone2017.cloudfunctions.net/approveBusinessAccount?id=${user_id}&size=${value.size}`
     };
 
@@ -103,6 +108,12 @@ exports.sendRedeemCode = functions.database.ref('/Redeems/{rid}').onWrite(event 
         .catch((error) => console.error(error));
   });
 
+});
+
+exports.deleteUser = functions.https.onRequest((req, res) => {
+  return admin.auth().deleteUser(req.query.uid).then(()=>{
+    res.status(200).send('user deleted');
+  });
 });
 
 exports.approveBusinessAccount = functions.https.onRequest((req, res) => {

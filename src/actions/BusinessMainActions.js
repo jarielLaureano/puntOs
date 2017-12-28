@@ -150,25 +150,43 @@ export const createPromo = (promo_text, promo_media, business_name, uid, categor
     const _today = new Date();
     const _todayISO = _today.toISOString();
     const _todayMil = _today.getTime();
-    Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
-    firebase.database().ref(`/posts`).once('value', snapshot => {
-    const new_post = { text: promo_text, image: response, businessID: uid, date: _todayISO,
-      name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
-    snapshot.ref.push(new_post).then(() => {
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
-      Alert.alert('Promotion Posted!','', {text: 'OK'})
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_text', value: ''}})
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_media', value: ''}})
-    }).catch((error) => {
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not post promotion' }});
-    });}).catch((error) => {
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
-    });}).catch((error) => {
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
-      dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
-    });
+    if(image_path) {
+      Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/posts`).once('value', snapshot => {
+      const new_post = { text: promo_text, image: response, businessID: uid, date: _todayISO,
+        name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
+      snapshot.ref.push(new_post).then(() => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
+        Alert.alert('Promotion Posted!','', {text: 'OK'})
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_text', value: ''}})
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_media', value: ''}})
+      }).catch((error) => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not post promotion' }});
+      });}).catch((error) => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
+      });}).catch((error) => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
+      });
+    } else{
+      firebase.database().ref(`/posts`).once('value', snapshot => {
+      const new_post = { text: promo_text, image: '', businessID: uid, date: _todayISO,
+        name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
+      snapshot.ref.push(new_post).then(() => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
+        Alert.alert('Promotion Posted!','', {text: 'OK'})
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_text', value: ''}})
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'promo_media', value: ''}})
+      }).catch((error) => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not post promotion' }});
+      });}).catch((error) => {
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
+      });
+    }
   };
 };
 
@@ -180,7 +198,40 @@ export const createCoupon = (coupon_state, business_name, uid, category, user_im
     const _today = new Date();
     const _todayISO = _today.toISOString();
     const _todayMil = _today.getTime();
-    Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
+    if(image_path){
+      Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/Coupons`).once('value', snapshot => {
+      const post_date = _todayISO;
+      //console.log(post_date.toISOString())
+      let expiration_date = new Date();
+      if( coupon_state.coupon_expiration_type === 'minutes'){
+          expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'm');
+      } else if( coupon_state.coupon_expiration_type === 'hours'){
+          expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'h');
+      } else if( coupon_state.coupon_expiration_type === 'days') {
+          expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'd');
+      }
+      const expire_coupon = expiration_date.toISOString();
+      const new_coupon = { text: coupon_state.coupon_text , image: response , businessID: uid, category: category,
+        date: post_date, name: business_name, icon: user_image, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
+        pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
+      snapshot.ref.push(new_coupon).then(() => {
+        dispatch({ type: CREATE_COUPON_UPDATE, payload: {prop: 'loading', value: false}});
+        Alert.alert('Coupon Posted!','Coupon will expire on ' + expire_coupon.substring(0,10) + ' at ' + expire_coupon.substring(11,16), {text: 'OK'})
+        dispatch({ type: CREATE_COUPON_RESET });
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+        dispatch({type: BUSINESS_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
+      }).catch((error) => {
+        dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not post coupon' }});
+      });}).catch((error) => {
+        dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
+        dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
+      });}).catch((error) => {
+    dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
+    dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
+  });} else {
     firebase.database().ref(`/Coupons`).once('value', snapshot => {
     const post_date = _todayISO;
     //console.log(post_date.toISOString())
@@ -193,7 +244,7 @@ export const createCoupon = (coupon_state, business_name, uid, category, user_im
         expiration_date = moment(expiration_date).add(coupon_state.coupon_expiration, 'd');
     }
     const expire_coupon = expiration_date.toISOString();
-    const new_coupon = { text: coupon_state.coupon_text , image: response , businessID: uid, category: category,
+    const new_coupon = { text: coupon_state.coupon_text , image: '', businessID: uid, category: category,
       date: post_date, name: business_name, icon: user_image, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
       pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
     snapshot.ref.push(new_coupon).then(() => {
@@ -209,11 +260,8 @@ export const createCoupon = (coupon_state, business_name, uid, category, user_im
     });}).catch((error) => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
       dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not access data' }});
-    });}).catch((error) => {
-  dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: false }});
-  dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: 'Could not upload image.' }});
-});
-};
+    });}
+  };
 };
 
 export const likeItem = (uid, pid, isCoupon) => {

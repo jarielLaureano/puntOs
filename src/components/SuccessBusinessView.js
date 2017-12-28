@@ -15,8 +15,8 @@ class SuccessBusinessView extends Component {
       Welcome to our team!
       </Text>
       <Text style={styles.normalTextStyle}>
-      Business accounts need to be verified and approved. Please
-      allow at least 24 hrs for this process before you attempt to
+      Business accounts need to be verified and approved. Your account will be verified in the next 3 business days.
+      Please allow for this process before you attempt to
       log in the application. Monitor your email for updates and more
       info about your account.
       </Text>
