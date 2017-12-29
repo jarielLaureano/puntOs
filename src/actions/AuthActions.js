@@ -66,8 +66,8 @@ const loginUserFail = (dispatch, newState) => {
 
 const loginUserSuccess = (dispatch, user) => {
   const user_id = user.uid;
-  console.log(user)
-  console.log(user_id)
+  //console.log(user)
+  //console.log(user_id)
   dispatch(
     { type: LOGIN_USER_SUCCESS, payload: user }
   );

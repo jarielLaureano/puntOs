@@ -56,6 +56,7 @@ renderButton() {
             placeholder='password'
             onChangeText={value => this.props.authFormUpdate({ prop: 'password', value })}
             value={this.props.password}
+            maxLength={16}
             placeholderTextColor='#c6e4f2'
             selectionColor='white'
           />
