@@ -5,7 +5,8 @@ import { Tile, Button, Spinner } from './common';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
-import { businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday, updateProfilePic, logoutUser } from '../actions';
+import { unlinkAccount, businessMainUpdate, getBusinessProfile, getCheckinsToday,
+  getCouponsToday, updateProfilePic, logoutUser } from '../actions';
 import { Actions } from 'react-native-router-flux';
 
 import BusinessDashboard from './BusinessDashboard';
@@ -107,28 +108,63 @@ renderInfo(){
     </Modal> );
 }
 
-toggleSignOut(){
-  this.props.businessMainUpdate({prop: 'signOut', value: !this.props.signOut});
+renderLinkUser(){
+  if(this.props.user.linked){
+    return(
+      <View>
+      <TouchableOpacity onPress={() => {
+        Actions.switchAccount(); this.toggleSettings();
+      }}>
+        <Text style={{fontSize: 20, color: '#000', paddingLeft:5, paddingTop: 2, paddingBottom: 2}}>Switch to User</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {
+        Alert.alert('Unlink User Account?','By unlinking yous account you will not be able to swicth to user mode again.',
+        [{text: 'Cancel', onPress: () => this.toggleSettings(), style: 'cancel'},
+        {text: 'Continue', onPress: () => {this.props.unlinkAccount(this.props.uid, this.props.user.linked.uid); this.toggleSettings()}}]);
+      }}>
+        <Text style={{fontSize: 20, color: '#000', paddingLeft:5, paddingTop: 2, paddingBottom: 2}}>Unlink User</Text>
+      </TouchableOpacity>
+      </View>
+    );
+  } else {
+    return(
+      <View>
+    <Text style={{fontSize: 20, color: 'grey', paddingLeft:5, paddingTop: 2, paddingBottom: 2}}>Switch to User</Text>
+    <TouchableOpacity onPress={() => {
+      Alert.alert('Link User Account?','This will allow you to switch from your business account to your user account providing your user password.',
+      [{text: 'Cancel', onPress: () => this.toggleSettings(), style: 'cancel'},
+      {text: 'Yes', onPress: () => {Actions.linkAccount(); this.toggleSettings()}}]);
+    }}>
+      <Text style={{fontSize: 20, color: '#000', paddingLeft:5, paddingTop: 2, paddingBottom: 2}}>Link User</Text>
+    </TouchableOpacity>
+    </View>
+  );
+  }
 }
 
-renderSignOut(){
+toggleSettings(){
+  this.props.businessMainUpdate({prop: 'settings', value: !this.props.settings});
+}
+
+renderSettings(){
   return (
-    <Modal transparent={true} animationType={'slide'} visible={this.props.signOut} style={{ justifyContent: 'flex-end', margin: 0 }}>
+    <Modal transparent={true} animationType={'slide'} visible={this.props.settings} style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'stretch' }}>
-        <TouchableWithoutFeedback onPress={() => {this.toggleSignOut()}}>
+        <TouchableWithoutFeedback onPress={() => {this.toggleSettings()}}>
         <View style={{flex:9}}></View>
         </TouchableWithoutFeedback>
-        <View style={{ flex: 1, justifyContent: 'center' , backgroundColor: '#fff', shadowColor: '#000',
+        <View style={{ flex: 2, justifyContent: 'center' , backgroundColor: '#fff', shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1, paddingTop: -10, paddingBottom: 10 }}>
-        <TouchableWithoutFeedback onPress={() => {this.toggleSignOut()}}>
+        <TouchableWithoutFeedback onPress={() => {this.toggleSettings()}}>
         <Icon name='ios-arrow-down' size= {30} color='grey' style={{ alignSelf: 'center' }} />
         </TouchableWithoutFeedback>
+        {this.renderLinkUser()}
         <TouchableOpacity onPress={() => {
           Alert.alert('Sign out?','',
-          [{text: 'Cancel', onPress: () => this.toggleSignOut(), style: 'cancel'},
-          {text: 'OK', onPress: () => {Actions.login({ type: 'reset' });this.props.logoutUser(); this.toggleSignOut()}}]);
+          [{text: 'Cancel', onPress: () => this.toggleSettings(), style: 'cancel'},
+          {text: 'OK', onPress: () => {Actions.login({ type: 'reset' });this.props.logoutUser(); this.toggleSettings()}}]);
         }}>
-          <Text style={{fontSize: 20, color: '#000', paddingLeft:5}}>Sign Out</Text>
+          <Text style={{fontSize: 20, color: '#000', paddingLeft:5, paddingTop: 2, paddingBottom: 2 }}>Sign Out</Text>
         </TouchableOpacity>
         </View>
       </View>
@@ -300,7 +336,7 @@ renderSignOut(){
       <View style={styles.backgroundStyle}>
         <View style={{ flex:4, marginBottom: 5, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff', shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1}}>
           {this.renderPhotosModal()}
-          {this.renderSignOut()}
+          {this.renderSettings()}
           {this.renderInfo()}
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
@@ -310,7 +346,7 @@ renderSignOut(){
               </TouchableWithoutFeedback>
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
-              <TouchableWithoutFeedback onPress={()=> this.toggleSignOut()}>
+              <TouchableWithoutFeedback onPress={()=> this.toggleSettings()}>
                 <Icon name='ios-settings' size= {20} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
               </TouchableWithoutFeedback>
             </View>
@@ -405,9 +441,9 @@ errorTextStyle: {
 
 const mapStateToProps = state => {
   const { user, uid, metrics, scene, coupon_count,
-    checkin_count, photos, photoSelectedKey, showPhotos, photoSelected, uploadError, uploadLoading, signOut, info } = state.businessMain;
+    checkin_count, photos, photoSelectedKey, showPhotos, photoSelected, uploadError, uploadLoading, settings, info } = state.businessMain;
   return { user, uid, metrics, scene, coupon_count, checkin_count,
-     photos, photoSelectedKey, showPhotos, photoSelected, uploadLoading, uploadError, signOut, info };
+     photos, photoSelectedKey, showPhotos, photoSelected, uploadLoading, uploadError, settings, info };
 };
 
-export default connect(mapStateToProps,{businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday, updateProfilePic, logoutUser})(BusinessMain);
+export default connect(mapStateToProps,{unlinkAccount, businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday, updateProfilePic, logoutUser})(BusinessMain);

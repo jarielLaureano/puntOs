@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const firebase = require('firebase');
 const https = require("https");
 const google_api = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
 const google_api_key = 'AIzaSyBLDLO4nbnylcU90AD-XFn0fZdcLxnHGsY';
@@ -13,6 +14,15 @@ admin.initializeApp({
   databaseURL: "https://puntos-capstone2017.firebaseio.com/"
 });
 
+firebase.initializeApp({
+  apiKey: "AIzaSyDxE1Bw8qQ3aOgJRxTiR88wPGTAyYOsn4Y",
+  authDomain: "puntos-capstone2017.firebaseapp.com",
+  databaseURL: "https://puntos-capstone2017.firebaseio.com",
+  projectId: "puntos-capstone2017",
+  storageBucket: "puntos-capstone2017.appspot.com",
+  messagingSenderId: "388873118722"
+});
+
 const sender_email = functions.config().gmail.email;
 const sender_pass = functions.config().gmail.password;
 const transport = nodemailer.createTransport({
@@ -22,6 +32,97 @@ const transport = nodemailer.createTransport({
     pass: sender_pass
   }
 })
+
+exports.unlinkAccount = functions.https.onRequest((req, res) => {
+  const uid = req.query.uid;
+  const linked_id = req.query.linkedId;
+  var unlinkAccount_response = { success: false, message: ''};
+  admin.database().ref(`/users/${linked_id}`).update({linked: ''}).then(() => {
+    admin.database().ref(`/users/${uid}`).update({linked: ''}).then(()=>{
+      unlinkAccount_response.success = true;
+      unlinkAccount_response.message = 'Your user account was unlinked. You are no longer able to switch to user mode.'
+      return res.status(200).send(unlinkAccount_response);
+    });
+  }).catch(()=>{
+    unlinkAccount_response.message = 'Could not unlink user account. Try again.'
+    return res.status(200).send(unlinkAccount_response);
+  });
+});
+
+exports.linkAccount = functions.https.onRequest((req, res) => {
+  const businessID = req.query.uid;
+  const userEmail = req.query.email;
+  const userPassword = req.query.password;
+  var linkAccount_response = { success: false, message: ''};
+  firebase.auth().signInWithEmailAndPassword(userEmail, userPassword).then(user=>{
+    const uid = user.uid;
+    if(user.emailVerified){
+        admin.database().ref(`/users/${businessID}`).once('value', snapshot => {
+          const businessProfile = snapshot.val();
+          if(businessProfile.linked){
+            linkAccount_response.message = 'A user account is already linked.'
+            return res.status(200).send(linkAccount_response);
+          } else{
+            const businessObj = snapshot.val();
+            const user_linked = { email: userEmail, uid: uid };
+            const linked_account = { linked : user_linked};
+            const business_linked = { email: businessObj.email, uid: businessID };
+            const linked_business = { linked: business_linked};
+            snapshot.ref.update(linked_account).then(() => {
+              admin.database().ref(`/users/${uid}`).update(linked_business).then(()=>{
+                linkAccount_response.success = true;
+                linkAccount_response.message = 'To switch to your user account go back to settings and select \'Switch to User\'.'
+                return res.status(200).send(linkAccount_response);
+              });
+            }).catch(()=>{
+              linkAccount_response.message = 'Unable to link user account. Try again.'
+              return res.status(200).send(linkAccount_response);
+            });
+          }
+        }).catch(()=>{
+          linkAccount_response.message = 'Unable to get business profile. Try again.'
+          return res.status(200).send(linkAccount_response);
+        });
+    }
+    else{
+      linkAccount_response.message = 'Email not verified.'
+      return res.status(200).send(linkAccount_response);
+    }
+  }).catch((error)=> {
+    console.log(error)
+    linkAccount_response.message = 'Invalid email or password.';
+    return res.status(200).send(linkAccount_response);
+  });
+});
+
+exports.switchAccount = functions.https.onRequest((req, res) => {
+  const email = req.query.email;
+  const password = req.query.password;
+  var switchAccount_response = { success: false, message: ''};
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(user => {
+      if(user.emailVerified){
+        switchAccount_response.success = true;
+        return res.status(200).send(switchAccount_response);
+    } else {
+      switchAccount_response.message = 'Email not verified.';
+      return res.status(200).send(switchAccount_response);
+    }
+    }).catch((error) => {
+      //console.log(error)
+      if (error.code === 'auth/user-not-found' && email != '') {
+        switchAccount_response.message = 'Unable to locate user account.';
+        return res.status(200).send(switchAccount_response);
+      }else if (error.code === 'auth/wrong-password') {
+        switchAccount_response.message = 'Incorrect Password.';
+        return res.status(200).send(switchAccount_response);
+      }
+      else {
+        switchAccount_response.message = 'Invalid Email.';
+        return res.status(200).send(switchAccount_response);
+      }
+    });
+  });
 
 exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onWrite(event =>{
   const event_data = event.data;

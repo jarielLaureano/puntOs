@@ -24,6 +24,8 @@ import RedeemCouponView from './components/RedeemCouponView';
 import { Actions } from 'react-native-router-flux';
 import UserNavBar from './components/UserNavBar';
 import UserSocialFeed from './components/UserSocialFeed';
+import LinkAccount from './components/LinkAccount';
+import SwitchAccount from './components/SwitchAccount';
 
 const RouterComponent = () => {
   return (
@@ -152,6 +154,22 @@ const RouterComponent = () => {
           onBack={() => Actions.BusinessMain()}
           component={ValidateCoupon}
           title='Validate Coupon'
+        />
+        <Scene
+          key='linkAccount'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.BusinessMain()}
+          component={LinkAccount}
+          title='Link Account'
+        />
+        <Scene
+          key='switchAccount'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.BusinessMain()}
+          component={SwitchAccount}
+          title='Switch Account'
         />
 
         {/*These are User Related Views*/}

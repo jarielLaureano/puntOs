@@ -10,7 +10,6 @@ import { connect } from 'react-redux';
 import { BUSINESS_NAME_REGEX, EMAIL_REGEX,
   USERNAME_REGEX, PASSWORD_REGEX, ZIP_REGEX, CITY_LIST, PHONE_REGEX } from './../constants';
 
-
 class BusinessSignUpForm extends Component {
   state = { nameBorder: '#0084b4', passwordBorder: '#0084b4', emailBorder: '#0084b4',
    userBorder: '#0084b4', confirmBorder: '#0084b4', zipCodeBorder:'#0084b4', phoneBorder: '#0084b4',
