@@ -469,6 +469,8 @@ export const switchAccount = (email, password) => {
           });
         //Alert.alert('Account Unlinked!',data.message,{text: 'OK'});
       } else{
+        dispatch({ type: BUSINESS_MAIN_UPDATE, payload: {prop: 'switchLoading', value: false}});
+        dispatch({ type: BUSINESS_MAIN_UPDATE, payload: {prop: 'switchPassword', value: ''}});
         Alert.alert('Unable to Switch!',data.message, {text: 'OK'});
       }
   });
@@ -482,6 +484,7 @@ export const linkAccount = (email, password, uid) => {
   axios.get(req_url)
     .then(response => {
       dispatch({ type: BUSINESS_MAIN_UPDATE, payload: {prop: 'linkLoading', value: false}});
+      dispatch({ type: BUSINESS_MAIN_UPDATE, payload: {prop: 'linkPassword', value: ''}});
       const data = response.data;
       if(data.success){
         Alert.alert('Account Linked!',data.message,{text: 'OK'});
@@ -490,22 +493,4 @@ export const linkAccount = (email, password, uid) => {
       }
   });
 };
-};
-
-const login = (email, password) => {
-  return (dispatch) => {
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(user => {
-      dispatch(
-        { type: LOGIN_USER_SUCCESS, payload: user }
-      );
-      dispatch(
-        { type: SET_PROFILE_UPDATE, payload: { prop: 'uid', value: user.uid } }
-      );
-      dispatch({ type: BUSINESS_MAIN_UPDATE, payload: {prop: 'switchLoading', value: false}});
-      Actions.settingProfile({type: 'reset'});
-    }).catch((error) => {
-      console.log(error)
-    });
-  };
 };
