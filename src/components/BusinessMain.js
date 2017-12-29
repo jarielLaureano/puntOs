@@ -342,12 +342,12 @@ renderSettings(){
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
               <TouchableWithoutFeedback onPress={()=> this.toggleInfo()}>
-                <Icon name='ios-information-circle' size= {20} color='#299cc5' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
+                <Icon name='ios-information-circle' size= {20} color='#0084b4' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
               </TouchableWithoutFeedback>
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
               <TouchableWithoutFeedback onPress={()=> this.toggleSettings()}>
-                <Icon name='ios-settings' size= {20} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
+                <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
               </TouchableWithoutFeedback>
             </View>
             </View>
@@ -412,7 +412,7 @@ tileStyle:{
   paddingLeft: 6,
   paddingRight: 4,
   paddingBottom: 4,
-  backgroundColor:'#299cc5',
+  backgroundColor:'#0084b4',
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,

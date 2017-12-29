@@ -169,7 +169,6 @@ export const checkin = (user_id, businessID) => {
     console.log(req_url)
     axios.get(req_url)
       .then(response => {
-        let body = '';
         if( response.data.checkedIn){
         Alert.alert('Checked In!', 'You Successfully checked in to ' + response.data.businessName + '. Points: '+response.data.pointsEarned, {text: 'OK'});
       } else {
