@@ -112,7 +112,7 @@ class UserPromoItem extends Component {
             const _today = moment(new Date());
             const minutes_diff = _today.diff(expires_date, 'minutes');
           if(minutes_diff>0){
-              this.props.setExpired(pid);
+              this.props.userSetExpired(pid);
               return (
                 <View style={{ flex:1, backgroundColor: '#f97171', flexDirection: 'column', paddingTop: 5, paddingBottom: 5 }}>
                 <Text style={{ alignSelf: 'center', fontSize: 20, color: 'white' }}>Expired</Text>

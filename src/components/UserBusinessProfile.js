@@ -78,8 +78,51 @@ class UserBusinessProfile extends Component {
             />);
           }
       }
+      renderTabs() {
+        const { businessProfileState } = this.props;
+        var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
+        var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
+        var selectedContainer = { borderBottomWidth: 5, borderColor: "#fff"};
+        var notSelectedContainer = { borderBottomWidth: 5, borderColor: "#0084b4"};
 
-  renderTabs() {
+        var promo_tab = null;
+        var coupon_tab = null;
+        var review_tab = null;
+        var promo_cont = notSelectedContainer;
+        var coupon_cont = notSelectedContainer;
+        var review_cont = notSelectedContainer;
+        if (businessProfileState.tab_selected === 'Promos'){
+          promo_tab = selectedStyle;
+          promo_cont = selectedContainer;
+          coupon_tab = notSelectedStyle;
+          review_tab = notSelectedStyle;
+        } else if( businessProfileState.tab_selected === 'Coupons'){
+          promo_tab = notSelectedStyle;
+          coupon_tab = selectedStyle;
+          coupon_cont = selectedContainer;
+          review_tab = notSelectedStyle;
+        } else if(businessProfileState.tab_selected === 'Reviews'){
+          promo_tab = notSelectedStyle;
+          coupon_tab = notSelectedStyle;
+          review_tab = selectedStyle;
+          review_cont = selectedContainer;
+        }
+        return(
+        <View style={{ flex:1, flexDirection: 'row', backgroundColor: '#0084b4',
+        shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1 }}>
+        <View style={[coupon_cont,{flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Coupons'})} style={coupon_tab} >Coupons</Text>
+        </View>
+        <View style={[promo_cont, {flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Promos'})} style={promo_tab} >Promos</Text>
+        </View>
+        <View style={[review_cont, {flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
+        </View>
+        </View>
+      );
+      }
+  renderTheTabs() {
     const { businessProfileState } = this.props;
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
     var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
@@ -122,14 +165,14 @@ class UserBusinessProfile extends Component {
     const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
+        <View style={{ flex:4, backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
-            <Icon name='ios-arrow-back' size= {30} color='#299cc5' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
+            <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
+            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>
@@ -156,9 +199,9 @@ class UserBusinessProfile extends Component {
                 starColor={'#f2d733'}
                 />
                 <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
-                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5, marginBottom: 15 }}>
+                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5 }}>
                   <TouchableOpacity onPress={() => {this.callCheckin()}}>
-                  <Icon name='ios-navigate' size= {25} color='#299cc5' />
+                  <Icon name='ios-navigate' size= {25} color='#0084b4' />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -178,27 +221,6 @@ const styles ={
 backgroundStyle: {
   flex: 1,
   backgroundColor: '#fff'
-},
-tileStyle:{
-  alignSelf: 'stretch',
-  flex:1,
-  borderColor:'#000',
-  borderRadius: 5,
-  borderWidth:1,
-  marginTop: 2,
-  marginLeft: 2,
-  marginBottom: 2,
-  marginRight: 2,
-  paddingTop: 6,
-  paddingLeft: 6,
-  paddingRight: 4,
-  paddingBottom: 4,
-  backgroundColor:'#299cc5',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-  elevation: 2
 },
 textStyle:{
   fontSize: 25,

@@ -238,7 +238,7 @@ renderProfileButtons(){
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
     var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
     var selectedContainer = { borderBottomWidth: 5, borderColor: "#fff"};
-    var notSelectedContainer = { borderBottomWidth: 5, borderColor: "#299cc5"};
+    var notSelectedContainer = { borderBottomWidth: 5, borderColor: "#0084b4"};
 
     var promo_tab = null;
     var coupon_tab = null;
@@ -263,7 +263,7 @@ renderProfileButtons(){
       review_cont = selectedContainer;
     }
     return(
-    <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderBottomWidth: 0.5, backgroundColor: '#299cc5',
+    <View style={{ flex:1, flexDirection: 'row', backgroundColor: '#0084b4',
     shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1 }}>
     <View style={[coupon_cont,{flex: 1, justifyContent: 'center'}]}>
     <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Coupons'})} style={coupon_tab} >Coupons</Text>
@@ -283,14 +283,14 @@ renderProfileButtons(){
       <View style={styles.backgroundStyle}>
         {this.renderProfileModal()}
         {this.renderEditItemModal()}
-        <View style={{ flex:4, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
+        <View style={{ flex:4, backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
-            <Icon name='ios-arrow-back' size= {30} color='#299cc5' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
+            <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#299cc5' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
+            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>

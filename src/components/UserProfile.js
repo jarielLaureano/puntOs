@@ -29,50 +29,53 @@ class UserProfile extends Component {
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <CheckinsView />
       </View>);
-    } 
+    }
     else if(userProfileState.tab_selected === 'Reviews'){
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <UserReviewsView />
       </View>);
     }
   }
-
   renderTabs() {
     const { userProfileState } = this.props;
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
     var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
+    var selectedContainer = { borderBottomWidth: 5, borderColor: "#fff"};
+    var notSelectedContainer = { borderBottomWidth: 5, borderColor: "#0084b4"};
+
     var checkin_tab = null;
     var review_tab = null;
+    var checkin_cont = notSelectedContainer;
+    var review_cont = notSelectedContainer;
     if (userProfileState.tab_selected === 'Checkins'){
       checkin_tab = selectedStyle;
+      checkin_cont = selectedContainer;
       review_tab = notSelectedStyle;
-    } 
-    else if(userProfileState.tab_selected === 'Reviews'){
-      checkin_tab = notSelectedStyle;
+      review_cont = notSelectedContainer;
+    } else if( userProfileState.tab_selected === 'Reviews'){
       review_tab = selectedStyle;
+      review_cont = selectedContainer;
+      checkin_tab = notSelectedStyle;
+      checkin_cont= notSelectedContainer;
     }
     return(
-    <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderBottomWidth: 0.5, backgroundColor: '#299cc5' }}>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={checkin_tab} >Check-Ins</Text>
+    <View style={{ flex:1, flexDirection: 'row', backgroundColor: '#0084b4',
+    shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1 }}>
+    <View style={[checkin_cont, {flex: 1, justifyContent: 'center'}]}>
+    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={checkin_tab} >Check-ins</Text>
     </View>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
+    <View style={[review_cont, {flex: 1, justifyContent: 'center'}]}>
     <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
     </View>
     </View>
   );
   }
+
   render() {
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, borderBottomWidth: 0.5, borderColor: '#000', backgroundColor:'#fff' }}>
+        <View style={{ flex:4, backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
-            <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
-            <View style={{ flex: 1, justifyContent: 'center'}} >
-            </View>
-            <View style={{ flex: 1, justifyContent: 'center'}}>
-            </View>
-            </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.props.user.points}</Text>
@@ -107,28 +110,8 @@ class UserProfile extends Component {
 const styles ={
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#e3e3e3'
-},
-tileStyle:{
-  alignSelf: 'stretch',
-  flex:1,
-  borderColor:'#000',
-  borderRadius: 5,
-  borderWidth:1,
-  marginTop: 2,
-  marginLeft: 2,
-  marginBottom: 2,
-  marginRight: 2,
-  paddingTop: 6,
-  paddingLeft: 6,
-  paddingRight: 4,
-  paddingBottom: 4,
-  backgroundColor:'#299cc5',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-  elevation: 2
+  backgroundColor: '#fff',
+  paddingTop: 20
 },
 textStyle:{
   fontSize: 25,
