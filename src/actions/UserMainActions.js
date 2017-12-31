@@ -105,10 +105,10 @@ export const getPromosCoupons = (uid) => {
 
 export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
-    let promoList = [];
     if (pf == 'Promos') {
       if (sf == 'All') {
         firebase.database().ref(`/posts`).on('value', snapshot => {
+          let promoList = [];
           let counter = 0;
           snapshot.forEach(child_node => {
             var child_key = child_node.key;
@@ -121,6 +121,7 @@ export const userGetPromos = (uid, pf, sf) => {
       }
       else {
         firebase.database().ref(`/posts`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let promoList = [];
           let counter = 0;
           snapshot.forEach(child_node => {
             var child_key = child_node.key;
@@ -136,26 +137,28 @@ export const userGetPromos = (uid, pf, sf) => {
     else {
       if (sf == 'All') {
         firebase.database().ref(`/Coupons`).on('value', snapshot => {
+          let couponList = [];
           let counter = 0;
           snapshot.forEach(child_node => {
             var child_key = child_node.key;
-            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            couponList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
             counter++;
           });
           //console.log(promoList)
-          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+          dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
       else {
         firebase.database().ref(`/Coupons`).orderByChild(`category`).equalTo(sf).on('value', snapshot => {
+          let couponList = [];
           let counter = 0;
           snapshot.forEach(child_node => {
             var child_key = child_node.key;
-            promoList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
+            couponList.splice(0,0,{ ...child_node.val(), id: counter, isCoupon: true, pid: child_key});
             counter++;
           });
           //console.log(promoList)
-          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
+          dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
     }
