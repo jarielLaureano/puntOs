@@ -78,9 +78,8 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    const new_promos = {...state.promos, ...action.payload};
-    console.log(new_promos);
-    return { ...state, promos: new_promos};
+    const new_promos = action.payload;
+    return { ...state, promos: new_promos };
     }
     case USER_SOCIALS_UPDATE:
     {
