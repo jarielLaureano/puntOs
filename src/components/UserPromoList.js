@@ -10,9 +10,7 @@ import { Card, CardSection } from './common/';
 
 class UserPromoList extends Component {
   componentWillMount() {
-    //console.log(this.props.uid)
-    //console.log(this.props.userPrimaryFilterState.primaryFilterSelected)
-    //console.log(this.props.userSecondaryFilterState.secondaryFilterSelected)
+
     this.props.userGetPromos(
       this.props.uid,
       this.props.userPrimaryFilterState.primaryFilterSelected,
@@ -20,25 +18,33 @@ class UserPromoList extends Component {
     );
   }
 
-  filter() {
-    this.props.userGetPromos(
-      this.props.uid,
-      this.props.userPrimaryFilterState.primaryFilterSelected,
-      this.props.userSecondaryFilterState.secondaryFilterSelected
-    );
+  toggleButtonHighlight() {
+
+  }
+
+  filter(sf, pf) {
+    console.log("at Filter function")
+    console.log("Filtering by " + pf);
+    this.props.userGetPromos(this.props.uid, sf, pf);
   }
 
   renderFilterCarousel() {
+    var pri_filter = 'Promos';
+    var sec_filter = 'All';
     const { filterStyle, filterContainer } = styles;
-    const { userPrimaryFilterState, userSecondaryFilterState } = this.props;
+    const { userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = this.props;
     return (
       <View style={{ flexDirection: 'row', backgroundColor: '#0084b4', borderColor: '#fff', borderTopWidth: 0.5, height: 60, paddingLeft: 5, paddingRight: 5 }}>
         <View style={{ flexDirection: 'row', flex: 3, alignSelf: 'stretch' }}>
           <View style={filterContainer}>
             <View style={filterStyle}>
               <TouchableOpacity onPress={() => {
-                this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Promos'});
-                this.filter.bind(this);
+                //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Promos'});
+                //this.props.pfilter='Promos';
+                console.log("changing pfilter to Promos...");
+                pri_filter = 'Promos';
+                //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
+                this.filter(pri_filter, sec_filter);
                 }}>
                 <Icon name='ios-megaphone' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
               </TouchableOpacity>
@@ -47,11 +53,12 @@ class UserPromoList extends Component {
           <View style={filterContainer}>
             <View style={filterStyle}>
               <TouchableOpacity onPress={() => {
-                this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Coupons'});
-                this.props.userGetPromos(
-                  this.props.uid,
-                  this.props.userPrimaryFilterState.primaryFilterSelected,
-                  this.props.userSecondaryFilterState.secondaryFilterSelected);
+                //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Coupons'});
+                //this.props.pfilter='Coupons';
+                console.log("changing pfilter to Coupons...");
+                pri_filter = 'Coupons';
+                //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
+                this.filter(pri_filter, sec_filter);
                 }}>
                 <Icon name='ios-pricetag' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
               </TouchableOpacity>
@@ -64,87 +71,75 @@ class UserPromoList extends Component {
             <ScrollView horizontal showVerticalScrollIndicator={false} contentContainerstyle={styles.carouselStyle}>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'All'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'All'});
+                    sec_filter = 'All';
+                    this.filter(pri_filter, sec_filter);
                 }}>
                     <Icon name='ios-apps' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Favorites'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Favorites'});
+                    sec_filter = 'Favorites';
+                    this.filter(pri_filter, sec_filter);
                   }}>
                     <Icon name='md-star' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Location'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Location'});
+                    sec_filter = 'Location';
+                    this.filter(pri_filter, sec_filter);
                   }}>
                     <Icon name='md-pin' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Cafe'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Cafe'});
+                    sec_filter = 'Cafe';
+                    this.filter(pri_filter, sec_filter);
                   }}>
                     <Icon name='md-cafe' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Bar'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Bar'});
+                    sec_filter = 'Bar';
+                    this.filter(pri_filter, sec_filter);
                   }}>
                     <Icon name='md-beer' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => {
-                    this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Restaurant'});
-                    this.props.userGetPromos(
-                      this.props.uid,
-                      this.props.userPrimaryFilterState.primaryFilterSelected,
-                      this.props.userSecondaryFilterState.secondaryFilterSelected);
+                  <TouchableOpacity onPress={() => {
+                    //this.props.userSecondaryFilterUpdate({prop:'secondaryFilterSelected', value: 'Restaurant'});
+                    sec_filter = 'Restaurant';
+                    this.filter(pri_filter, sec_filter);
                   }}>
                     <Icon name='md-restaurant' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
               <View style={filterContainer}>
                 <View style={filterStyle}>
-                  <TouchableWithoutFeedback onPress={() => { }}>
+                  <TouchableOpacity onPress={() => { }}>
                     <Icon name='md-desktop' size= {25} color='#0084b4' style={{ alignSelf: 'center' }} />
-                  </TouchableWithoutFeedback>
+                  </TouchableOpacity>
                 </View>
               </View>
             </ScrollView>
@@ -154,6 +149,7 @@ class UserPromoList extends Component {
   }
 
   renderContent() {
+    console.log(this.props.promos)
     return (
       <FlatList
         data={this.props.promos}
@@ -163,9 +159,6 @@ class UserPromoList extends Component {
   }
 
   render() {
-    console.log(this.props.userPrimaryFilterState)
-    console.log(this.props.userSecondaryFilterState)
-    console.log(this.props.promos);
     return (
       <View style={{ flex: 1, flexDirection: 'column', justifyContent:'space-around' }}>
         {this.renderFilterCarousel()}
@@ -230,12 +223,12 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  var { uid, userPrimaryFilterState, userSecondaryFilterState } = state.userMain;
+  var { uid, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = state.userMain;
   console.log(state.userMain)
   const promos = _.map(state.userMain.promos, (val, key) => {
     return {...val, key};
   });
-  return { uid, promos, userPrimaryFilterState, userSecondaryFilterState };
+  return { uid, promos, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter };
 }
 
 

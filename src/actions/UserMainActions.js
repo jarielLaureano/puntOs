@@ -38,6 +38,7 @@ export const userProfileUpdate = ({ prop, value }) => {
 };
 
 export const userPrimaryFilterUpdate = ({ prop, value }) => {
+  console.log("changing primary filter")
   return {
     type: USER_PRIMARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -45,6 +46,7 @@ export const userPrimaryFilterUpdate = ({ prop, value }) => {
 };
 
 export const userSecondaryFilterUpdate = ({ prop, value }) => {
+  console.log("changing secondary filter")
   return {
     type: USER_SECONDARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -105,6 +107,8 @@ export const getPromosCoupons = (uid) => {
 
 export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
+    console.log(pf + " " + sf);
+    console.log("At userGetPromos Action");
     if (pf == 'Promos') {
       if (sf == 'All') {
         firebase.database().ref(`/posts`).on('value', snapshot => {
@@ -116,6 +120,7 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
+          console.log("Dispatching Promos...");
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -145,6 +150,7 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
+          console.log("Dispatching Coupons...");
           dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
