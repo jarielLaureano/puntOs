@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate } from '../actions';
 import UserPromoItem from './UserPromoItem'
 import { Card, CardSection } from './common/';
+var pri_filter = 'Promos';
+var sec_filter = 'All';
 
 class UserPromoList extends Component {
   componentWillMount() {
@@ -29,8 +31,6 @@ class UserPromoList extends Component {
   }
 
   renderFilterCarousel() {
-    var pri_filter = 'Promos';
-    var sec_filter = 'All';
     const { filterStyle, filterContainer } = styles;
     const { userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = this.props;
     return (
