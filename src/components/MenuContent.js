@@ -49,6 +49,9 @@ class MenuContent extends Component {
                   <Text style={{ alignSelf: 'flex-start', fontSize: 15, color: 'grey' }}>
                     Switch to Business
                   </Text>
+                  <Text style={{ alignSelf: 'flex-start', fontSize: 8, color: 'grey' }}>
+                    No account linked
+                  </Text>
               </View>
             </View>
         </View>
@@ -78,7 +81,7 @@ class MenuContent extends Component {
             </TouchableOpacity>
         </View>
         <View style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose();Actions.Leaderboard();}}>
             <View style={{ flexDirection: 'row' }}>
               <View style={styles.itemIconStyle}>
                 <Icon name='md-stats' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
@@ -171,7 +174,7 @@ const styles = {
   },
   itemTextStyle:{
     flex:4, justifyContent: 'center', alignItems: 'center',
-    paddingBottom: 5, marginLeft: 10
+    paddingBottom: 5, marginLeft: 10, flexDirection: 'column'
   },
   itemIconStyle:{
     height: 40, width: 40, alignSelf: 'center',
