@@ -18,10 +18,11 @@ class UserProfile extends Component {
     this.props.getCheckins(currentUser);
     this.props.getUserProfile(currentUser);
   }
-
+/*
   componentWillUpdate(){
     LayoutAnimation.spring();
   }
+  */
 
   renderContent(){
     const { userProfileState } = this.props;

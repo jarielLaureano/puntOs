@@ -9,10 +9,12 @@ import {
   USER_PROMOS_UPDATE,
   USER_PRIMARY_FILTER_UPDATE,
   USER_SECONDARY_FILTER_UPDATE,
-  USER_SOCIALS_UPDATE } from './types';
+  USER_SOCIALS_UPDATE,
+  SET_PROFILE_UPDATE,
+  LOGIN_USER_SUCCESS } from './types';
 import { Actions } from 'react-native-router-flux';
-
 import axios from 'axios';
+const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -232,6 +234,37 @@ export const getSocialPosts = () => {
       dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
     });
   };
+};
+
+export const switchAccountUser = (email, password) => {
+  return (dispatch) => {
+  dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchLoading', value: true}});
+  const req_url = SWITCH_ACCOUNT+'?email='+email+'&password='+password;
+  axios.get(req_url)
+    .then(response => {
+      const data = response.data;
+      if(data.success){
+        firebase.auth().signInWithEmailAndPassword(email, password)
+          .then(user => {
+            dispatch(
+              { type: LOGIN_USER_SUCCESS, payload: user }
+            );
+            dispatch(
+              { type: SET_PROFILE_UPDATE, payload: { prop: 'uid', value: user.uid } }
+            );
+            dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchLoading', value: false}});
+            Actions.settingProfile({type: 'reset'});
+          }).catch((error) => {
+            console.log(error)
+          });
+        //Alert.alert('Account Unlinked!',data.message,{text: 'OK'});
+      } else{
+        dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchLoading', value: false}});
+        dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchPassword', value: ''}});
+        Alert.alert('Unable to Switch!',data.message, {text: 'OK'});
+      }
+  });
+};
 };
 
 function sortObj(list, key) {

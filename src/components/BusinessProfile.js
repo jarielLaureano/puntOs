@@ -18,11 +18,11 @@ class BusinessProfile extends Component {
       super();
       this.renderItem = this.renderItem.bind(this);
   }
-
+/*
   componentWillUpdate(){
     LayoutAnimation.spring();
   }
-
+*/
   toggleEditCoupon(){
     this.props.businessMainUpdate({prop: 'edit', value: !this.props.edit});
   }
