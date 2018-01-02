@@ -3,7 +3,7 @@ import { Text, View, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions, Router, Scene } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-import { getUserProfile } from '../actions';
+import { getUserProfile, userMainUpdate } from '../actions';
 
 class UserNavBar extends Component {
 
@@ -16,8 +16,10 @@ class UserNavBar extends Component {
             <View>
                 <View style={styles.viewStyle}>
                 <View style={{ flex: 1, justifyContent: 'center'}} >
-                <TouchableWithoutFeedback onPress={() => {}}>
-                <Icon name='ios-menu' size= {25} color='#fff' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
+                <TouchableWithoutFeedback onPress={() => {
+                  Actions.drawerOpen();
+              }}>
+                <Icon name='ios-menu' size= {30} color='#fff' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
                 </TouchableWithoutFeedback>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center'}} >
@@ -47,9 +49,9 @@ const styles = {
 }
 
 const mapStateToProps = state => {
-  const { user, name, points, level, checkins, userProfileState, uid } = state.userMain;
+  const { user, name, points, level, checkins, userProfileState, uid, openMenu } = state.userMain;
   //console.log(state.userMain);
-  return { user, name, points, level, checkins, userProfileState, uid };
+  return { user, name, points, level, checkins, userProfileState, uid, openMenu };
 };
 
-export default connect(mapStateToProps, { getUserProfile })(UserNavBar);
+export default connect(mapStateToProps, { getUserProfile, userMainUpdate })(UserNavBar);

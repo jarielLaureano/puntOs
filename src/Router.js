@@ -26,13 +26,12 @@ import UserNavBar from './components/UserNavBar';
 import UserSocialFeed from './components/UserSocialFeed';
 import LinkAccount from './components/LinkAccount';
 import SwitchAccount from './components/SwitchAccount';
+import MenuContent from './components/MenuContent';
 
 const RouterComponent = () => {
   return (
     <Router>
-
       <Scene key='root' >
-
         {/*These are Login Related Views}*/}
 
         <Scene
@@ -173,7 +172,7 @@ const RouterComponent = () => {
         />
 
         {/*These are User Related Views*/}
-
+        <Scene key='burgerMenu' drawer contentComponent={MenuContent} hideNavBar panHandlers={null} open={false}>
         {/* Tab Container */}
         <Scene
           hideNavBar
@@ -230,9 +229,8 @@ const RouterComponent = () => {
               component={UserProfile}
             />
           </Scene>
-
         </Scene>
-
+    </Scene>
         <Scene
           key="PostReviewView"
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
@@ -244,7 +242,7 @@ const RouterComponent = () => {
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
           navBarButtonColor='white'
           hideNavBar
-          onBack={() => Actions.UserMain()}
+          onBack={() => Actions.burgerMenu('UserMain')}
           component={UserBusinessProfile}
           title="UserBusinessProfile"
         />

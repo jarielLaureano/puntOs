@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     user: {},
     type: 'user',
     uid:'',
+    openMenu: false,
     checkins: {},
     promos: {},
     coupons: {},
