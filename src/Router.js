@@ -27,6 +27,7 @@ import UserSocialFeed from './components/UserSocialFeed';
 import LinkAccount from './components/LinkAccount';
 import SwitchAccount from './components/SwitchAccount';
 import SwitchAccountUser from './components/SwitchAccountUser';
+import Leaderboard from './components/Leaderboard';
 import MenuContent from './components/MenuContent';
 
 const RouterComponent = () => {
@@ -262,6 +263,14 @@ const RouterComponent = () => {
           onBack={() => Actions.burgerMenu('UserMain')}
           component={SwitchAccountUser}
           title='Switch Account'
+        />
+        <Scene
+          key='Leaderboard'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={Leaderboard}
+          title='Leaderboard'
         />
       </Scene>
     </Router>
