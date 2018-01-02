@@ -30,6 +30,9 @@ const INITIAL_STATE = {
     userProfileState: { tab_selected: 'Checkins' },
     userPrimaryFilterState: { primaryFilterSelected: 'Promos' },
     userSecondaryFilterState: { secondaryFilterSelected: 'All'},
+    refresh: false,
+    pfilter: 'Promos',
+    sfilter: 'All',
     points: 0,
     level: 0
 };
@@ -79,9 +82,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    const new_promos = {...state.promos, ...action.payload};
-    console.log(new_promos);
-    return { ...state, promos: new_promos};
+    console.log("at reducer: returning new promos")
+    console.log(action.payload)
+    const new_promos = action.payload;
+    return { ...state, promos: new_promos };
     }
     case USER_SOCIALS_UPDATE:
     {
