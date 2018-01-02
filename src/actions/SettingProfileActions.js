@@ -59,7 +59,7 @@ export const getProfile = (uid) => {
         }
     } else if(user.type === 'user'){
           dispatch({ type: USER_MAIN_SET_PROFILE, payload: {user, uid}});
-          Actions.UserMain();
+          Actions.burgerMenu('UserMain');
     }
     }).catch((error) => {
       console.log(error)

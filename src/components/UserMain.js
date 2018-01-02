@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import firebase from 'firebase';
 import { userMainUpdate, getUserProfile } from '../actions';
 import UserPromoList from './UserPromoList';
-
 import UserMainFilterHeader from './UserMainFilterHeader';
 import PostFeed from './PostFeed';
 import UserMainFooter from './UserMainFooter';
