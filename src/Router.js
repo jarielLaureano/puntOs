@@ -26,6 +26,7 @@ import UserNavBar from './components/UserNavBar';
 import UserSocialFeed from './components/UserSocialFeed';
 import LinkAccount from './components/LinkAccount';
 import SwitchAccount from './components/SwitchAccount';
+import SwitchAccountUser from './components/SwitchAccountUser';
 import MenuContent from './components/MenuContent';
 
 const RouterComponent = () => {
@@ -253,6 +254,14 @@ const RouterComponent = () => {
           onBack={() => Actions.UserBusinessProfile()}
           component={RedeemCouponView}
           title="RedeemCouponView"
+        />
+        <Scene
+          key='switchAccountUser'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.burgerMenu('UserMain')}
+          component={SwitchAccountUser}
+          title='Switch Account'
         />
       </Scene>
     </Router>

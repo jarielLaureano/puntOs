@@ -34,7 +34,9 @@ const INITIAL_STATE = {
     pfilter: 'Promos',
     sfilter: 'All',
     points: 0,
-    level: 0
+    level: 0,
+    switchLoading: false,
+    switchPassword: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
