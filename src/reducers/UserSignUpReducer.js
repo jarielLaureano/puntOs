@@ -19,7 +19,8 @@ const INITIAL_STATE = {
     type: 'user',
     points: 1000,
     level: 1,
-    repassword: ''
+    repassword: '',
+    image: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
