@@ -164,7 +164,8 @@ class UserSignUpForm extends Component {
       birthdate,
       points,
       type,
-      level
+      level,
+      image
     } = this.props
 
     if(name&&email&&password&&telephone&&hometown&&birthdate&&repassword){
@@ -174,7 +175,7 @@ class UserSignUpForm extends Component {
               if(PASSWORD_REGEX.test(password)){
                    if(HOMETOWN_REGEX.test(hometown)){
                        if(this.passwordMatch()){
-                         this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type,points,level});
+                         this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type,points,level,image});
                        }
                        this.props.userSignUpUpdate({ prop: 'error', value: 'Not Matching Password' });
                        this.props.userSignUpUpdate({ prop: 'password', value: ''});
@@ -284,6 +285,7 @@ const mapStateToProps = state => {
     points,
     level,
     repassword,
+    image
   } = state.userSignUp;
 
   return {
@@ -299,7 +301,8 @@ const mapStateToProps = state => {
     type,
     points,
     level,
-    repassword
+    repassword,
+    image
   }
 }
 

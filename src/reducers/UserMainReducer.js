@@ -36,7 +36,13 @@ const INITIAL_STATE = {
     points: 0,
     level: 0,
     switchLoading: false,
-    switchPassword: ''
+    switchPassword: '',
+    uploadLoading: false,
+    uploadError: false,
+    photoSelected: null,
+    photoSelectedKey: null,
+    photos: [],
+    showPhotos: false
 };
 
 export default (state = INITIAL_STATE, action) => {

@@ -15,6 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
+var Utils = require('../components/common/Utils');
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -263,6 +264,29 @@ export const switchAccountUser = (email, password) => {
         dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchPassword', value: ''}});
         Alert.alert('Unable to Switch!',data.message, {text: 'OK'});
       }
+  });
+};
+};
+
+export const updateUserProfilePic = (image_path, uid) =>{
+  return (dispatch) => {
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadLoading', value: true}});
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadError', value: ''}});
+    const _today = new Date().getTime();
+    Utils.uploadImage(image_path, `${_today+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/users/${uid}`).update({image: response}).then(()=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
+      }).catch((error)=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+      });
+
+  }).catch((error)=>{
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
   });
 };
 };
