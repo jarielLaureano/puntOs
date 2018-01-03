@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     name: '',
     email: '',
     password: '',
-    birthdate: '2017-01-01',
+    birthdate: '2000-01-01',
     hometown: '',
     loading: '',
     error: '',
@@ -18,6 +18,8 @@ const INITIAL_STATE = {
     user: null,
     type: 'user',
     points: 1000,
+    level: 1,
+    repassword: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
