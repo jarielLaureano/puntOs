@@ -8,7 +8,7 @@ import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
-import { Button } from './common';
+import { Button, Spinner } from './common';
 import firebase from 'firebase';
 //import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
 
@@ -157,10 +157,11 @@ class UserBusinessProfile extends Component {
   );
   }
 
+
   callCheckin(){
-    console.log(this.props.uid)
-    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid);
+    this.props.checkin(this.props.user_id, this.props.uid, this.props.username);
   }
+
   render() {
     const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
     return (
@@ -175,7 +176,7 @@ class UserBusinessProfile extends Component {
             <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
             </View>
-            <View style={{ flex: 5, flexDirection: 'row' }}>
+            <View style={{ flex: 5, flexDirection: 'row', marginBottom: 10 }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>{coupon_count}</Text>
               <Text style={{ alignSelf: 'center' }}>coupons</Text>
@@ -213,6 +214,7 @@ class UserBusinessProfile extends Component {
         </View>
     );
   }
+
 }
 
 
@@ -255,8 +257,9 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
-  const { user_id } = state.userMain.uid;
-
+  const user_id = firebase.auth().currentUser.uid;
+  const username  = state.userMain.user.name;
+  const { checkin } = state.userMain;
 
   return {
     user_id,
@@ -267,7 +270,9 @@ const mapStateToProps = state => {
     coupon_count,
     checkin_count,
     businessProfileState,
-    isCouponClaim
+    isCouponClaim,
+    username,
+    checkin
  };
 };
 export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
