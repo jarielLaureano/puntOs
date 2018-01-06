@@ -5,7 +5,6 @@
 'use strict';
 
 import React, { Component } from 'react';
-
 import {
   AppRegistry,
   StyleSheet,
@@ -13,33 +12,49 @@ import {
   Navigator,
   TouchableOpacity,
   Linking,
+  LayoutAnimation,
+  View
 } from 'react-native';
-
+import { connect } from 'react-redux';
+import { businessMainUpdate, checkin, userMainUpdate } from '../actions';
+import { Actions } from 'react-native-router-flux';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import firebase from 'firebase';
 
 class QRCheckInView extends Component {
+
+  componentWillUpdate(){
+    LayoutAnimation.spring();
+  }
+
   onSuccess(e) {
-    Linking
-      .openURL(e.data)
-      .catch(err => console.error('An error occured', err));
+    if(e.data){
+      this.props.businessMainUpdate({ prop: 'uid', value: e.data}); //Deberia verificar si existe ese uid
+      this.props.userMainUpdate({ prop: 'checkin', value: true });
+      Actions.UserBusinessProfile();
+      //this.props.checkin(this.props.user_id, e.data, this.props.user.name);
+    }
   }
 
   render() {
     return (
-      <QRCodeScanner
-        onRead={this.onSuccess.bind(this)}
-        topContent={(
-          <Text style={styles.centerText}>
-            Go to <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on your computer and scan the QR code.
-          </Text>
-        )}
-        bottomContent={(
-          <TouchableOpacity style={styles.buttonTouchable}>
-            <Text style={styles.buttonText}>OK. Got it!</Text>
-          </TouchableOpacity>
-        )}
-      />
-    );
+      <View style={{ flex: 1 }}>
+        <QRCodeScanner
+          ref={ (node) => { this.scanner = node } }
+          onRead={this.onSuccess.bind(this)}
+          topContent = {(
+              <Text style={styles.centerText}>Scan QR Code to Check-in</Text>
+          )}
+          bottomContent = {(
+            <TouchableOpacity onPress={() => {
+              this.scanner.reactivate();
+            }}>
+              <Text style={styles.textBold}> Scan </Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+    ); 
   }
 }
 
@@ -47,23 +62,25 @@ const styles = StyleSheet.create({
   centerText: {
     flex: 1,
     fontSize: 18,
-    padding: 32,
-    color: '#777',
+    paddingBottom: 10, 
+    paddingTop: 10,
+    color: 'rgb(0,122,255)',
   },
 
   textBold: {
     fontWeight: '500',
     color: '#000',
-  },
-
-  buttonText: {
-    fontSize: 21,
-    color: 'rgb(0,122,255)',
-  },
-
-  buttonTouchable: {
-    padding: 16,
-  },
+    fontSize: 18
+  }
 });
 
-export default QRCheckInView;
+const mapStateToProps = state => {
+  const user_id = firebase.auth().currentUser.uid;
+  const { user, cameraActive } = state.userMain;
+  return {
+    user_id,
+    user
+ };
+};
+
+export default connect(mapStateToProps,{ businessMainUpdate, checkin, userMainUpdate })(QRCheckInView);

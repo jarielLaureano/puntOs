@@ -174,17 +174,21 @@ export const userGetPromos = (uid, pf, sf) => {
   }
 }
 
-export const checkin = (user_id, businessID) => {
+export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
-    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude;
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + username ;
     console.log(req_url)
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
-        Alert.alert('Checked In!', 'You Successfully checked in to ' + response.data.businessName + '. Points: '+response.data.pointsEarned, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: '' }});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false }});
+         Actions.UserCheckinResult();
       } else {
-        Alert.alert('Error!', response.data.message, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: response.data.message } });
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false}});
+         Actions.UserCheckinResult();
       }
     });})
   };
