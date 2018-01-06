@@ -5,6 +5,7 @@ import PreSignUp from './components/PreSignUp';
 import BusinessSignUpForm from './components/BusinessSignUpForm';
 import UserSignUpForm from './components/UserSignUpForm';
 import SuccessBusinessView from './components/SuccessBusinessView';
+import SuccessUserView from './components/SuccessUserView';
 import SettingProfile from './components/SettingProfile';
 import BusinessMain from './components/BusinessMain';
 import BusinessProfile from './components/BusinessProfile';
@@ -29,6 +30,7 @@ import SwitchAccount from './components/SwitchAccount';
 import SwitchAccountUser from './components/SwitchAccountUser';
 import Leaderboard from './components/Leaderboard';
 import MenuContent from './components/MenuContent';
+import UserCheckinResult from './components/UserCheckinResult';
 
 const RouterComponent = () => {
   return (
@@ -73,6 +75,22 @@ const RouterComponent = () => {
           key='signUpSuccessBusiness'
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
           component={SuccessBusinessView}
+          back='false'
+          hideBackImage
+          panHandlers={null}
+        />
+        <Scene
+          key='signUpSuccessUser'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
+          component={SuccessUserView}
+          back='false'
+          hideBackImage
+          panHandlers={null}
+        />
+         <Scene
+          key='UserCheckinResult'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
+          component={UserCheckinResult}
           back='false'
           hideBackImage
           panHandlers={null}
@@ -178,7 +196,6 @@ const RouterComponent = () => {
         {/* Tab Container */}
         <Scene
           hideNavBar
-          hideBackImage
           back='false'
           key="tabbar"
           tabs={true}
@@ -222,6 +239,7 @@ const RouterComponent = () => {
             <Scene
               key='NotificationsView'
               component={NotificationsView}
+              hideNavBar='false'
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
@@ -229,6 +247,7 @@ const RouterComponent = () => {
             <Scene
               key='UserProfile'
               component={UserProfile}
+              hideNavBar='false'
             />
           </Scene>
         </Scene>
@@ -252,7 +271,7 @@ const RouterComponent = () => {
           key="RedeemCouponView"
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
           navBarButtonColor='white'
-          onBack={() => Actions.UserBusinessProfile()}
+          onBack={() => Actions.pop()}
           component={RedeemCouponView}
           title="RedeemCouponView"
         />

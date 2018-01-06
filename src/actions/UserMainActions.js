@@ -15,6 +15,7 @@ import {
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
+var Utils = require('../components/common/Utils');
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -173,17 +174,21 @@ export const userGetPromos = (uid, pf, sf) => {
   }
 }
 
-export const checkin = (user_id, businessID) => {
+export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
-    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude;
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + username ;
     console.log(req_url)
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
-        Alert.alert('Checked In!', 'You Successfully checked in to ' + response.data.businessName + '. Points: '+response.data.pointsEarned, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: '' }});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false }});
+         Actions.UserCheckinResult();
       } else {
-        Alert.alert('Error!', response.data.message, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: response.data.message } });
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false}});
+         Actions.UserCheckinResult();
       }
     });})
   };
@@ -263,6 +268,29 @@ export const switchAccountUser = (email, password) => {
         dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'switchPassword', value: ''}});
         Alert.alert('Unable to Switch!',data.message, {text: 'OK'});
       }
+  });
+};
+};
+
+export const updateUserProfilePic = (image_path, uid) =>{
+  return (dispatch) => {
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadLoading', value: true}});
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadError', value: ''}});
+    const _today = new Date().getTime();
+    Utils.uploadImage(image_path, `${_today+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/users/${uid}`).update({image: response}).then(()=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
+      }).catch((error)=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+      });
+
+  }).catch((error)=>{
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
   });
 };
 };

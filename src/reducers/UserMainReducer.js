@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     user: {},
     type: 'user',
     uid:'',
+    checkin: false,
     openMenu: false,
     checkins: {},
     promos: {},
@@ -36,7 +37,15 @@ const INITIAL_STATE = {
     points: 0,
     level: 0,
     switchLoading: false,
-    switchPassword: ''
+    switchPassword: '',
+    uploadLoading: false,
+    uploadError: false,
+    photoSelected: null,
+    photoSelectedKey: null,
+    photos: [],
+    showPhotos: false,
+    checkinSuccessful: '',
+    checkinError: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
