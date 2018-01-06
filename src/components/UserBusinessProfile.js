@@ -32,7 +32,6 @@ class UserBusinessProfile extends Component {
     LayoutAnimation.spring();
   }
 
-  component
   renderContent(){
     const { businessProfileState } = this.props;
     if (businessProfileState.tab_selected === 'Promos'){
@@ -158,9 +157,9 @@ class UserBusinessProfile extends Component {
   }
 
   callCheckin(){
-    console.log(this.props.uid)
-    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid);
+    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid, this.props.name);
   }
+
   render() {
     const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
     return (
@@ -170,9 +169,6 @@ class UserBusinessProfile extends Component {
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
             <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
-            </View>
-            <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>
@@ -199,11 +195,6 @@ class UserBusinessProfile extends Component {
                 starColor={'#f2d733'}
                 />
                 <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
-                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5 }}>
-                  <TouchableOpacity onPress={() => {this.callCheckin()}}>
-                  <Icon name='ios-navigate' size= {25} color='#0084b4' />
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </View>
@@ -255,12 +246,13 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
-  const { user_id } = state.userMain.uid;
+  const { user_id, name } = state.userMain;
 
 
   return {
     user_id,
     user,
+    name,
     uid,
     metrics,
     scene,

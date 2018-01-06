@@ -10,8 +10,6 @@ class CheckinList extends Component {
   componentWillMount() {
     currentUser = firebase.auth().currentUser.uid;
     this.props.getCheckins(currentUser);
-    console.log('the id is: ' + currentUser);
-    console.log(this.props.checkins)
   }
 
   render() {
@@ -25,8 +23,6 @@ class CheckinList extends Component {
 }
 const mapStateToProps = state => {
   var { user } = state.userMain;
-  console.log(user)
-  console.log(state.userMain.checkins)
   const checkins = _.map(state.userMain.checkins, (val, key) => {
     return {...val, key};
   });

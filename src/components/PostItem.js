@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeItem, unlikeItem, setExpired, editItem, setCouponProfile } from '../actions';
+import { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
@@ -143,9 +143,48 @@ class PostItem extends Component {
         }
     }
 
-    // TODO
-    renderShares(share) {
+    renderShares(shares) {
+      if(shares){
+      return Object.keys(shares).length;
+    }
+    else{
+      return 0;
+    }
+    }
 
+    getShares(sharedBy, uid, pid, isCoupon) {
+        if (this.isSharedByUser(sharedBy, uid)) {
+            return (
+                <Icon.Button
+                name="share"
+                color="#0084b4"
+                backgroundColor="white"
+                disabled
+                >
+                    <Text style={styles.postFooterButtonTextStyle}>{this.renderShares(sharedBy)}</Text>
+                </Icon.Button>
+            );
+        }
+        return (
+            <Icon.Button name="share" color="black" backgroundColor="white"
+            onPress={() => this.props.shareItem(uid, pid, isCoupon, this.props.item.image, this.props.item.text, this.props.item.name)}
+            >
+                <Text style={styles.postFooterButtonTextStyle}>{this.renderShares(sharedBy)}</Text>
+            </Icon.Button>
+        );
+    }
+
+    isSharedByUser(shares, uid) {
+        //console.log(likes);
+      if (shares) {
+        for (share in shares) {
+            if (share == uid) {
+                //console.log(like == uid);
+                return true;
+            }
+        }
+      }
+        return false;
     }
 
     renderDate(date) {
@@ -207,9 +246,7 @@ class PostItem extends Component {
                 <CardSection>
                     <View style={postFooterStyle}>
                         {this.getLikes(likedBy, uid, pid, isCoupon)}
-                        <Icon.Button name="share" color="black" backgroundColor="white">
-                            <Text style={postFooterButtonTextStyle}>Share</Text>
-                        </Icon.Button>
+                        {this.getShares(sharedBy, uid, pid, isCoupon)}
                     </View>
                 </CardSection>
                   {this.renderClaimButton(isCoupon, expired, expires, pointsValue, pid, uid)}
@@ -285,4 +322,4 @@ const mapStateToProps = state => {
   return { uid, type, userType };
 }
 
-export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem, setCouponProfile }) (PostItem);
+export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem }) (PostItem);

@@ -72,6 +72,15 @@ class UserProfile extends Component {
   );
   }
 
+  renderPoints(){
+    if(this.props.user.points){
+      return this.props.user.points;
+    }
+    else{
+      return 0;
+    }
+  }
+
   render() {
     return (
       <View style={styles.backgroundStyle}>
@@ -79,7 +88,7 @@ class UserProfile extends Component {
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 5, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.props.user.points}</Text>
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.renderPoints()}</Text>
               <Text style={{ alignSelf: 'center' }}>puntOs</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>
@@ -130,7 +139,6 @@ resizeMode: 'contain'
 }
 const mapStateToProps = state => {
   const { user, name, points, level, checkins, userProfileState } = state.userMain;
-  console.log(state.userMain);
   return { user, name, points, level, checkins, userProfileState };
 };
 export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile, getCheckins })(UserProfile);

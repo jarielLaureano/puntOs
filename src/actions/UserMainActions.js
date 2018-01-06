@@ -14,6 +14,7 @@ import {
   LOGIN_USER_SUCCESS } from './types';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
+const levels = [1000, 2500, 3750, 5625, 8450, 12650];
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
 
 export const userMainUpdate = ({ prop, value }) => {
@@ -40,7 +41,6 @@ export const userProfileUpdate = ({ prop, value }) => {
 };
 
 export const userPrimaryFilterUpdate = ({ prop, value }) => {
-  console.log("changing primary filter")
   return {
     type: USER_PRIMARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -48,7 +48,6 @@ export const userPrimaryFilterUpdate = ({ prop, value }) => {
 };
 
 export const userSecondaryFilterUpdate = ({ prop, value }) => {
-  console.log("changing secondary filter")
   return {
     type: USER_SECONDARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -100,17 +99,9 @@ export const userSetExpired = (pid) => {
   };
 };
 
-export const getPromosCoupons = (uid) => {
-  return (dispatch) => {
-
-
-  };
-};
 
 export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
-    console.log(pf + " " + sf);
-    console.log("At userGetPromos Action");
     if (pf == 'Promos') {
       if (sf == 'All') {
         firebase.database().ref(`/posts`).on('value', snapshot => {
@@ -122,7 +113,6 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
-          console.log("Dispatching Promos...");
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -152,7 +142,6 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
-          console.log("Dispatching Coupons...");
           dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
@@ -173,11 +162,10 @@ export const userGetPromos = (uid, pf, sf) => {
   }
 }
 
-export const checkin = (user_id, businessID) => {
+export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
-    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude;
-    console.log(req_url)
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + username ;
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
@@ -230,7 +218,6 @@ export const getSocialPosts = () => {
       });
       socialList = sortObj(socialList, 'date');
       socialList.reverse();
-      console.log(socialList);
       dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
     });
   };
@@ -265,6 +252,122 @@ export const switchAccountUser = (email, password) => {
       }
   });
 };
+};
+
+export const getStats = (uid) => {
+  return (dispatch) => {
+    firebase.database().ref(`/userRewards/${uid}`).on('value', pointsObj => {
+      var db_level = 0;
+      firebase.database().ref(`/users/${uid}`).once('value', user=>{
+        db_level = user.val().level;
+      });
+      const rewards = pointsObj.val();
+      var accumulated = 0;
+      console.log('died here')
+      if(rewards){
+      if(rewards.hasOwnProperty('points')){
+        accumulated = rewards.points;
+      }
+    }
+      //console.log('points: ' + accumulated)
+      dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'overallPoints', value: accumulated}});
+      for(var i=0; i<levels.length; i++){
+        if(accumulated>=levels[i] && accumulated<levels[i+1]){
+          var current_level = i+1;
+          dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'level', value: current_level }});
+          //console.log('db level:' + db_level)
+          //console.log('local level: ' + current_level)
+          if(current_level != db_level){
+            firebase.database().ref(`/users/${uid}`).once('value', user => {
+              user.ref.update({level: current_level});
+            }).then(()=>{
+              Alert.alert('Level Up!','You are now in level'+current_level, {text: 'OK'});
+            });}
+          const percentage = (((accumulated - levels[i])/(levels[i+1]-levels[i]))*100).toFixed(0);
+          dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'levelPercentage', value: percentage }});
+          const remaining = (levels[i+1]-levels[i])-(accumulated - levels[i]);
+          dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'pointsToNext', value: remaining }});
+          return;
+          }
+        }
+      });
+    };
+  };
+
+export const getMyCheckins = (uid) => {
+    return (dispatch) => {
+      firebase.database().ref(`/Checkins/`).orderByChild('uid').equalTo(uid).on('value', snapshot => {
+        let checkinList = [];
+        let counter = 0;
+        snapshot.forEach(child_node => {
+          var child_key = child_node.key;
+          checkinList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          counter++;
+        });
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalCheckins', value: Object.keys(checkinList).length}});
+        var shortList = checkinList.slice(0,3);
+        //console.log(shortList)
+        shortList.forEach( checkin => {
+          const businessID = checkin.businessID;
+          var image = '';
+          firebase.database().ref(`/users/${businessID}`).once('value', snapshot =>{
+            if(snapshot.val().image){
+              image = snapshot.val().image;
+            }
+            checkin['image'] = image;
+          });
+        });
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'lastCheckins', value: shortList}});
+      });
+    };
+};
+
+export const getMyCoupons = (uid) => {
+    return (dispatch) => {
+      firebase.database().ref(`/Redeems/`).orderByChild('uid').equalTo(uid).on('value', snapshot => {
+        let couponList = [];
+        let counter = 0;
+        snapshot.forEach(child_node => {
+          var child_key = child_node.key;
+          couponList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          counter++;
+        });
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalCoupons', value: Object.keys(couponList).length}});
+        //console.log(shortList)
+        couponList.forEach( coupon => {
+          const couponID = coupon.couponID;
+          var image = '';
+          firebase.database().ref(`/Coupons/${couponID}`).once('value', snapshot =>{
+            if(snapshot.val().icon){
+              image = snapshot.val().icon;
+            }
+            coupon['image'] = image;
+            coupon['businessName'] = snapshot.val().name;
+            coupon['text'] = snapshot.val().text;
+          });
+        });
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'my_coupons', value: couponList}});
+        var shortList = couponList.slice(0,3);
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'lastCoupons', value: shortList}});
+        //console.log('shortList: ')
+        //console.log(shortList)
+      })
+    };
+};
+
+export const getMyReviewCount = (uid) => {
+    return (dispatch) => {
+      firebase.database().ref(`/Reviews/`).orderByChild('uid').equalTo(uid).on('value', snapshot => {
+        let reviewList = [];
+        let counter = 0;
+        snapshot.forEach(child_node => {
+          var child_key = child_node.key;
+          reviewList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          counter++;
+        });
+        dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalReviews', value: Object.keys(reviewList).length}});
+      });
+    };
 };
 
 function sortObj(list, key) {

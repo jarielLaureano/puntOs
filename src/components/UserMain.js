@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { userMainUpdate, getUserProfile } from '../actions';
+import { userMainUpdate, getUserProfile, getStats, getMyCheckins, getMyCoupons, getMyReviewCount} from '../actions';
 import UserPromoList from './UserPromoList';
 import UserMainFilterHeader from './UserMainFilterHeader';
 import PostFeed from './PostFeed';
@@ -17,6 +17,11 @@ class UserMain extends Component {
   componentWillMount(){
     currentUser = firebase.auth().currentUser.uid;
     this.props.getUserProfile(currentUser);
+    this.props.getStats(currentUser);
+    this.props.getMyCheckins(currentUser);
+    this.props.getMyCoupons(currentUser);
+    this.props.getMyReviewCount(currentUser);
+
   }
 
   render() {
@@ -33,4 +38,4 @@ const mapStateToProps = state => {
   return { user, uid };
 };
 
-export default connect(mapStateToProps, { getUserProfile })(UserMain);
+export default connect(mapStateToProps, { getUserProfile, getStats, getMyCoupons, getMyCheckins, getMyReviewCount })(UserMain);

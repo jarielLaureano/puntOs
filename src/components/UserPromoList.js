@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate } from '../actions';
 import UserPromoItem from './UserPromoItem'
 import { Card, CardSection } from './common/';
+var pri_filter = 'Promos';
+var sec_filter = 'All';
 
 class UserPromoList extends Component {
   componentWillMount() {
@@ -23,14 +25,10 @@ class UserPromoList extends Component {
   }
 
   filter(sf, pf) {
-    console.log("at Filter function")
-    console.log("Filtering by " + pf);
     this.props.userGetPromos(this.props.uid, sf, pf);
   }
 
   renderFilterCarousel() {
-    var pri_filter = 'Promos';
-    var sec_filter = 'All';
     const { filterStyle, filterContainer } = styles;
     const { userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = this.props;
     return (
@@ -41,7 +39,6 @@ class UserPromoList extends Component {
               <TouchableOpacity onPress={() => {
                 //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Promos'});
                 //this.props.pfilter='Promos';
-                console.log("changing pfilter to Promos...");
                 pri_filter = 'Promos';
                 //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
                 this.filter(pri_filter, sec_filter);
@@ -55,7 +52,6 @@ class UserPromoList extends Component {
               <TouchableOpacity onPress={() => {
                 //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Coupons'});
                 //this.props.pfilter='Coupons';
-                console.log("changing pfilter to Coupons...");
                 pri_filter = 'Coupons';
                 //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
                 this.filter(pri_filter, sec_filter);
@@ -149,7 +145,6 @@ class UserPromoList extends Component {
   }
 
   renderContent() {
-    console.log(this.props.promos)
     return (
       <FlatList
         data={this.props.promos}
@@ -224,7 +219,6 @@ const styles = {
 
 const mapStateToProps = state => {
   var { uid, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = state.userMain;
-  console.log(state.userMain)
   const promos = _.map(state.userMain.promos, (val, key) => {
     return {...val, key};
   });
