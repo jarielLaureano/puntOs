@@ -3,6 +3,7 @@ import { View, Text, Image, LayoutAnimation, ScrollView } from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
+import TextInputMask from 'react-native-text-input-mask';
 import { InputLine, Button, Spinner } from './common';
 import { signUpUser, userSignUpUpdate } from './../actions';
 import { 
@@ -26,11 +27,13 @@ class UserSignUpForm extends Component {
       bigTextStyle,
       datePickerContainer,
       credentialsStyle,
+      celphoneTextStyle
     } = styles;
     const {
       name, 
       email,
       password,
+      repassword,
       birthdate,
       hometown,
       telephone,
@@ -55,6 +58,7 @@ class UserSignUpForm extends Component {
 
           <InputLine
             onChangeText={value => userSignUpUpdate({ prop: 'name', value })}
+            maxLength={70}
             placeholder='Full Name' 
             placeholderTextColor='gray'
             overStyle={inputLineStyle}
@@ -75,12 +79,21 @@ class UserSignUpForm extends Component {
             overStyle={inputLineStyle}
             value={password}
           />
-          <InputLine 
+           <InputLine 
+            secureTextEntry
+            onChangeText={value => userSignUpUpdate({ prop: 'repassword', value })}
+            placeholder='Re-type Password'
+            placeholderTextColor='gray'
+            overStyle={inputLineStyle}
+            value={repassword}
+          />
+          <TextInputMask 
             onChangeText={value => userSignUpUpdate({ prop: 'telephone', value })}
             placeholder='Telephone'
             placeholderTextColor='gray'
-            overStyle={inputLineStyle}
+            style={celphoneTextStyle}
             value={telephone}
+            mask={"([000]) [000] [0000]"}
           />
           <InputLine 
             onChangeText={value => userSignUpUpdate({ prop: 'hometown', value })}
@@ -98,7 +111,8 @@ class UserSignUpForm extends Component {
               placeholder="select date"
               androidMode='spinner'
               format="YYYY-MM-DD"
-              minDate="1900-01-01"
+              minDate="1918-01-01"
+              maxDate="2000-01-01"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               date={birthdate}
@@ -135,55 +149,71 @@ class UserSignUpForm extends Component {
     }
   }
 
+  passwordMatch () {
+    return this.props.password === this.props.repassword;
+  }
   SubmitForm(){
 
     const {
       name,
       email,
       password,
+      repassword,
       telephone,
       hometown,
       birthdate,
       points,
-      type
+      type,
+      level
     } = this.props
 
-    if(name&&email&&password&&telephone&&hometown&&birthdate){
+    if(name&&email&&password&&telephone&&hometown&&birthdate&&repassword){
        if(EMAIL_REGEX.test(email)){
          if(NAME_REGEX.test(name)){
             if(PHONE_REGEX.test(telephone)){
               if(PASSWORD_REGEX.test(password)){
                    if(HOMETOWN_REGEX.test(hometown)){
-                       this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type,points});
+                       if(this.passwordMatch()){
+                         this.props.signUpUser({name,email,password,telephone,hometown,birthdate,type,points,level});
+                       }
+                       this.props.userSignUpUpdate({ prop: 'error', value: 'Not Matching Password' });
+                       this.props.userSignUpUpdate({ prop: 'password', value: ''});
+                       this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
                    }
                    else{
                     this.props.userSignUpUpdate({ prop: 'error', value: 'Not Valid Hometown' });
                     this.props.userSignUpUpdate({ prop: 'password', value: ''});
+                    this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
                    }
               }
               else{
                 this.props.userSignUpUpdate({ prop: 'error', value: 'Password Must Contain At Least:\n 1 Number\n 1 Special Character' });
                 this.props.userSignUpUpdate({ prop: 'password', value: ''});
+                this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
               }
             }
             else {
               this.props.userSignUpUpdate({ prop: 'error', value: 'Not Valid Phone' });
               this.props.userSignUpUpdate({ prop: 'password', value: ''});
+              this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
             }
          }
          else {
           this.props.userSignUpUpdate({ prop: 'error', value: 'Not Valid Name' });
           this.props.userSignUpUpdate({ prop: 'password', value: ''});
+          this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
          }
       }
       else {
         this.props.userSignUpUpdate({ prop: 'error', value: 'Not Valid Email' });
         this.props.userSignUpUpdate({ prop: 'password', value: ''});
+        this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
       }
     }
     else{
       this.props.userSignUpUpdate({ prop: 'error', value: 'Missing Fields' });
       this.props.userSignUpUpdate({ prop: 'password', value: ''});
+      this.props.userSignUpUpdate({ prop: 'repassword', value: ''});
     }
   }
 }
@@ -229,6 +259,13 @@ const styles = {
     color: 'red',
     fontSize: 20,
     marginTop: 15
+  },
+  celphoneTextStyle: {
+    borderBottomColor: '#0084b4', 
+    color: '#0084b4',
+    fontSize: 18,
+    borderBottomWidth: 1,
+    width: 330,
   }
 }
 
@@ -244,7 +281,9 @@ const mapStateToProps = state => {
     error,
     user,
     type,
-    points
+    points,
+    level,
+    repassword,
   } = state.userSignUp;
 
   return {
@@ -258,7 +297,9 @@ const mapStateToProps = state => {
     error,
     user,
     type,
-    points
+    points,
+    level,
+    repassword
   }
 }
 
