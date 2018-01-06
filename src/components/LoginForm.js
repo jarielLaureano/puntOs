@@ -7,9 +7,6 @@ import { Actions } from 'react-native-router-flux';
 
 class LoginForm extends Component {
 
-componentWillMount() {
-  Actions.refresh({ key: 'login', hideNavBar: true });
-}
 
 onButtonPress() {
   const { email, password } = this.props;

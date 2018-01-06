@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     user: {},
     type: 'user',
     uid:'',
-    checkin: false,
+    cameraActive: false,
     openMenu: false,
     checkins: {},
     promos: {},

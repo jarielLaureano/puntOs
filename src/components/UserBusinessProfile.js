@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
@@ -47,19 +47,25 @@ class UserBusinessProfile extends Component {
     } else if(businessProfileState.tab_selected === 'Reviews'){
         return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <ReviewList />
-        <Button
-            overStyle={styles.reviewButtonOverStyle}
-            onPress={() => {
-                this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
-                Actions.PostReviewView()
-            }}
-        >
-            Make Review
-        </Button>
       </View>);
     }
   }
 
+  renderReview() {
+    return(
+      <View style={{ flex: 1 }}>
+      <TouchableOpacity onPress={() => {
+          this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
+          Actions.PostReviewView();
+      }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+         <Icon style={{ paddingLeft: 30 }} name='ios-create' size= {30} color='#0084b4' />
+         <Text style={{ paddingLeft: 25, color: '#0084b4' }}>Review</Text>
+        </View>
+       </TouchableOpacity>
+      </View>
+    );
+  }
 
 
   renderIcon(image) {
@@ -157,9 +163,24 @@ class UserBusinessProfile extends Component {
   );
   }
 
+  renderCheckin() {
+      return(
+        <View style={{ flex: 1 }}>
+        <TouchableOpacity onPress={() => {this.callCheckin()}}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
+         <Icon name='ios-navigate' size= {30} color='#0084b4' style={{ paddingLeft: 25 }} />
+         <Text style={{ paddingLeft: 20, color: '#0084b4' }}>Check-in</Text>
+        </View>
+       </TouchableOpacity>
+       </View>
+      );
+    
+  }
+
 
   callCheckin(){
     this.props.checkin(this.props.user_id, this.props.uid, this.props.username);
+    //this.props.userMainUpdate({ prop: 'loading', value: true });
   }
 
   render() {
@@ -172,21 +193,16 @@ class UserBusinessProfile extends Component {
             <View style={{ flex: 1, justifyContent: 'center'}} >
             <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
-            <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
-            </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row', marginBottom: 10 }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{coupon_count}</Text>
-              <Text style={{ alignSelf: 'center' }}>coupons</Text>
+              {this.renderReview()}
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>
               {this.renderIcon(user.image)}
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{checkin_count}</Text>
-              <Text style={{ alignSelf: 'center'}}>visits</Text>
+              {this.renderCheckin()}
               </View>
             </View>
             <View style={{ flex: 3 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: 5 }}>
@@ -200,11 +216,6 @@ class UserBusinessProfile extends Component {
                 starColor={'#f2d733'}
                 />
                 <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
-                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5 }}>
-                  <TouchableOpacity onPress={() => {this.callCheckin()}}>
-                  <Icon name='ios-navigate' size= {25} color='#0084b4' />
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </View>
@@ -259,7 +270,7 @@ const mapStateToProps = state => {
     } = state.businessMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { checkin } = state.userMain;
+  const { loading } = state.userMain;
 
   return {
     user_id,
@@ -272,7 +283,7 @@ const mapStateToProps = state => {
     businessProfileState,
     isCouponClaim,
     username,
-    checkin
+    loading
  };
 };
 export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
@@ -282,5 +293,6 @@ export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getRevi
   getCouponsToday,
    getCheckins,
   getPosts,
-  postReviewChange
+  postReviewChange,
+  userMainUpdate
  })(UserBusinessProfile);

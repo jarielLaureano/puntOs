@@ -6,6 +6,8 @@ import { connect } from 'react-redux';
 import { userMainUpdate } from '../actions';
 
 class UserCheckinResult extends Component {
+ 
+
   componentWillUpdate(){
         LayoutAnimation.spring();
     }

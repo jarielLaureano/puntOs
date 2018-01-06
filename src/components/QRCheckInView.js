@@ -54,7 +54,7 @@ class QRCheckInView extends Component {
           )}
         />
       </View>
-    );
+    ); 
   }
 }
 
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     paddingBottom: 10, 
-    paddingTop: 30,
+    paddingTop: 10,
     color: 'rgb(0,122,255)',
   },
 
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   const user_id = firebase.auth().currentUser.uid;
-  const { user } = state.userMain;
+  const { user, cameraActive } = state.userMain;
   return {
     user_id,
     user
