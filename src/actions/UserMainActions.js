@@ -170,6 +170,18 @@ export const userGetPromos = (uid, pf, sf) => {
   }
 }
 
+export const verifyCheckin = (user_id, businessID) => {
+  return (dispatch) => {
+    firebase.database().ref('/Checkins').orderByChild('uid').equalTo(user_id).once('value', snapshot => {
+      snapshot.forEach(child_node => {
+        if(businessID === child_node.val().businessID){
+          dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'hasCheckedIn', value: true }});
+        }
+      });
+    });
+  }
+}
+
 export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
@@ -179,11 +191,20 @@ export const checkin = (user_id, businessID, username) => {
         if( response.data.checkedIn){
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: '' }});
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false }});
-         Actions.UserCheckinResult();
+         Alert.alert('Check-in:','Check-in Successful!', 
+         [{text: 'OK', onPress: () => {
+         
+         }}]);
+         Actions.UserBusinessProfile();
+         
       } else {
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: response.data.message } });
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false}});
-         Actions.UserCheckinResult();
+         Alert.alert('Check-in:','Check-in failed: '+ response.data.message, 
+         [{text: 'OK', onPress: () => {
+          
+         }}]);
+         Actions.UserBusinessProfile();
       }
     });})
   };
