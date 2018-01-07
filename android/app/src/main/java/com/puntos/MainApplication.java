@@ -5,6 +5,7 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.barefootcoders.android.react.KDSocialShare.KDSocialShare;
+import com.RNTextInputMask.RNTextInputMaskPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new FBSDKPackage(),
             new KDSocialShare(),
+            new RNTextInputMaskPackage(),
             new VectorIconsPackage(),
             new RNFetchBlobPackage(),
             new RCTCameraPackage()

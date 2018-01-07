@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem } from '../actions';
+import { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem, userMainUpdate } from '../actions';
 import { Card, CardSection, Button } from './common';
 import { Alert } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 var moment = require('moment');
 
 class PostItem extends Component {
+
   hasUniqueIconImage(image) {
         if (image) {
             return (
@@ -230,7 +231,7 @@ class PostItem extends Component {
                             </Text>
                         </View>
                     <TouchableWithoutFeedback onPress={() => {this.props.editItem(pid, isCoupon, expired)}}>
-                      <Icon name='ellipsis-v' size= {20} color='grey' style={{ paddingRight: 10, paddingTop: 10 }} />
+                      { this.props.userType ? <View></View> :<Icon name='ellipsis-v' size= {20} color='grey' style={{ paddingRight: 10, paddingTop: 10 }} />}
                     </TouchableWithoutFeedback>
                     </View>
                 </CardSection>
@@ -322,4 +323,4 @@ const mapStateToProps = state => {
   return { uid, type, userType };
 }
 
-export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem }) (PostItem);
+export default connect(mapStateToProps, { likeItem, unlikeItem, setExpired, editItem, setCouponProfile, shareItem, userMainUpdate }) (PostItem);

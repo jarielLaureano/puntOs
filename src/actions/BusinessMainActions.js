@@ -408,7 +408,7 @@ export const getPosts = (uid) => {
         promoList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
         counter++;
       });
-      console.log(promoList)
+  
       dispatch({ type: PROMOS_UPDATE, payload: promoList});
   });
 };

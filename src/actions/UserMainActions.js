@@ -16,6 +16,7 @@ import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
 const levels = [1000, 2500, 3750, 5625, 8450, 12650];
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
+var Utils = require('../components/common/Utils');
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -112,7 +113,6 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
             counter++;
           });
-          //console.log(promoList)
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -142,6 +142,7 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
+
           dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
@@ -169,9 +170,13 @@ export const checkin = (user_id, businessID, username) => {
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
-        Alert.alert('Checked In!', 'You Successfully checked in to ' + response.data.businessName + '. Points: '+response.data.pointsEarned, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: '' }});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false }});
+         Actions.UserCheckinResult();
       } else {
-        Alert.alert('Error!', response.data.message, {text: 'OK'});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: response.data.message } });
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false}});
+         Actions.UserCheckinResult();
       }
     });})
   };
@@ -301,7 +306,7 @@ export const getMyCheckins = (uid) => {
         let counter = 0;
         snapshot.forEach(child_node => {
           var child_key = child_node.key;
-          checkinList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          checkinList.splice(0,0,{...child_node.val(), id: counter, key: child_key});
           counter++;
         });
         dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalCheckins', value: Object.keys(checkinList).length}});
@@ -329,7 +334,7 @@ export const getMyCoupons = (uid) => {
         let counter = 0;
         snapshot.forEach(child_node => {
           var child_key = child_node.key;
-          couponList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          couponList.splice(0,0,{...child_node.val(), id: counter, key: child_key});
           counter++;
         });
         dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalCoupons', value: Object.keys(couponList).length}});
@@ -362,12 +367,35 @@ export const getMyReviewCount = (uid) => {
         let counter = 0;
         snapshot.forEach(child_node => {
           var child_key = child_node.key;
-          reviewList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
+          reviewList.splice(0,0,{...child_node.val(), id: counter, key: child_key});
           counter++;
         });
         dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'totalReviews', value: Object.keys(reviewList).length}});
       });
     };
+  };
+
+export const updateUserProfilePic = (image_path, uid) =>{
+  return (dispatch) => {
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadLoading', value: true}});
+    dispatch({type: USER_MAIN_UPDATE, payload: {prop: 'uploadError', value: ''}});
+    const _today = new Date().getTime();
+    Utils.uploadImage(image_path, `${_today+uid}.jpg` ).then((response) => {
+      firebase.database().ref(`/users/${uid}`).update({image: response}).then(()=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'showPhotos', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelected', value: null}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'photoSelectedKey', value: null}});
+      }).catch((error)=>{
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+        dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+      });
+
+  }).catch((error)=>{
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadLoading', value: false}});
+    dispatch({type: USER_MAIN_UPDATE, payload:{prop: 'uploadError', value: 'Could not upload image.'}});
+  });
+};
 };
 
 function sortObj(list, key) {

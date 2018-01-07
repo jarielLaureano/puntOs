@@ -52,6 +52,7 @@ class UserPromoList extends Component {
               <TouchableOpacity onPress={() => {
                 //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Coupons'});
                 //this.props.pfilter='Coupons';
+
                 pri_filter = 'Coupons';
                 //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
                 this.filter(pri_filter, sec_filter);

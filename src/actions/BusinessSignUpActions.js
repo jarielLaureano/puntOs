@@ -33,7 +33,6 @@ export const businessSignUp = (props) => {
                 signUpBusinessFail(dispatch, 'Could not send verification email. Try Again.');
                 axios.get(DELETE_USER+`?uid=${user.uid}`);
               });}).catch((response) => {
-              console.log(response)
               if( response.code === 'auth/invalid-email'){
                 signUpBusinessFail(dispatch, 'Invalid Email')
             }
