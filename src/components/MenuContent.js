@@ -95,7 +95,7 @@ class MenuContent extends Component {
             </TouchableOpacity>
         </View>
         <View style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose(); Actions.Favorites();}}>
             <View style={{ alignSelf: 'stretch', flexDirection: 'row' }}>
               <View style={styles.itemIconStyle}>
                 <Icon name='md-star' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
@@ -109,7 +109,7 @@ class MenuContent extends Component {
             </TouchableOpacity>
         </View>
         <View style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose(); Actions.myCoupons();}}>
             <View style={{ alignSelf: 'stretch', flexDirection: 'row' }}>
               <View style={styles.itemIconStyle}>
                 <Icon name='md-pricetag' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
@@ -117,6 +117,20 @@ class MenuContent extends Component {
               <View style={styles.itemTextStyle}>
                   <Text style={{ alignSelf: 'flex-start', fontSize: 15}}>
                     My Coupons
+                  </Text>
+              </View>
+            </View>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose(); Actions.userStats();}}>
+            <View style={{ alignSelf: 'stretch', flexDirection: 'row' }}>
+              <View style={styles.itemIconStyle}>
+                <Icon name='md-stats' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
+              </View>
+              <View style={styles.itemTextStyle}>
+                  <Text style={{ alignSelf: 'flex-start', fontSize: 15}}>
+                    My Stats
                   </Text>
               </View>
             </View>
@@ -141,7 +155,7 @@ class MenuContent extends Component {
             </View>
             </TouchableOpacity>
         </View>
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 5 }}>
         </View>
       </View >
     );

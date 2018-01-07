@@ -32,11 +32,6 @@ class UserBusinessProfile extends Component {
     LayoutAnimation.spring();
   }
 
-  componentWillUnmount() {
-    this.props.userMainUpdate({ prop: 'cameraActive', value: true });
-  }
-
-  component
   renderContent(){
     const { businessProfileState } = this.props;
     if (businessProfileState.tab_selected === 'Promos'){
@@ -179,13 +174,12 @@ class UserBusinessProfile extends Component {
        </TouchableOpacity>
        </View>
       );
-    
+
   }
 
 
   callCheckin(){
-    this.props.checkin(this.props.user_id, this.props.uid, this.props.username);
-    //this.props.userMainUpdate({ prop: 'loading', value: true });
+    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid, this.props.name);
   }
 
   render() {
@@ -234,7 +228,7 @@ class UserBusinessProfile extends Component {
           <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#0084b4'}}>
             <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50,  borderWidth: 1, borderColor: 'white' }} onPress={() => {this.callCheckin()}}>
               <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-navigate' size= {20} color='white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
+              <Icon name='ios-navigate' size= {20} color='white' style={{ alignSelf: 'flex-end', marginRight: 5 }} />
               </View>
              </TouchableOpacity>
              <TouchableOpacity style={{ flex:2, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50, borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
@@ -242,7 +236,7 @@ class UserBusinessProfile extends Component {
                   Actions.PostReviewView();
                }}>
               <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-create' size= {20} color='#white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
+              <Icon name='ios-create' size= {20} color='#white' style={{ alignSelf: 'flex-end', marginRight: 5 }} />
               </View>
              </TouchableOpacity>
           </View>
@@ -292,6 +286,7 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
+  const { name } = state.userMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
   const { loading } = state.userMain;
@@ -299,6 +294,7 @@ const mapStateToProps = state => {
   return {
     user_id,
     user,
+    name,
     uid,
     metrics,
     scene,

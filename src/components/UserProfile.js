@@ -103,6 +103,15 @@ class UserProfile extends Component {
   );
   }
 
+  renderPoints(){
+    if(this.props.user.points){
+      return this.props.user.points;
+    }
+    else{
+      return 0;
+    }
+  }
+
   render() {
     return (
       <View style={styles.backgroundStyle}>
@@ -111,7 +120,7 @@ class UserProfile extends Component {
             {this.renderPhotosModal()}
             <View style={{ flex: 5, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.props.user.points}</Text>
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{this.renderPoints()}</Text>
               <Text style={{ alignSelf: 'center' }}>puntOs</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>

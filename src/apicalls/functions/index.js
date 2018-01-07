@@ -232,9 +232,9 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
       });
       res.on('end', () => {
         let longitude = '';
-        let lattitude = '';
+        let latitude = '';
         body = JSON.parse(body);
-        lattitude += body.results[0].geometry.location.lat;
+        latitude += body.results[0].geometry.location.lat;
         longitude += body.results[0].geometry.location.lng;
         //console.log(body.results[0])
         //console.log(lattitude)
@@ -248,7 +248,7 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
         else if( req.query.size === 'XLarge')
             radius_size = '100';
 
-        const activate_account = { active: true, longitude: longitude, latitude: lattitude, radius: radius_size };
+        const activate_account = { active: true, longitude: longitude, latitude: latitude, radius: radius_size };
         snapshot.ref.update(activate_account).catch((error) => console.log(error));
     });});
 
@@ -259,8 +259,10 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
     var checkin_response = {checkedIn: false, pointsEarned: 0, businessName: '', message: '', distance: 0};
     const businessID = req.query.bid;
     const user_id = req.query.uid;
-    const lattitude = req.query.lattitude;
+    const latitude = req.query.latitude;
     const longitude = req.query.longitude;
+    var new_event = { businessName: '', date: new Date().toISOString() , eventType: 'checkIn', username: '' };
+    new_event.username = req.query.username;
     var checkinFailed = false;
     var check_ins_today = 0;
     const _today = new Date().toISOString().substring(0,10);
@@ -282,18 +284,20 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
                 const businessLat = businessObj.latitude;
                 const businessLong = businessObj.longitude;
                 const businessRad = businessObj.radius;
-                const distance_feet = haversine({latitude: businessLat, longitude: businessLong}, {latitude: lattitude, longitude: longitude}, {unit: 'meter'})*3.28084;
+                const distance_feet = haversine({latitude: businessLat, longitude: businessLong}, {latitude: latitude, longitude: longitude}, {unit: 'meter'})*3.28084;
+                new_event.businessName = businessObj.businessName;
                 checkin_response.distance = distance_feet;
                 //return res.status(200).send(checkin_response);
                 if(distance_feet <= businessRad){
                   checkin_response.checkedIn = true;
                   checkin_response.message = 'Successfully checked in.';
                   checkin_response.businessName = businessObj.businessName;
+                  checkin_response.pointsEarned = 50;
                   admin.database().ref(`users/${user_id}`).once('value', user => {
                     const today = new Date().toISOString().substring(0,10);
                     const userObj = user.val();
                     const age = (moment(new Date(today)).diff(moment(new Date(userObj.birthdate)), 'minutes')/525600).toFixed(0);
-                    const checkin_in = {age: age, businessID: businessID, businessName: businessObj.businessName, city: userObj.city,
+                    const checkin_in = {age: age, businessID: businessID, businessName: businessObj.businessName, city: userObj.hometown,
                     date: today, name: userObj.name, uid: user_id, queryparam: businessID+today};
                     admin.database().ref(`/Checkins`).once('value', checkins => {
                       checkins.ref.push(checkin_in).catch(() => {
@@ -304,7 +308,14 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
                       var current_points = userObj.points;
                       const new_points = current_points+50;
                       user.ref.update({points: new_points}).then(()=>{
-                      return res.status(200).send(checkin_response);
+                        admin.database().ref(`/userRewards/${user_id}`).once('value', accumulated =>{
+                          var current_points = accumulated.val().points;
+                          const new_points = current_points + 50;
+                          accumulated.ref.update({points: new_points}).then(()=>{
+                            admin.database().ref('/Events/').push(new_event);
+                            return res.status(200).send(checkin_response);
+                          });
+                        });
                       }).catch(()=>{
                         checkin_response.message = 'Could not add points.';
                         return res.status(200).send(checkin_response);

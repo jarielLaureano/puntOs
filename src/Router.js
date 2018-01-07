@@ -29,6 +29,9 @@ import LinkAccount from './components/LinkAccount';
 import SwitchAccount from './components/SwitchAccount';
 import SwitchAccountUser from './components/SwitchAccountUser';
 import Leaderboard from './components/Leaderboard';
+import MyCoupons from './components/MyCoupons';
+import Favorites from './components/Favorites';
+import UserStats from './components/UserStats';
 import MenuContent from './components/MenuContent';
 import UserCheckinResult from './components/UserCheckinResult';
 import UserPreScanner from './components/UserPreScanner';
@@ -299,6 +302,30 @@ const RouterComponent = () => {
           onBack={() => Actions.pop()}
           component={Leaderboard}
           title='Leaderboard'
+        />
+        <Scene
+          key='myCoupons'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={MyCoupons}
+          title='My Coupons'
+        />
+        <Scene
+          key='Favorites'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={Favorites}
+          title='Favorites'
+        />
+        <Scene
+          key='userStats'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={UserStats}
+          title='My Stats'
         />
       </Scene>
     </Router>
