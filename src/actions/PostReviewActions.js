@@ -42,7 +42,6 @@ export const resetPostReview = () =>{
 export const givePointsForReview = (uid, user) => {
     return (dispatch) => {
         var result = user.points + 100;
-        console.log("result:"+result);
         firebase.database().ref(`users/${uid}`).update({points: result})
         .then(() => {
             firebase.database().ref(`userRewards/${uid}`).once('value', snapshot => {

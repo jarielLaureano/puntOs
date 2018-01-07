@@ -64,7 +64,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, createCouponState: new_state};
     }
     case BUSINESS_PROFILE_UPDATE:
-    { console.log(action);
+    { 
       const new_state = { ...state.businessProfileState, [action.payload.prop]: action.payload.value };
       return { ...state, businessProfileState: new_state};
     }
@@ -93,7 +93,6 @@ export default (state = INITIAL_STATE, action) => {
     console.log(action.payload);
     //const new_metrics = {...state.metrics, ...action.payload};
     //console.log({ ...state, metrics: new_metrics })
-    console.log( { ...state, [action.payload.prop]: action.payload.value } )
     return { ...state, [action.payload.prop]: action.payload.value };;
     }
     default:

@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     user: {},
     type: 'user',
     uid:'',
-    cameraActive: false,
+    cameraActive: true,
     openMenu: false,
     checkins: {},
     promos: {},
@@ -55,7 +55,6 @@ export default (state = INITIAL_STATE, action) => {
     case USER_PROFILE_UPDATE:
     {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
-      console.log(new_state);
       return { ...state, userProfileState: new_state};
     }
     case USER_PRIMARY_FILTER_UPDATE:
@@ -93,15 +92,14 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    console.log("at reducer: returning new promos")
-    console.log(action.payload)
+    
     const new_promos = action.payload;
     return { ...state, promos: new_promos };
     }
     case USER_SOCIALS_UPDATE:
     {
     const new_socials = action.payload;
-    console.log(new_socials);
+
     return { ...state, socials: new_socials};
     }
     default:

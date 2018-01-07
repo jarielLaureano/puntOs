@@ -34,7 +34,6 @@ export const userSignUpReset = () => {
 export const signUpUser = (props) => {
     return (dispatch) => {
         dispatch({ type: SIGNUP_USER });
-        console.log("email:"+props.email);
         firebase.auth().createUserWithEmailAndPassword(props.email, props.password)
             .then((user) => {
               user.sendEmailVerification().then(() => {
