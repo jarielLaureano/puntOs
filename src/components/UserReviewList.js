@@ -10,8 +10,6 @@ class UserReviewList extends Component {
   componentWillMount() {
     currentUser = firebase.auth().currentUser.uid;
     this.props.getMyReviews(currentUser);
-    console.log('the id is: ' + currentUser)
-    console.log(this.props.reviews)
   }
 
   render() {
@@ -25,8 +23,6 @@ class UserReviewList extends Component {
 }
 const mapStateToProps = state => {
   var { uid } = state.userMain;
-  console.log(uid)
-  console.log(state.userMain.reviews)
   const reviews = _.map(state.userMain.reviews, (val, key) => {
     return {...val, key};
   });

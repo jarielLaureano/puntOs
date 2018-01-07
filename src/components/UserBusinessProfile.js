@@ -32,6 +32,10 @@ class UserBusinessProfile extends Component {
     LayoutAnimation.spring();
   }
 
+  componentWillUnmount() {
+    this.props.userMainUpdate({ prop: 'cameraActive', value: true });
+  }
+
   component
   renderContent(){
     const { businessProfileState } = this.props;
@@ -46,8 +50,9 @@ class UserBusinessProfile extends Component {
       </View>);
     } else if(businessProfileState.tab_selected === 'Reviews'){
         return (<View style= {{ flex: 8, flexDirection: 'column' }}>
-      <ReviewList />
-      </View>);
+        <ReviewList />
+        </View>
+      );
     }
   }
 
@@ -59,8 +64,8 @@ class UserBusinessProfile extends Component {
           Actions.PostReviewView();
       }}>
         <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-         <Icon style={{ paddingLeft: 30 }} name='ios-create' size= {30} color='#0084b4' />
-         <Text style={{ paddingLeft: 25, color: '#0084b4' }}>Review</Text>
+         <Icon style={{ marginLeft: 65 }} name='ios-create' size= {35} color='#0084b4' />
+         <Text style={{ marginLeft: 55, color: '#0084b4' }}>Review</Text>
         </View>
        </TouchableOpacity>
       </View>
@@ -168,8 +173,8 @@ class UserBusinessProfile extends Component {
         <View style={{ flex: 1 }}>
         <TouchableOpacity onPress={() => {this.callCheckin()}}>
         <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-         <Icon name='ios-navigate' size= {30} color='#0084b4' style={{ paddingLeft: 25 }} />
-         <Text style={{ paddingLeft: 20, color: '#0084b4' }}>Check-in</Text>
+         <Icon name='ios-navigate' size= {35} color='#0084b4' style={{ marginLeft: 27 }} />
+         <Text style={{ marginLeft: 20, color: '#0084b4' }}>Check-in</Text>
         </View>
        </TouchableOpacity>
        </View>
@@ -196,13 +201,17 @@ class UserBusinessProfile extends Component {
             </View>
             <View style={{ flex: 5, flexDirection: 'row', marginBottom: 10 }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              {this.renderReview()}
+              {/* {this.renderReview()} */}
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{coupon_count}</Text>
+              <Text style={{ alignSelf: 'center' }}>coupons</Text>
               </View>
               <View style={{ flex: 1, justifyContent: 'center'}}>
               {this.renderIcon(user.image)}
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
-              {this.renderCheckin()}
+              {/* {this.renderCheckin()} */}
+              <Text style={{ alignSelf: 'center', fontSize: 30 }}>{checkin_count}</Text>
+              <Text style={{ alignSelf: 'center'}}>visits</Text>
               </View>
             </View>
             <View style={{ flex: 3 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: 5 }}>
@@ -222,6 +231,21 @@ class UserBusinessProfile extends Component {
         </View>
           {this.renderTabs()}
           {this.renderContent()}
+          <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#0084b4'}}>
+            <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50,  borderWidth: 1, borderColor: 'white' }} onPress={() => {this.callCheckin()}}>
+              <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name='ios-navigate' size= {20} color='white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
+              </View>
+             </TouchableOpacity>
+             <TouchableOpacity style={{ flex:2, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50, borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
+                  this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
+                  Actions.PostReviewView();
+               }}>
+              <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name='ios-create' size= {20} color='#white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
+              </View>
+             </TouchableOpacity>
+          </View>
         </View>
     );
   }

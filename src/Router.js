@@ -31,6 +31,7 @@ import SwitchAccountUser from './components/SwitchAccountUser';
 import Leaderboard from './components/Leaderboard';
 import MenuContent from './components/MenuContent';
 import UserCheckinResult from './components/UserCheckinResult';
+import UserPreScanner from './components/UserPreScanner';
 
 const RouterComponent = () => {
   return (
@@ -228,10 +229,10 @@ const RouterComponent = () => {
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}
-          <Scene key="QR-Check-In" title="Check-In">
+          <Scene key="UserPreScanner" title="Check-In">
             <Scene
-              key='QRCheckInView'
-              component={QRCheckInView}
+              key='UserPreScanner'
+              component={UserPreScanner}
             />
           </Scene>
           {/* User Notifications Tab and its scenes */}
@@ -266,6 +267,14 @@ const RouterComponent = () => {
           onBack={() => Actions.burgerMenu('UserMain')}
           component={UserBusinessProfile}
           title="UserBusinessProfile"
+        />
+        <Scene
+          key="QRCheckInView"
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
+          navBarButtonColor='white'
+          onBack={() => Actions.burgerMenu('UserPreScanner')}
+          component={QRCheckInView}
+          title="QR Scanner"
         />
         <Scene
           key="RedeemCouponView"

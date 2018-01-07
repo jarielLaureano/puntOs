@@ -41,7 +41,7 @@ export const userProfileUpdate = ({ prop, value }) => {
 };
 
 export const userPrimaryFilterUpdate = ({ prop, value }) => {
-  console.log("changing primary filter")
+ 
   return {
     type: USER_PRIMARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -49,7 +49,7 @@ export const userPrimaryFilterUpdate = ({ prop, value }) => {
 };
 
 export const userSecondaryFilterUpdate = ({ prop, value }) => {
-  console.log("changing secondary filter")
+
   return {
     type: USER_SECONDARY_FILTER_UPDATE,
     payload: { prop, value }
@@ -110,8 +110,6 @@ export const getPromosCoupons = (uid) => {
 
 export const userGetPromos = (uid, pf, sf) => {
   return (dispatch) => {
-    console.log(pf + " " + sf);
-    console.log("At userGetPromos Action");
     if (pf == 'Promos') {
       if (sf == 'All') {
         firebase.database().ref(`/posts`).on('value', snapshot => {
@@ -122,8 +120,6 @@ export const userGetPromos = (uid, pf, sf) => {
             promoList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key});
             counter++;
           });
-          //console.log(promoList)
-          console.log("Dispatching Promos...");
           dispatch({ type: USER_PROMOS_UPDATE, payload: promoList});
         });
       }
@@ -153,7 +149,7 @@ export const userGetPromos = (uid, pf, sf) => {
             counter++;
           });
           //console.log(promoList)
-          console.log("Dispatching Coupons...");
+          
           dispatch({ type: USER_PROMOS_UPDATE, payload: couponList});
         });
       }
@@ -178,7 +174,6 @@ export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
     const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + username ;
-    console.log(req_url)
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
@@ -235,7 +230,6 @@ export const getSocialPosts = () => {
       });
       socialList = sortObj(socialList, 'date');
       socialList.reverse();
-      console.log(socialList);
       dispatch({ type: USER_SOCIALS_UPDATE, payload: socialList});
     });
   };
