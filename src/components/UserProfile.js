@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { userProfileUpdate, getUserProfile, getCheckins } from '../actions';
+import { userProfileUpdate, getUserProfile, getCheckins, getFollowing } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import firebase from 'firebase';
 import UserMainFilterHeader from './UserMainFilterHeader';
 import UserReviewsView from './UserReviewsView';
 import CheckinsView from './CheckinsView';
+import UserFollowingView from './UserFollowingView';
 
 class UserProfile extends Component {
 
@@ -17,28 +18,37 @@ class UserProfile extends Component {
     currentUser = firebase.auth().currentUser.uid;
     this.props.getCheckins(currentUser);
     this.props.getUserProfile(currentUser);
+    this.props.getFollowing(currentUser);
   }
-/*
+
+  /*
   componentWillUpdate(){
     LayoutAnimation.spring();
   }
   */
 
-  renderContent(){
+  renderContent() {
     const { userProfileState } = this.props;
-    if (userProfileState.tab_selected === 'Checkins'){
+    if (userProfileState.tab_selected === 'Checkins') {
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <CheckinsView />
       </View>);
     }
-    else if(userProfileState.tab_selected === 'Reviews'){
+    else if (userProfileState.tab_selected === 'Reviews') {
       return (<View style= {{ flex: 8, flexDirection: 'column' }}>
       <UserReviewsView />
       </View>);
     }
+    else if (userProfileState.tab_selected === 'Following') {
+      return (<View style= {{ flex: 8, flexDirection: 'column' }}>
+      <UserFollowingView />
+      </View>);
+    }
   }
+
   renderTabs() {
     const { userProfileState } = this.props;
+
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
     var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
     var selectedContainer = { borderBottomWidth: 5, borderColor: "#fff"};
@@ -46,28 +56,49 @@ class UserProfile extends Component {
 
     var checkin_tab = null;
     var review_tab = null;
+    var following_tab = null;
+
     var checkin_cont = notSelectedContainer;
     var review_cont = notSelectedContainer;
+    var following_cont = notSelectedContainer;
+
     if (userProfileState.tab_selected === 'Checkins'){
       checkin_tab = selectedStyle;
       checkin_cont = selectedContainer;
       review_tab = notSelectedStyle;
       review_cont = notSelectedContainer;
-    } else if( userProfileState.tab_selected === 'Reviews'){
+      following_tab = notSelectedStyle;
+      following_cont = notSelectedContainer;
+    }
+    else if (userProfileState.tab_selected === 'Reviews'){
       review_tab = selectedStyle;
       review_cont = selectedContainer;
       checkin_tab = notSelectedStyle;
       checkin_cont= notSelectedContainer;
+      following_tab = notSelectedStyle;
+      following_cont = notSelectedContainer;
     }
+    else if (userProfileState.tab_selected === 'Following'){
+      review_tab = notSelectedStyle;
+      review_cont = notSelectedContainer;
+      checkin_tab = notSelectedStyle;
+      checkin_cont= notSelectedContainer;
+      following_tab = selectedStyle;
+      following_cont = selectedContainer;
+    }
+
     return(
     <View style={{ flex:1, flexDirection: 'row', backgroundColor: '#0084b4',
     shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1 }}>
-    <View style={[checkin_cont, {flex: 1, justifyContent: 'center'}]}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={checkin_tab} >Check-ins</Text>
-    </View>
-    <View style={[review_cont, {flex: 1, justifyContent: 'center'}]}>
-    <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
-    </View>
+      <View style={[checkin_cont, {flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Checkins'})} style={checkin_tab} >Check-ins</Text>
+      </View>
+      <View style={[review_cont, {flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
+      </View>
+      <View style={[following_cont, {flex: 1, justifyContent: 'center'}]}>
+        <Text onPress={()=> this.props.userProfileUpdate({prop:'tab_selected', value: 'Following'})} style={following_tab} >Follows</Text>
+      </View>
     </View>
   );
   }
@@ -129,8 +160,8 @@ resizeMode: 'contain'
 }
 }
 const mapStateToProps = state => {
-  const { user, name, points, level, checkins, userProfileState } = state.userMain;
+  const { user, name, points, level, checkins, userProfileState, following } = state.userMain;
   console.log(state.userMain);
-  return { user, name, points, level, checkins, userProfileState };
+  return { user, name, points, level, checkins, userProfileState, following };
 };
-export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile, getCheckins })(UserProfile);
+export default connect(mapStateToProps,{ userProfileUpdate, getUserProfile, getCheckins, getFollowing })(UserProfile);

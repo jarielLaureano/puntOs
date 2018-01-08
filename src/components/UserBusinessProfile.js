@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, getUserProfile, getFollowing, userFollowBusiness, userUnfollowBusiness } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
@@ -15,10 +15,11 @@ import firebase from 'firebase';
 
 class UserBusinessProfile extends Component {
 
-
   componentWillMount(){
-
     var businessID = this.props.uid;
+    var userID = firebase.auth().currentUser.uid;
+    this.props.getUserProfile(userID);
+    this.props.getFollowing(userID);
     this.props.getBusinessProfile(businessID);
     this.props.getCheckins(businessID);
     this.props.getCheckinsToday(businessID);
@@ -32,7 +33,54 @@ class UserBusinessProfile extends Component {
     LayoutAnimation.spring();
   }
 
-  component
+  follow() {
+    var userID = firebase.auth().currentUser.uid;
+    var businessID = this.props.uid;
+    var bName = this.props.user.businessName;
+    var bIcon = this.props.user.image;
+    console.log('User ID:')
+    console.log(userID)
+    console.log('Business ID:')
+    console.log(businessID)
+    this.props.userFollowBusiness(userID, businessID, bName, bIcon);
+  }
+
+  unfollow() {
+    var userID = firebase.auth().currentUser.uid;
+    var businessID = this.props.uid;
+    this.props.userUnfollowBusiness(userID, businessID);
+  }
+
+  userIsFollowing(uid, bid, follows) {
+    if (follows) {
+      for (follow in follows) {
+        if (follow == bid) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  renderFollowButton(uid, bid, following) {
+    console.log("Following:");
+    console.log(following);
+    if (this.userIsFollowing(uid, bid, following)) {
+      return (
+        <TouchableOpacity style={styles.followButtonStyle} onPress={() => this.unfollow()}>
+          <Text style={{ fontSize: 12, alignSelf: 'center', color: '#0084b4' }}>Unfollow</Text>
+        </TouchableOpacity>
+      );
+    }
+    else {
+      return (
+        <TouchableOpacity style={styles.followButtonStyle} onPress={() => this.follow()}>
+          <Text style={{ fontSize: 12, alignSelf: 'center', color: '#0084b4' }}>Follow</Text>
+        </TouchableOpacity>
+      );
+    }
+  }
+
   renderContent(){
     const { businessProfileState } = this.props;
     if (businessProfileState.tab_selected === 'Promos'){
@@ -60,8 +108,6 @@ class UserBusinessProfile extends Component {
     }
   }
 
-
-
   renderIcon(image) {
           if (image) {
               return (
@@ -78,8 +124,10 @@ class UserBusinessProfile extends Component {
             />);
           }
       }
+
       renderTabs() {
         const { businessProfileState } = this.props;
+
         var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
         var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
         var selectedContainer = { borderBottomWidth: 5, borderColor: "#fff"};
@@ -88,9 +136,11 @@ class UserBusinessProfile extends Component {
         var promo_tab = null;
         var coupon_tab = null;
         var review_tab = null;
+
         var promo_cont = notSelectedContainer;
         var coupon_cont = notSelectedContainer;
         var review_cont = notSelectedContainer;
+
         if (businessProfileState.tab_selected === 'Promos'){
           promo_tab = selectedStyle;
           promo_cont = selectedContainer;
@@ -107,6 +157,7 @@ class UserBusinessProfile extends Component {
           review_tab = selectedStyle;
           review_cont = selectedContainer;
         }
+
         return(
         <View style={{ flex:1, flexDirection: 'row', backgroundColor: '#0084b4',
         shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1 }}>
@@ -122,6 +173,7 @@ class UserBusinessProfile extends Component {
         </View>
       );
       }
+      
   renderTheTabs() {
     const { businessProfileState } = this.props;
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
@@ -158,11 +210,11 @@ class UserBusinessProfile extends Component {
   }
 
   callCheckin(){
-    console.log(this.props.uid)
+    //console.log(this.props.uid)
     this.props.checkin(firebase.auth().currentUser.uid,this.props.uid);
   }
   render() {
-    const { user, coupon_count, checkin_count, scene, businessProfileState } = this.props;
+    const { user, coupon_count, checkin_count, scene, businessProfileState, following, user_id, uid } = this.props;
     return (
       <View style={styles.backgroundStyle}>
         <View style={{ flex:4, backgroundColor:'#fff' }}>
@@ -189,7 +241,7 @@ class UserBusinessProfile extends Component {
               </View>
             </View>
             <View style={{ flex: 3 , flexDirection: 'column', justifyContent: 'center', marginBottom: 10, marginTop: 5 }}>
-            <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
+              <Text style={{ alignSelf: 'center', fontWeight: 'bold', fontSize: 25 }}>{user.businessName}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'center', alignSelf: 'center' }}>
                 <StarRating
                 disabled={true}
@@ -199,13 +251,16 @@ class UserBusinessProfile extends Component {
                 starColor={'#f2d733'}
                 />
                 <Text style={{ fontSize: 20, paddingLeft: 5 }}>{user.rating}</Text>
-                <View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5 }}>
-                  <TouchableOpacity onPress={() => {this.callCheckin()}}>
-                  <Icon name='ios-navigate' size= {25} color='#0084b4' />
-                  </TouchableOpacity>
-                </View>
+                {
+                //<View style={{ alignSelf: 'flex-end', paddingLeft: 20, marginRight: 5 }}>
+                  //<TouchableOpacity onPress={() => {this.callCheckin()}}>
+                    //<Icon name='ios-navigate' size= {25} color='#0084b4' />
+                  //</TouchableOpacity>
+                //</View>
+                }
               </View>
             </View>
+            {this.renderFollowButton(firebase.auth().currentUser.uid, uid, following )}
           </View>
         </View>
           {this.renderTabs()}
@@ -215,9 +270,7 @@ class UserBusinessProfile extends Component {
   }
 }
 
-
-
-const styles ={
+const styles = {
 backgroundStyle: {
   flex: 1,
   backgroundColor: '#fff'
@@ -238,6 +291,17 @@ resizeMode: 'contain'
 reviewButtonOverStyle: {
     marginTop: 5
 },
+followButtonStyle: {
+  height:18, 
+  width:80, 
+  borderRadius:15,
+  borderColor:'#0084b4',
+  borderWidth:1,
+  backgroundColor:'white', 
+  alignSelf:'center', 
+  marginBottom: 15, 
+  marginTop: 15
+},
 reviewButtonContainer: {
     backgroundColor: '#0084b4',
     flex: 9,
@@ -253,13 +317,15 @@ const mapStateToProps = state => {
       coupon_count,
       checkin_count,
       businessProfileState,
-      isCouponClaim
-    } = state.businessMain;
-  const { user_id } = state.userMain.uid;
+      isCouponClaim 
+  } = state.businessMain;
 
+  const { user_id, name, following } = state.userMain
 
   return {
     user_id,
+    name,
+    following,
     user,
     uid,
     metrics,
@@ -267,15 +333,22 @@ const mapStateToProps = state => {
     coupon_count,
     checkin_count,
     businessProfileState,
-    isCouponClaim
- };
+    isCouponClaim 
+  };
 };
-export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
-   getCheckinsToday,
+
+export default connect(mapStateToProps,{
+  checkin, 
+  businessProfileUpdate, 
+  getReviews,
+  getCheckinsToday,
   getCoupons,
-   getBusinessProfile,
+  getBusinessProfile,
   getCouponsToday,
-   getCheckins,
+  getCheckins,
   getPosts,
-  postReviewChange
- })(UserBusinessProfile);
+  postReviewChange,
+  getUserProfile,
+  getFollowing,
+  userFollowBusiness,
+  userUnfollowBusiness})(UserBusinessProfile);
