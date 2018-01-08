@@ -45,6 +45,7 @@
 		34167CF72003CCD4009F7D1A /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34167CF32003CCD3009F7D1A /* FBSDKCoreKit.framework */; };
 		34167CF82003CCD4009F7D1A /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34167CF42003CCD3009F7D1A /* FBSDKLoginKit.framework */; };
 		34167CF92003D25E009F7D1A /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34392B231FFD2DA700298952 /* libRCTFBSDK.a */; };
+		34167CFB200423E7009F7D1A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 34167CFA200423E6009F7D1A /* GoogleService-Info.plist */; };
 		34392C711FFEE2BC00298952 /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34392C461FFEE28E00298952 /* libART.a */; };
 		348EC78A2002602C00F408F4 /* InputMask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348EC7892002602C00F408F4 /* InputMask.framework */; };
 		348EC78B2002602C00F408F4 /* InputMask.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 348EC7892002602C00F408F4 /* InputMask.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -424,6 +425,7 @@
 		34167CF22003CCD3009F7D1A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = ../../../../../FacebookSDK/Bolts.framework; sourceTree = "<group>"; };
 		34167CF32003CCD3009F7D1A /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		34167CF42003CCD3009F7D1A /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		34167CFA200423E6009F7D1A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		34392C401FFEE28E00298952 /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		348EC7892002602C00F408F4 /* InputMask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = InputMask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		34FEA9971FE75498003672C1 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
@@ -601,6 +603,7 @@
 		13B07FAE1A68108700A75B9A /* puntOs */ = {
 			isa = PBXGroup;
 			children = (
+				34167CFA200423E6009F7D1A /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1354,6 +1357,7 @@
 				B93BC4EFFAE54623B2137701 /* Octicons.ttf in Resources */,
 				DDC99E07A1E9461DBF9AC31E /* SimpleLineIcons.ttf in Resources */,
 				56421B1CF7CA44CC9D258C97 /* Zocial.ttf in Resources */,
+				34167CFB200423E7009F7D1A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
