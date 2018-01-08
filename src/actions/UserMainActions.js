@@ -13,6 +13,7 @@ import {
   SET_PROFILE_UPDATE,
   LOGIN_USER_SUCCESS } from './types';
 import { Actions } from 'react-native-router-flux';
+import { ShareDialog } from 'react-native-fbsdk';
 import axios from 'axios';
 const levels = [1000, 2500, 3750, 5625, 8450, 12650];
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
@@ -174,6 +175,72 @@ export const verifyCheckin = (user_id, businessID) => {
     });
   }
 }
+
+export const shareItemUser = (uid, pid, isCoupon, image, text, businessID, businessName, username) => {
+  const like_obj = {[uid]: 1};
+  var shareContent = {
+    contentType: 'link',
+    contentUrl: 'https://firebasestorage.googleapis.com/v0/b/puntos-capstone2017.appspot.com/o/logo%2FLogoSmall.png?alt=media&token=08d5bd23-ddfe-435c-8a35-b9cce394c13c',
+    quote: '',
+    title: ''
+  };
+  var new_event = { businessName: businessName, date: new Date().toISOString() , eventType: '', username: username };
+  const share_obj = {[uid]: 1};
+  return (dispatch) => {
+  if (isCoupon){
+    new_event.eventType = 'shareCoupon';
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Get the puntOs app now and start saving with this coupon by ' + businessName ;
+    if(image){
+      shareContent.contentUrl = image;
+    }
+    ShareDialog.canShow(shareContent).then((canShow)=> {
+      if(canShow){
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/Coupons/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              firebase.database().ref('/Events/').push(new_event);
+              Alert.alert('Coupon Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+        }}).catch((error)=>{
+          Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+        });
+      }
+    })
+  } else {
+    new_event.eventType = 'sharePromo';
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Never miss a beat!' + '\n' + 'Get the puntOs app now and follow your favorite businesses for promotions, events and coupons!' +'\n'+ businessName ;
+    if(image){
+      shareContent.contentUrl = image;
+    }
+    ShareDialog.canShow(shareContent).then((canShow)=> {
+      if(canShow){
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/posts/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              firebase.database().ref('/Events/').push(new_event);
+              Alert.alert('Promo Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+      }
+    }).catch((error)=>{
+      Alert.alert('Error!', 'Could not share promo.', {text: 'OK'});
+    });
+  }
+  });}
+  };
+};
+
 
 export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
