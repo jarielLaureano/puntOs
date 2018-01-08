@@ -178,27 +178,34 @@ export const verifyCheckin = (user_id, businessID) => {
 export const checkin = (user_id, businessID, username) => {
   return (dispatch) => {navigator.geolocation.getCurrentPosition(
   (position) => {
-    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + username ;
+    console.log(businessID)
+    console.log(user_id)
+    console.log(username)
+    const user_name = encodeURIComponent(username.trim())
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/checkIn?uid=' + user_id + '&bid=' + businessID + '&latitude=' + position.coords.latitude + '&longitude=' + position.coords.longitude + '&username=' + user_name;
+    console.log(req_url)
     axios.get(req_url)
       .then(response => {
         if( response.data.checkedIn){
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: '' }});
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false }});
-         Alert.alert('Check-in:','Check-in Successful!', 
+         Alert.alert('Check-in:','Check-in Successful!',
          [{text: 'OK', onPress: () => {
-         
+
          }}]);
          Actions.UserBusinessProfile();
-         
+
       } else {
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkinError', value: response.data.message } });
          dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'checkin', value: false}});
-         Alert.alert('Check-in:','Check-in failed: '+ response.data.message, 
+         Alert.alert('Check-in:','Check-in failed: '+ response.data.message,
          [{text: 'OK', onPress: () => {
-          
+
          }}]);
          Actions.UserBusinessProfile();
       }
+    }).catch((error)=>{
+      console.log(error)
     });})
   };
 };
@@ -289,7 +296,6 @@ export const getStats = (uid) => {
       });
       const rewards = pointsObj.val();
       var accumulated = 0;
-      console.log('died here')
       if(rewards){
       if(rewards.hasOwnProperty('points')){
         accumulated = rewards.points;

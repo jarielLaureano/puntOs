@@ -42,55 +42,42 @@ class QRCheckInView extends Component {
   onSuccess(e) {
     if(e.data){
       if(QR_REGEX.test(e.data)){
-        this.props.businessMainUpdate({ prop: 'uid', value: e.data}); 
+        this.props.businessMainUpdate({ prop: 'uid', value: e.data});
         this.props.userMainUpdate({ prop: 'cameraActive', value: false });
-        this.props.checkin(this.props.user.uid, e.data , this.props.user.name);
+        this.props.checkin(this.props.uid, e.data , this.props.user.name);
       }
       else {
-        Alert.alert('Notification:','Not Valid QR Code Scanned', 
+        Alert.alert('Notification:','Not Valid QR Code Scanned',
         [{text: 'OK', onPress: () => {
-         
+
         }}]);
       }
     }
   }
-     
+
 
   renderContent() {
     if(this.props.cameraActive){
       return (
         <View style={{ flex: 1 }}>
-            
+
             { Platform.OS === 'android' && <QRCodeScanner
             ref={ (node) => { this.scanner = node } }
             onRead={this.onSuccess.bind(this)}
             topContent = {(
                 <Text style={styles.centerText}>Scan QR Code to Check-in</Text>
             )}
-            bottomContent = {(
-              <TouchableOpacity onPress={() => {
-                this.scanner.reactivate();
-              }}>
-                <Text style={styles.textBold}> Scan </Text>
-              </TouchableOpacity>
-            )}
+            navigationBarHidden={true}
               />}
 
             { Platform.OS === 'ios' && <NavigatorIOS
               initialRoute={{
                 component: QRCodeScanner,
-                title: 'Scan Code',
+                title: '',
                 passProps: {
                   onRead: this.onSuccess.bind(this),
                   topContent: (
                     <Text style={styles.centerText}>Scan QR Code to Check-in</Text>
-                  ),
-                  bottomContent: (
-                    <TouchableOpacity onPress={() => {
-                      this.scanner.reactivate();
-                    }}>
-                      <Text style={styles.textBold}> Scan </Text>
-                    </TouchableOpacity>
                   ),
                   containerStyle: {
                     marginTop: 64
@@ -98,13 +85,14 @@ class QRCheckInView extends Component {
                 },
               }}
               style={{ flex: 1 }}
+              navigationBarHidden={true}
              />}
         </View>
-      ); 
+      );
    }
    else {
      return (
-      <View style={{ flex: 1, backgroundColor: 'white', flexDirection: 'column' }}> 
+      <View style={{ flex: 1, backgroundColor: 'white', flexDirection: 'column' }}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 200 }} >
         <Spinner size='large' />
         </View>
@@ -123,7 +111,7 @@ class QRCheckInView extends Component {
       </View>
     );
   }
-   
+
 }
 
 
@@ -131,7 +119,7 @@ const styles = StyleSheet.create({
   centerText: {
     flex: 1,
     fontSize: 18,
-    paddingBottom: 10, 
+    paddingBottom: 10,
     paddingTop: 20,
     color: 'rgb(0,122,255)',
   },
@@ -144,10 +132,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-  const { user, cameraActive } = state.userMain;
+  const { user, cameraActive, uid } = state.userMain;
   return {
     user,
-    cameraActive
+    cameraActive,
+    uid
  };
 };
 
