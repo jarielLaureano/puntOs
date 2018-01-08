@@ -1,0 +1,10 @@
+framework module InputMask {
+  umbrella header "InputMask.h"
+
+  export *
+  module * { export * }
+}
+
+module InputMask.__Swift {
+    exclude header "InputMask-Swift.h"
+}

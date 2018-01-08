@@ -388,6 +388,7 @@ class BusinessSignUpForm extends Component {
       </View>
       <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
         <Text style={styles.sizeTextStyle}>{size}</Text>
+        {this.renderSizeValue()}
       </View>
     </View>
     </View>
