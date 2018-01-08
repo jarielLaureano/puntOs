@@ -14,4 +14,5 @@ export const CITY_LIST = ['Adjuntas','Aguada','Aguadilla','Aguas Buenas','Aiboni
 'Naranjito','Orocovis','Patillas','Peñuelas','Ponce','Quebradillas','Rincon','Rio Grande','Sabana Grande','Salinas','San German',
 'San Juan','San Lorenzo','San Sebastian','Santa Isabel','Toa Alta','Toa Baja','Trujillo Alto','Utuado','Vega Alta','Vega Baja',
 'Vieques','Villalba','Yabucoa','Yauco'];
+export const QR_REGEX = /^[a-zA-Z0-9]*$/;
 //export const BUSINESS_NAME_REGEX = /^((^[A-Za-z0-9]+[' -]?[A-Za-z0-9]?)\s?)*$/;

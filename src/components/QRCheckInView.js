@@ -15,7 +15,8 @@ import {
   LayoutAnimation,
   NavigatorIOS,
   Platform,
-  View
+  View,
+  Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import { businessMainUpdate, checkin, userMainUpdate } from '../actions';
@@ -23,6 +24,7 @@ import { Actions } from 'react-native-router-flux';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import firebase from 'firebase';
 import { Spinner } from './common';
+import { QR_REGEX } from './../constants';
 
 class QRCheckInView extends Component {
   componentDidMount(){
@@ -39,10 +41,17 @@ class QRCheckInView extends Component {
 
   onSuccess(e) {
     if(e.data){
-      this.props.businessMainUpdate({ prop: 'uid', value: e.data}); //Deberia verificar si existe ese uid
-      this.props.userMainUpdate({ prop: 'cameraActive', value: false });
-      Actions.UserBusinessProfile();
-      //this.props.checkin(this.props.user_id, e.data, this.props.user.name);
+      if(QR_REGEX.test(e.data)){
+        this.props.businessMainUpdate({ prop: 'uid', value: e.data}); 
+        this.props.userMainUpdate({ prop: 'cameraActive', value: false });
+        this.props.checkin(this.props.user.uid, e.data , this.props.user.name);
+      }
+      else {
+        Alert.alert('Notification:','Not Valid QR Code Scanned', 
+        [{text: 'OK', onPress: () => {
+         
+        }}]);
+      }
     }
   }
      
@@ -95,8 +104,13 @@ class QRCheckInView extends Component {
    }
    else {
      return (
-      <View> 
+      <View style={{ flex: 1, backgroundColor: 'white', flexDirection: 'column' }}> 
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 200 }} >
         <Spinner size='large' />
+        </View>
+        <View style={{ flex: 2, justifyContent: 'flex-start', alignItems: 'center' }}>
+        <Text style={{ fontSize: 20, justifyContent: 'center', color: '#0084b4'}}>loading ...</Text>
+        </View>
       </View>
      );
    }

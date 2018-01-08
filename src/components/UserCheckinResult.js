@@ -29,9 +29,9 @@ class UserCheckinResult extends Component {
             <Button onPress={() => { 
                 this.props.userMainUpdate({ prop: 'checkinSuccessful', value: '' });
                 this.props.userMainUpdate({ prop: 'checkinError', value: '' });
-                Actions.pop();
+                Actions.UserBusinessProfile();
              }}>
-             Back
+             Continue
             </Button>
             </View>
             </View>
@@ -55,9 +55,9 @@ class UserCheckinResult extends Component {
             <Button onPress={() => { 
                 this.props.userMainUpdate({ prop: 'checkinSuccessful', value: '' });
                 this.props.userMainUpdate({ prop: 'checkinError', value: '' });
-                Actions.pop();
+                Actions.UserBusinessProfile();
             }} >
-            Back
+            Continue
             </Button>
             </View>
             </View>
@@ -135,11 +135,12 @@ const styles = {
 }
 
 const mapStateToProps = state => {
-    const { checkinSuccessful, checkinError } = state.userMain;
+    const { checkinSuccessful, checkinError, cameraActive } = state.userMain;
   
     return {
       checkinSuccessful, 
-      checkinError
+      checkinError,
+      cameraActive
    };
   };
 
