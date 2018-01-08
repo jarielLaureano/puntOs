@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const firebase = require('firebase');
+const gcloud = require('google-cloud');
 const https = require("https");
 const google_api = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
 const google_api_key = 'AIzaSyBLDLO4nbnylcU90AD-XFn0fZdcLxnHGsY';
@@ -8,10 +9,13 @@ var nodemailer = require('nodemailer');
 var serviceAccount = require("./puntOs-Capstone2017-4ab872953b34.json");
 var haversine = require('haversine');
 var moment = require('moment');
+var QRCode = require('qrcode');
+var stream = require('stream');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://puntos-capstone2017.firebaseio.com/"
+  databaseURL: "https://puntos-capstone2017.firebaseio.com/",
+  storageBucket: "puntos-capstone2017.appspot.com"
 });
 
 firebase.initializeApp({
@@ -142,7 +146,7 @@ exports.SendConfirmAndApproveEmails = functions.database.ref('/users/{uid}').onW
       to: value.email,
       subject: 'Thanks for submiting your information!',
       text: `Thank you ${value.businessName} for submitting your business request to join puntOs!
-      Please allow at least 24hrs for your information to be verified and your account activated.`
+      Please allow 3 business days for your information to be verified and your account activated.`
     };
 
     const approve_mail_struct = {
@@ -200,7 +204,7 @@ exports.sendRedeemCode = functions.database.ref('/Redeems/{rid}').onWrite(event 
         from: 'puntos Team <noreply@firebase.com>',
         to: user.email,
         subject: 'Here is your Coupon Code!',
-        text: `Thank you ${user.name} for using or app!
+        text: `Thank you ${user.name} for using our app!
         Here is your coupon code: ${value.code}`
      };
 
@@ -222,6 +226,7 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
     var radius_size = '0';
     var address = snapshot.val().addressLine.split(' ').join('+') + ',+' + snapshot.val().city.split(' ').join('+') + ',+' + 'Puerto+Rico&';
     var req_url = google_api + address + 'key=' + google_api_key;
+    var activate_account = {};
     //console.log('address: ' + address)
     //console.log('url: ' + req_url)
     https.get(req_url, res => {
@@ -247,12 +252,84 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
             radius_size = '80';
         else if( req.query.size === 'XLarge')
             radius_size = '100';
+      if(!snapshot.val().longitude || !snapshot.val().latitude){
+        activate_account = { active: true, longitude: longitude, latitude: latitude, radius: radius_size };
+      } else {
+        activate_account = { active: true, radius: radius_size };
+      }
+        snapshot.ref.update(activate_account).then(()=>{
+          var opts = {
+          errorCorrectionLevel: 'H',
+          type: 'image/jpeg',
+          rendererOpts: {
+            quality: 0.3
+            }
+          };
+          QRCode.toDataURL(req.query.id, {
+            color: {
+              dark: '#0084b4',  // Blue dots
+              light: '#0000' // Transparent background
+            }
+          }, function (err, url) {
+          if (err){
+            console.log(error);
+          }
+          const imageName = req.query.id+'QRID.png';
+          const bucket = admin.storage().bucket('puntos-capstone2017.appspot.com');
+          const base64string = url.substring(21);
+          var bufferStream = new stream.PassThrough();
+          bufferStream.end(new Buffer(base64string, 'base64'));
+          var file = bucket.file('/qrids/'+imageName);
+          bufferStream.pipe(file.createWriteStream({
+            metadata: {
+              contentType: 'image/png',
+              metadata: {
+                custom: 'metadata'
+              }
+            },
+            public: true,
+            validation: "md5"
+          }))
+          .on('error', (err) => {
+            console.log(err);
+          })
+          .on('finish', ()=> {
+            file.getSignedUrl({
+            action: 'read',
+            expires: '03-09-2491'
+            }).then(signedUrls => {
+                const image_url = signedUrls[0];
+                snapshot.ref.update({qrid: image_url}).then(()=>{
+                  const code_mail_struct = {
+                     from: 'puntos Team <noreply@firebase.com>',
+                     to: snapshot.val().email,
+                     subject: 'Your account is Activated!',
+                     html: `<img src="https://firebasestorage.googleapis.com/v0/b/puntos-capstone2017.appspot.com/o/logo%2FLogoSmall.png?alt=media&token=08d5bd23-ddfe-435c-8a35-b9cce394c13c" align="middle"></img>
+                            <br>
+                            <p>Congratulations ${snapshot.val().businessName} your business account is active!
+                            Below is your QRID, this QR-code will allow users to check in to your business,
+                            you can place it in your menu, register or even print it on your receipts.
+                            Users will only be able to check-in and get points if they are on your business as we do
+                            location verification.
+                            Enjoy the app and start engaging with your customers!
+                            </p>
+                            <br>
+                            <img src="${image_url}" align="middle"></img>`
+                  };
 
-        const activate_account = { active: true, longitude: longitude, latitude: latitude, radius: radius_size };
-        snapshot.ref.update(activate_account).catch((error) => console.log(error));
+                  transport.sendMail(code_mail_struct)
+                     .then(() => console.log(`email sent to ${snapshot.val().email}`))
+                     .catch((error) => console.error(error));
+                });
+                //console.log('signed URL: ', signedUrls[0]); // this will contain the picture's url
+            });
+          });
+        });
+        }).catch((error) => console.log(error));
     });});
 
-  }).then(snapshot => res.status(200).end());});
+  }).then(snapshot => res.status(200).end());
+});
 
 
   exports.checkIn = functions.https.onRequest((req, res) => {
@@ -280,6 +357,11 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
         if(!checkinFailed){
           if(check_ins_today < 10){
               admin.database().ref(`users/${businessID}`).once('value', business => {
+                if(!business){
+                    checkin_response.message = 'Could not find business.';
+                    checkin_response.checkedIn = false;
+                    return res.status(200).send(checkin_response);
+                }
                 const businessObj = business.val();
                 const businessLat = businessObj.latitude;
                 const businessLong = businessObj.longitude;

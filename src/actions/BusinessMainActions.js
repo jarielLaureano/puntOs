@@ -408,7 +408,7 @@ export const getPosts = (uid) => {
         promoList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
         counter++;
       });
-  
+
       dispatch({ type: PROMOS_UPDATE, payload: promoList});
   });
 };
@@ -532,3 +532,20 @@ export const linkAccount = (email, password, uid) => {
   });
 };
 };
+
+export const resetLocation = (uid) => {
+  return (dispatch) => {
+    navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      firebase.database().ref(`/users/${uid}`).on('value', snapshot => {
+        snapshot.ref.update({longitude: longitude, latitude: latitude}).then(()=>{
+          Alert.alert('Success!','Your business was relocated in our system.',{text: 'OK'});
+        }).catch(()=>{
+          Alert.alert('Error!','We were unable to relocate your business, try again later.',{text: 'OK'});
+        });
+      });
+    });
+    };
+  };
