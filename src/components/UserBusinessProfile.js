@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate, verifyCheckin } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
@@ -26,14 +26,18 @@ class UserBusinessProfile extends Component {
     this.props.getReviews(businessID);
     this.props.getCouponsToday(businessID);
     this.props.getPosts(businessID);
+    this.props.verifyCheckin(this.props.user_id, this.props.uid);
   }
 
   componentWillUpdate(){
     LayoutAnimation.spring();
   }
 
+  
+
   componentWillUnmount() {
     this.props.userMainUpdate({ prop: 'cameraActive', value: true });
+    this.props.userMainUpdate({ prop: 'hasCheckedIn', value: false });
   }
 
   component
@@ -56,21 +60,6 @@ class UserBusinessProfile extends Component {
     }
   }
 
-  renderReview() {
-    return(
-      <View style={{ flex: 1 }}>
-      <TouchableOpacity onPress={() => {
-          this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
-          Actions.PostReviewView();
-      }}>
-        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-         <Icon style={{ marginLeft: 65 }} name='ios-create' size= {35} color='#0084b4' />
-         <Text style={{ marginLeft: 55, color: '#0084b4' }}>Review</Text>
-        </View>
-       </TouchableOpacity>
-      </View>
-    );
-  }
 
 
   renderIcon(image) {
@@ -168,19 +157,6 @@ class UserBusinessProfile extends Component {
   );
   }
 
-  renderCheckin() {
-      return(
-        <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={() => {this.callCheckin()}}>
-        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
-         <Icon name='ios-navigate' size= {35} color='#0084b4' style={{ marginLeft: 27 }} />
-         <Text style={{ marginLeft: 20, color: '#0084b4' }}>Check-in</Text>
-        </View>
-       </TouchableOpacity>
-       </View>
-      );
-    
-  }
 
 
   callCheckin(){
@@ -232,17 +208,20 @@ class UserBusinessProfile extends Component {
           {this.renderTabs()}
           {this.renderContent()}
           <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#0084b4'}}>
-            <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50,  borderWidth: 1, borderColor: 'white' }} onPress={() => {this.callCheckin()}}>
-              <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-navigate' size= {20} color='white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
-              </View>
-             </TouchableOpacity>
-             <TouchableOpacity style={{ flex:2, alignSelf: 'stretch', paddingLeft: 50, paddingRight: 50, borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
-                  this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
-                  Actions.PostReviewView();
+             <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
+                if(this.props.hasCheckedIn){
+                    this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
+                    Actions.PostReviewView();
+                }
+                else {
+                  Alert.alert('Notification:','Must Check-in to Business', 
+                  [{text: 'OK', onPress: () => {
+                   
+                  }}]);
+                }
                }}>
               <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-create' size= {20} color='#white' style={{ alignSelf: 'flex-end', marginRight: 5 }} /> 
+              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} /> 
               </View>
              </TouchableOpacity>
           </View>
@@ -294,7 +273,7 @@ const mapStateToProps = state => {
     } = state.businessMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { loading } = state.userMain;
+  const { loading, hasCheckedIn } = state.userMain;
 
   return {
     user_id,
@@ -307,7 +286,8 @@ const mapStateToProps = state => {
     businessProfileState,
     isCouponClaim,
     username,
-    loading
+    loading,
+    hasCheckedIn
  };
 };
 export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
@@ -318,5 +298,6 @@ export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getRevi
    getCheckins,
   getPosts,
   postReviewChange,
-  userMainUpdate
+  userMainUpdate,
+  verifyCheckin
  })(UserBusinessProfile);
