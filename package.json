@@ -19,6 +19,7 @@
 		"moment": "^2.19.4",
 		"nodemailer": "^4.4.0",
 		"pretty-format": "^22.0.3",
+		"qrcode": "^1.2.0",
 		"react": "16.0.0",
 		"react-native": "0.50.4",
 		"react-native-camera": "^0.12.0",

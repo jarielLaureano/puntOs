@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, LayoutAnimation,
   TouchableOpacity, TouchableWithoutFeedback, Keyboard, Alert, Picker } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 import { InputLine, Button, Spinner } from './common';
-import { businessFormUpdate, businessSignUp } from '../actions';
+import { businessFormUpdate, businessSignUp, getLocation } from '../actions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -141,12 +141,12 @@ class BusinessSignUpForm extends Component {
 
   renderContent(){
     const { businessName,username,addressLine,city,country,zipCode,phoneNumber,email,
-    password,confirmPassword,type,step,size,error,loading,businessFormUpdate, businessSignUp} = this.props;
+    password,confirmPassword,type,step,size,error,loading,businessFormUpdate, businessSignUp, longitude, latitude} = this.props;
     if (step === 1){
       return (
       <View style={styles.containerStyle}>
       <Text style={{ fontSize: 14,color: 'black', fontWeight: 'bold', paddingBottom: 10 }}>
-      1 of 3
+      1 of 4
       </Text>
       <ProgressBar
       progress={0}
@@ -223,10 +223,10 @@ class BusinessSignUpForm extends Component {
       return (
       <View style={styles.containerStyle}>
       <Text style={{ fontSize: 14,color: 'black', fontWeight: 'bold', paddingBottom: 10 }}>
-      2 of 3
+      2 of 4
       </Text>
       <ProgressBar
-      progress={0.33}
+      progress={0.25}
       width={300}
       color='#0084b4'
       />
@@ -250,6 +250,7 @@ class BusinessSignUpForm extends Component {
         this.validateInput('zipCode', value);
         }}
         placeholder='Zipcode'
+        secureTextEntry={false}
         placeholderTextColor='gray'
         selectionColor='#0084b4'
         keyboardType = 'numeric'
@@ -259,6 +260,7 @@ class BusinessSignUpForm extends Component {
       />
      <InputLine
         onChangeText={value => businessFormUpdate({ prop: 'country', value })}
+        secureTextEntry={false}
         placeholder='Country'
         placeholderTextColor='gray'
         selectionColor='#0084b4'
@@ -282,57 +284,120 @@ class BusinessSignUpForm extends Component {
       return (
       <View style={styles.containerStyle}>
       <Text style={{ fontSize: 14,color: 'black', fontWeight: 'bold', paddingBottom: 10 }}>
-      3 of 3
+      3 of 4
       </Text>
       <ProgressBar
-      progress={0.66}
+      progress={0.50}
       width={300}
       color='#0084b4'
       />
       <Text style={{ fontSize: 20,color: 'black', fontWeight: 'bold', paddingTop: 30 }}>
-      Business Size
+      Business Location
       </Text>
-      <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'center', alignItems: 'center'}}>
-        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 20, paddingBottom: 10}}>
-        <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Small'})} >
+      <Text style={{ color: 'black', fontWeight: 'bold', paddingTop: 10, paddingBottom: 10 }}>
+      Tap the pin icon to get your current location.
+      </Text>
+      <TouchableOpacity onPress={() => {this.props.getLocation()}}>
+      <Icon name='md-pin' size= {80} color='#0084b4' style={{ alignSelf: 'center' }} />
+      </TouchableOpacity>
+      <View style={{ height: 40,
+          width: 300,
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 10,
+          marginBottom: 10,
+          borderBottomColor: '#0084b4',
+          borderBottomWidth: 1.5}}>
+      <Text
+        style={{ paddingRight: 5,
+            paddingLeft: 5,
+            paddingBottom: 5,
+            marginLeft: 40,
+            marginRight: 40,
+            fontSize: 18,
+            lineHeight: 23,
+            flex: 2,
+            color: '#0084b4'}}
+      >{latitude ? latitude: 'latitude'}</Text>
+      </View>
+      <View style={{ height: 40,
+          width: 300,
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 10,
+          marginBottom: 10,
+          borderBottomColor: '#0084b4',
+          borderBottomWidth: 1.5}}>
+      <Text
+        style={{ paddingRight: 5,
+            paddingLeft: 5,
+            paddingBottom: 5,
+            marginLeft: 40,
+            marginRight: 40,
+            fontSize: 18,
+            lineHeight: 23,
+            flex: 2,
+            color: '#0084b4'}}
+      >{longitude ? longitude: 'longitude'}</Text>
+      </View>
+      </View>
+
+    );
+  } else if (step === 4) {
+    return (
+    <View style={styles.containerStyle}>
+    <Text style={{ fontSize: 14,color: 'black', fontWeight: 'bold', paddingBottom: 10 }}>
+    4 of 4
+    </Text>
+    <ProgressBar
+    progress={0.75}
+    width={300}
+    color='#0084b4'
+    />
+    <Text style={{ fontSize: 20,color: 'black', fontWeight: 'bold', paddingTop: 30 }}>
+    Business Size
+    </Text>
+    <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 20, paddingBottom: 10}}>
+      <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Small'})} >
+      <Image
+        style={styles.thumbnailStyle}
+        source={require('../assets/smallRadIcon.png')}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Medium'})}>
+        <Image
+        style={styles.thumbnailStyle}
+        source={require('../assets/mediumRadIcon.png')}
+        />
+      </TouchableOpacity>
+      </View>
+      <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 10, paddingBottom: 10}}>
+      <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Large'})}>
         <Image
           style={styles.thumbnailStyle}
-          source={require('../assets/smallRadIcon.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Medium'})}>
-          <Image
+          source={require('../assets/largeRadIcon.png')}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'XLarge'})}>
+        <Image
           style={styles.thumbnailStyle}
-          source={require('../assets/mediumRadIcon.png')}
-          />
-        </TouchableOpacity>
-        </View>
-        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center', paddingTop: 10, paddingBottom: 10}}>
-        <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'Large'})}>
-          <Image
-            style={styles.thumbnailStyle}
-            source={require('../assets/largeRadIcon.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => businessFormUpdate({ prop: 'size', value: 'XLarge'})}>
-          <Image
-            style={styles.thumbnailStyle}
-            source={require('../assets/xlargeRadIcon.png')}
-          />
-        </TouchableOpacity>
-        </View>
-        <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
-          <Text style={styles.sizeTextStyle}>{size}</Text>
-        </View>
+          source={require('../assets/xlargeRadIcon.png')}
+        />
+      </TouchableOpacity>
       </View>
+      <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
+        <Text style={styles.sizeTextStyle}>{size}</Text>
       </View>
-    );
+    </View>
+    </View>
+  );
   }
   }
 
   onNextPress(){
     const { businessName,username,email,addressLine,city, country, zipCode, phoneNumber,
-    password,step,error,type,size,businessFormUpdate, businessSignUp } = this.props;
+    password,step,error,type,size,businessFormUpdate, businessSignUp, latitude, longitude } = this.props;
     var emailError = '';
     var passwordError = '';
     var usernameError = '';
@@ -394,10 +459,20 @@ class BusinessSignUpForm extends Component {
       else {
         businessFormUpdate({ prop: 'error', value: 'Missing Inputs' })
       }
-    }
-    else {
+    } else if (step === 3) {
+          if (longitude === '' || latitude === ''){
+            Alert.alert('No Location Set!','If you skip this step, our system will use your address to set your location.\
+             This could cause the checkin system to be less accurate. You can always reset your business location later by going to the app settings.',
+            [{text: 'Cancel', onPress: () => {}, style: 'cancel'},
+            {text: 'Continue', onPress: () => {businessFormUpdate({ prop: 'step', value: 4});businessFormUpdate({ prop: 'error', value: ''});}}]);
+          } else{
+            businessFormUpdate({ prop: 'step', value: 4});
+            businessFormUpdate({ prop: 'error', value: ''});
+          }
+
+          } else {
       businessSignUp({businessName,username,addressLine,city,country,zipCode,phoneNumber,email,
-      password,type,size});
+      password,type,size, latitude, longitude});
     }
   }
 
@@ -410,6 +485,10 @@ class BusinessSignUpForm extends Component {
     }
     if (step === 3) {
       businessFormUpdate({ prop: 'step', value: 2 })
+      businessFormUpdate({ prop: 'error', value: ''})
+    }
+    if (step === 4) {
+      businessFormUpdate({ prop: 'step', value: 3 })
       businessFormUpdate({ prop: 'error', value: ''})
     }
   }
@@ -451,7 +530,7 @@ class BusinessSignUpForm extends Component {
 
   renderSizeValue() {
     const { step, size } = this.props;
-    if (step === 3){
+    if (step === 4){
       switch(size){
         case 'Small':
           return <Text style={{ fontSize: 16, color: '#f97171', fontWeight: 'bold', marginBottom: -4 }}>40 ft. radius</Text>
@@ -555,7 +634,9 @@ const mapStateToProps = state => {
     loading,
     step,
     size,
-    type} = state.businessSignUp;
+    type,
+    longitude,
+    latitude} = state.businessSignUp;
   return {
       businessName,
       username,
@@ -571,7 +652,9 @@ const mapStateToProps = state => {
       loading,
       step,
       size,
-      type};
+      type,
+      longitude,
+      latitude};
 };
 
-export default connect(mapStateToProps, { businessFormUpdate, businessSignUp })(BusinessSignUpForm);
+export default connect(mapStateToProps, { businessFormUpdate, businessSignUp, getLocation })(BusinessSignUpForm);
