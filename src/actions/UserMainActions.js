@@ -12,7 +12,7 @@ import {
   USER_SOCIALS_UPDATE,
   SET_PROFILE_UPDATE,
   GET_FOLLOWING,
-  LOGIN_USER_SUCCESS, 
+  LOGIN_USER_SUCCESS,
   LEADERBOARD_UPDATE} from './types';
 import { Actions } from 'react-native-router-flux';
 import { ShareDialog } from 'react-native-fbsdk';
@@ -20,6 +20,7 @@ import axios from 'axios';
 const levels = [1000, 2500, 3750, 5625, 8450, 12650];
 const SWITCH_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/switchAccount';
 var Utils = require('../components/common/Utils');
+var haversine = require('haversine');
 
 export const userMainUpdate = ({ prop, value }) => {
   return {
@@ -148,7 +149,7 @@ export const userGetPromos = (uid, pf, sf, fol) => {
         //FILTERING BY LOCATION
         else if (sf == 'Location') {
           console.log('Filtering by location...');
-          userGetPromosByLocation(uid, pf, sf, fol);
+          return dispatch(userGetPromosByLocation(uid, pf, sf, fol));
         }
         //FILTER BY CATEGORY
         else {
@@ -229,23 +230,18 @@ export const userGetPromos = (uid, pf, sf, fol) => {
 
 //Filter promos by user location, locations near user first
 export const userGetPromosByLocation = (uid, pf, sf, fol) => {
-
+  return (dispatch) => {
   console.log('at user get promos by location');
-
-  return (dispatch) => 
-  {
-    navigator.geolocation.getCurrentPosition( 
-      (position) => {
-      console.log("Getting user location...");
-      console.log('Getting User lat...');
-      var lat1 = position.coords.latitude; //user latitude
-      console.log('User lat ' + lat1);
-      console.log('Getting User long...');
-      var lon1 = position.coords.longitude; //user longitude
-      console.log('User long ' + lon1);
-    });
-
-    /*console.log('User Location OK');
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+    console.log("Getting user location...");
+    console.log('Getting User lat...');
+    var lat1 = position.coords.latitude; //user latitude
+    console.log('User lat ' + lat1);
+    console.log('Getting User long...');
+    var lon1 = position.coords.longitude; //user longitude
+    console.log('User long ' + lon1);
+    console.log('User Location OK');
     console.log('Entering user get promos by location');
     firebase.database().ref(`/users`).on('value', snapshot => {
       var businessList = [];
@@ -255,48 +251,46 @@ export const userGetPromosByLocation = (uid, pf, sf, fol) => {
         var business = child_node.val();
         var lat2 = 0; //business latitude
         var lon2 = 0; //business longitude
-        if (business.type == 'business') {
+        if (business.type == 'Business') {
           counter++;
-          businessList.splice(0,0,{...business});
+          //businessList.splice(0,0,{...business});
           lat2 = business.latitude;
           lon2 = business.longitude;
           console.log('business lat ' + lat2);
           console.log('business long ' + lon2);
-          var R = 6371e3; // metres
-          var φ1 = lat1.toRadians();
-          var φ2 = lat2.toRadians();
-          var Δφ = (lat2-lat1).toRadians();
-          var Δλ = (lon2-lon1).toRadians();
-          var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-          Math.cos(φ1) * Math.cos(φ2) *
-          Math.sin(Δλ/2) * Math.sin(Δλ/2);
-          var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-          var d = R * c;
+          const d = haversine({latitude: lat2, longitude: lon2}, {latitude: lat1, longitude: lon1}, {unit: 'meter'})*3.28084;
           console.log('distance from business: ' + d);
           businessList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key, disFromUser: d});
         }
-      });
-      dispatch({ type: USER_PROMOS_UPDATE, payload: businessList });
-
-        /*firebase.database().ref(`posts/`).on('value', snapshot2 => {
-          let promoList = [];
-          let counter2 = 0;
-          snapshot2.forEach(child_node2 => {
-            counter2++;
-            for (var i = 0, l = businessList.length; i < l; i++) {
-              var obj = businessList[i];
-              if ( child_node2.val().businessID === obj.businessID) {
-                promoList.splice(0,0,{ ...child_node2.val(), id: counter2, dfu: obj.disFromUser})
-              }
-            }
-          })
-          console.log('list before sorting by distance from usr: ' + promoList);
-          promoList = sortObj(promoList, 'dfu');
-          console.log('list after sorting by distance from usr ' + promoList);
-          dispatch({ type: USER_PROMOS_UPDATE, payload: promoList });
-        })*/
-    };
-  }
+      }
+    );
+    firebase.database().ref(`posts/`).on('value', snapshot2 => {
+      let promoList = [];
+      let counter2 = 0;
+      console.log(businessList)
+      snapshot2.forEach(child_node2 => {
+        counter2++;
+        for (var i = 0, l = businessList.length; i < l; i++) {
+          var obj = businessList[i];
+          console.log(child_node2.val().businessID)
+          console.log(obj.pid)
+          if ( child_node2.val().businessID === obj.pid) {
+            promoList.splice(0,0,{ ...child_node2.val(), id: counter2, dfu: obj.disFromUser})
+          }
+        }
+      })
+      console.log('list before sorting by distance from usr: ');
+      console.log(promoList)
+      //promoList = sortObj(promoList, 'dfu');
+      console.log('list after sorting by distance from usr ');
+      console.log(promoList)
+        console.log('Dispatching')
+      dispatch({ type: USER_PROMOS_UPDATE, payload: promoList });
+    });
+    });
+          });
+};
+};
 
 //---------------------------------------------------------------//
 //                                                               //

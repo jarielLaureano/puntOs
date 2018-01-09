@@ -209,7 +209,7 @@ const RouterComponent = () => {
             backgroundColor: 'white',
             borderTopColor: '#ababab',
             borderTopWidth: 2,
-            height: 50,
+            height: 60,
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center'
@@ -223,7 +223,7 @@ const RouterComponent = () => {
             <Scene
               key='UserMain'
               component={UserMain}
-              icon={() => {return(<Icon name="bullhorn" backgroundColor="white" size={30}/>)}}
+              icon={() => {return(<Icon name="bullhorn" backgroundColor="white" size={25}/>)}}
             />
           </Scene>
           {/* User Social Feed Tab and its scenes */}
@@ -231,13 +231,13 @@ const RouterComponent = () => {
             <Scene
               key='UserSocialFeed'
               component={UserSocialFeed}
-              icon={() => {return(<Icon name="comments" backgroundColor="white" size={30}/>)}}
+              icon={() => {return(<Icon name="comments" backgroundColor="white" size={25}/>)}}
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}
           <Scene key="UserPreScanner" title="Check-In">
             <Scene
-              icon={() => {return(<Icon name="compass" backgroundColor="white" size={30}/>)}}
+              icon={() => {return(<Icon name="compass" backgroundColor="white" size={25}/>)}}
               key='UserPreScanner'
               component={UserPreScanner}
             />
@@ -247,8 +247,7 @@ const RouterComponent = () => {
             <Scene
               key='NotificationsView'
               component={NotificationsView}
-              icon={() => {return(<Icon name="bell" backgroundColor="white" size={30}/>)}}
-              hideNavBar='false'
+              icon={() => {return(<Icon name="bell" backgroundColor="white" size={25}/>)}}
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
@@ -256,8 +255,7 @@ const RouterComponent = () => {
             <Scene
               key='UserProfile'
               component={UserProfile}
-              icon={() => {return(<Icon name="user" backgroundColor="white" size={30}/>)}}
-              hideNavBar='false'
+              icon={() => {return(<Icon name="user" backgroundColor="white" size={25}/>)}}
             />
           </Scene>
         </Scene>

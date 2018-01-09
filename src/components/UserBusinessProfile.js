@@ -29,10 +29,10 @@ class UserBusinessProfile extends Component {
     this.props.getPosts(businessID);
     this.props.verifyCheckin(this.props.user_id, this.props.uid);
   }
-
+/*
   componentWillUpdate(){
     LayoutAnimation.spring();
-  }
+  }*/
 
   follow() {
     var userID = firebase.auth().currentUser.uid;
@@ -80,6 +80,8 @@ class UserBusinessProfile extends Component {
         </TouchableOpacity>
       );
     }
+  }
+
   componentWillUnmount() {
     this.props.userMainUpdate({ prop: 'cameraActive', value: true });
     this.props.userMainUpdate({ prop: 'hasCheckedIn', value: false });
@@ -169,7 +171,7 @@ class UserBusinessProfile extends Component {
         </View>
       );
       }
-      
+
   renderTheTabs() {
     const { businessProfileState } = this.props;
     var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
@@ -214,7 +216,7 @@ class UserBusinessProfile extends Component {
     const { user, coupon_count, checkin_count, scene, businessProfileState, following, user_id, uid } = this.props;
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, backgroundColor:'#fff' }}>
+        <View style={{ flex:6, backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
@@ -268,14 +270,14 @@ class UserBusinessProfile extends Component {
                     Actions.PostReviewView();
                 }
                 else {
-                  Alert.alert('Notification:','Must Check-in to Business', 
+                  Alert.alert('Notification:','Must Check-in to Business',
                   [{text: 'OK', onPress: () => {
-                   
+
                   }}]);
                 }
                }}>
               <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} /> 
+              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} />
               </View>
              </TouchableOpacity>
           </View>
@@ -307,14 +309,14 @@ reviewButtonOverStyle: {
     marginTop: 5
 },
 followButtonStyle: {
-  height:18, 
-  width:80, 
+  height:18,
+  width:80,
   borderRadius:15,
   borderColor:'#0084b4',
   borderWidth:1,
-  backgroundColor:'white', 
-  alignSelf:'center', 
-  marginBottom: 15, 
+  backgroundColor:'white',
+  alignSelf:'center',
+  marginBottom: 15,
   marginTop: 15
 },
 reviewButtonContainer: {
@@ -334,10 +336,9 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
-  const { name, following } = state.userMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { loading, hasCheckedIn } = state.userMain;
+  const { loading, hasCheckedIn, name, following } = state.userMain;
 
   return {
     user_id,
@@ -359,8 +360,8 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps,{
-  checkin, 
-  businessProfileUpdate, 
+  checkin,
+  businessProfileUpdate,
   getReviews,
   getCheckinsToday,
   getCoupons,

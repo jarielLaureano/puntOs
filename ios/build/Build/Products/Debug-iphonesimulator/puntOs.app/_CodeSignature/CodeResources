@@ -189,9 +189,13 @@
 		<data>
 		dyKltMCMbq+pYDVJBtY78y7BuP0=
 		</data>
+		<key>GoogleService-Info.plist</key>
+		<data>
+		ihs1RFeRL/h+Qm+h7BWttH1tKww=
+		</data>
 		<key>Info.plist</key>
 		<data>
-		GgwMb0E2w55247wCMLY+Ok8r9a0=
+		thmPpWgQRJQhKlhEa/IWyDRsG3Y=
 		</data>
 		<key>Ionicons.ttf</key>
 		<data>
@@ -219,7 +223,7 @@
 		</data>
 		<key>PlugIns/puntOsTests.xctest.dSYM/Contents/Resources/DWARF/puntOsTests</key>
 		<data>
-		cI6JJnIdsjoyMAY1veNfMlGVNDY=
+		DX3nT58GHozgfhbZFxNbwgdltFM=
 		</data>
 		<key>PlugIns/puntOsTests.xctest/Info.plist</key>
 		<data>
@@ -231,7 +235,7 @@
 		</data>
 		<key>PlugIns/puntOsTests.xctest/puntOsTests</key>
 		<data>
-		2/i13hWWxpCQK0WcH3/BcZcKHBI=
+		NxBy3Q++q2AVZpPYe6lhz3dOkYg=
 		</data>
 		<key>SimpleLineIcons.ttf</key>
 		<data>
@@ -745,6 +749,17 @@
 			6DxNIVZgqWfOeWfedGQ1+wOnIuA7vQlU+gVA0WhCiRw=
 			</data>
 		</dict>
+		<key>GoogleService-Info.plist</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			ihs1RFeRL/h+Qm+h7BWttH1tKww=
+			</data>
+			<key>hash2</key>
+			<data>
+			Ij4v5Bax+MI4RDhKonfcoiD4S2WxXq2VO2dPv/g8bVU=
+			</data>
+		</dict>
 		<key>Ionicons.ttf</key>
 		<dict>
 			<key>hash</key>
@@ -804,11 +819,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			cI6JJnIdsjoyMAY1veNfMlGVNDY=
+			DX3nT58GHozgfhbZFxNbwgdltFM=
 			</data>
 			<key>hash2</key>
 			<data>
-			FTSPDa1t2oHUUs0EA/wFmdcXWo8v1Bx13k5HuyHMP3I=
+			V6I8IuqPSEci6jX+TtoaSCW21B3wqEEVuKL8VKaeQ9g=
 			</data>
 		</dict>
 		<key>PlugIns/puntOsTests.xctest/Info.plist</key>
@@ -837,11 +852,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			2/i13hWWxpCQK0WcH3/BcZcKHBI=
+			NxBy3Q++q2AVZpPYe6lhz3dOkYg=
 			</data>
 			<key>hash2</key>
 			<data>
-			0QvnMsMSTvtwANawIsfrSzSpQq9AJ9nawSBNDEbU8AQ=
+			8q0P76bLdjzZPRBnnPQBmoQn2cVCC2f3hm97fqIOHQE=
 			</data>
 		</dict>
 		<key>SimpleLineIcons.ttf</key>

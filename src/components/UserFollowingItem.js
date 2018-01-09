@@ -35,9 +35,8 @@ class UserFollowingItem extends Component {
                     <View>
                         {this.renderIcon(icon)}
                     </View>
-
-                    <View style={{marginLeft: 2}}>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold'}}>{name}</Text> 
+                    <View style={{marginLeft: 15, justifyContent: 'center'}}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold'}}>{name}</Text>
                     </View>
 
                 </View>
@@ -51,15 +50,17 @@ const styles = {
     iconStyle: {
         height: 40,
         width: 40,
-        borderRadius: 100,
-        alignContent: 'center',
-        resizeMode: 'contain'
+        borderRadius: 20,
+        resizeMode: 'contain',
+        borderColor: '#ababab',
     },
     itemContainer:{
-        flex: 1, 
-        alignSelf: 'stretch', 
-        flexDirection: 'row', 
+        flex: 1,
+        height: 50,
+        alignSelf: 'stretch',
+        flexDirection: 'row',
         paddingBottom: 5,
+        paddingTop: 5,
         paddingLeft: 5
       }
 }
