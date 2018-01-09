@@ -1,5 +1,6 @@
 import React from 'react';
 import { Scene, Router, Drawer } from 'react-native-router-flux';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import LoginForm from './components/LoginForm';
 import PreSignUp from './components/PreSignUp';
 import BusinessSignUpForm from './components/BusinessSignUpForm';
@@ -222,6 +223,7 @@ const RouterComponent = () => {
             <Scene
               key='UserMain'
               component={UserMain}
+              icon={() => {return(<Icon name="bullhorn" backgroundColor="white" size={30}/>)}}
             />
           </Scene>
           {/* User Social Feed Tab and its scenes */}
@@ -229,11 +231,13 @@ const RouterComponent = () => {
             <Scene
               key='UserSocialFeed'
               component={UserSocialFeed}
+              icon={() => {return(<Icon name="comments" backgroundColor="white" size={30}/>)}}
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}
           <Scene key="UserPreScanner" title="Check-In">
             <Scene
+              icon={() => {return(<Icon name="compass" backgroundColor="white" size={30}/>)}}
               key='UserPreScanner'
               component={UserPreScanner}
             />
@@ -243,6 +247,7 @@ const RouterComponent = () => {
             <Scene
               key='NotificationsView'
               component={NotificationsView}
+              icon={() => {return(<Icon name="bell" backgroundColor="white" size={30}/>)}}
               hideNavBar='false'
             />
           </Scene>
@@ -251,6 +256,7 @@ const RouterComponent = () => {
             <Scene
               key='UserProfile'
               component={UserProfile}
+              icon={() => {return(<Icon name="user" backgroundColor="white" size={30}/>)}}
               hideNavBar='false'
             />
           </Scene>

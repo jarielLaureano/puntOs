@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { userMainUpdate, getUserProfile, getStats, getMyCheckins, getMyCoupons, getMyReviewCount} from '../actions';
+import { userMainUpdate, getUserProfile, getStats, getMyCheckins, getMyCoupons, getMyReviewCount, getFollowing } from '../actions';
 import UserPromoList from './UserPromoList';
 import UserMainFilterHeader from './UserMainFilterHeader';
 import PostFeed from './PostFeed';
@@ -57,4 +57,4 @@ const mapStateToProps = state => {
   return { user, uid, loading };
 };
 
-export default connect(mapStateToProps, { getUserProfile, getStats, getMyCoupons, getMyCheckins, getMyReviewCount, userMainUpdate })(UserMain);
+export default connect(mapStateToProps, { getUserProfile, getStats, getMyCoupons, getMyCheckins, getMyReviewCount, userMainUpdate, getFollowing })(UserMain);
