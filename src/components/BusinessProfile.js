@@ -289,9 +289,6 @@ renderProfileButtons(){
             <View style={{ flex: 1, justifyContent: 'center'}} >
             <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
-            <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
-            </View>
             </View>
             <View style={{ flex: 5, flexDirection: 'row' }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>

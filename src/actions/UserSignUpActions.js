@@ -7,7 +7,7 @@ import {
     SIGNUP_USER_FAIL,
     SIGNUP_USER_SUCCESS
 } from "./types";
-import Actions from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 const DELETE_USER = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/deleteUser';
 
 export const userSignUpUpdate = ({ prop, value }) => {
@@ -34,7 +34,6 @@ export const userSignUpReset = () => {
 export const signUpUser = (props) => {
     return (dispatch) => {
         dispatch({ type: SIGNUP_USER });
-        console.log("email:"+props.email);
         firebase.auth().createUserWithEmailAndPassword(props.email, props.password)
             .then((user) => {
               user.sendEmailVerification().then(() => {
@@ -54,6 +53,7 @@ export const signUpUser = (props) => {
                                 });
                             signUpUserSuccess(dispatch, user);
                             dispatch({ type: USER_SIGNUP_RESET });
+                            Actions.signUpSuccessUser();
                         });}).catch(() => {
                           signUpBusinessFail(dispatch, 'Could not send verification email. Try Again.');
                           axios.get(DELETE_USER+`?uid=${user.uid}`);

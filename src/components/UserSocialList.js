@@ -8,12 +8,12 @@ import UserSocialItem from './UserSocialItem';
 class UserSocialList extends Component {
 
     componentWillMount() {
-        console.log(this.props.uid);
+
         this.props.getSocialPosts(this.props.uid);
       }
-    
+
     render() {
-        console.log(this.props.socials);
+
         return (
             <FlatList
                 data={this.props.socials}

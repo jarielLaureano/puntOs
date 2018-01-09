@@ -23,6 +23,9 @@ const INITIAL_STATE = {
     user: {},
     type: 'user',
     uid:'',
+    cameraActive: true,
+    checkin: false,
+    hasCheckedIn: false,
     openMenu: false,
     checkins: {},
     promos: {},
@@ -40,7 +43,24 @@ const INITIAL_STATE = {
     following: {},
     lbentries: {},
     switchLoading: false,
-    switchPassword: ''
+    switchPassword: '',
+    pointsToNext: 0,
+    levelPercentage: 0,
+    overallPoints: 0,
+    totalCoupons: 0,
+    lastCoupons: {},
+    totalCheckins: 0,
+    lastCheckins: {},
+    totalReviews: 0,
+    my_coupons: {},
+    uploadLoading: false,
+    uploadError: false,
+    photoSelected: null,
+    photoSelectedKey: null,
+    photos: [],
+    showPhotos: false,
+    checkinSuccessful: '',
+    checkinError: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -50,7 +70,6 @@ export default (state = INITIAL_STATE, action) => {
     case USER_PROFILE_UPDATE:
     {
       const new_state = { ...state.userProfileState, [action.payload.prop]: action.payload.value };
-      console.log(new_state);
       return { ...state, userProfileState: new_state};
     }
     case USER_PRIMARY_FILTER_UPDATE:
@@ -89,15 +108,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    console.log("at reducer: returning new promos")
-    console.log(action.payload)
     const new_promos = action.payload;
     return { ...state, promos: new_promos };
     }
     case USER_SOCIALS_UPDATE:
     {
     const new_socials = action.payload;
-    console.log(new_socials);
     return { ...state, socials: new_socials};
     }
     case LEADERBOARD_UPDATE:

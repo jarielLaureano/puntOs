@@ -5,6 +5,7 @@ import { BUSINESS_MAIN_UPDATE, VALIDATE_STATE_UPDATE, CREATE_PROMO_UPDATE, CREAT
   COUPONS_UPDATE, BUSINESS_METRICS_UPDATE, SET_PROFILE_UPDATE, LOGIN_USER_SUCCESS } from './types';
 import { Actions } from 'react-native-router-flux';
 import axios from 'axios';
+import { ShareDialog } from 'react-native-fbsdk';
 var Utils = require('../components/common/Utils');
 var moment = require('moment');
 const LINK_ACCOUNT = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/linkAccount';
@@ -149,6 +150,10 @@ export const getCouponsToday = (uid) => {
 
 export const createPromo = (promo_text, promo_media, business_name, uid, category, user_image) => {
   return (dispatch) => {
+    var user_icon = user_image;
+    if(!user_icon){
+      user_icon = '';
+    }
     const image_path = promo_media;
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_PROMO_UPDATE, payload: { prop: 'error', value: '' }});
@@ -159,7 +164,7 @@ export const createPromo = (promo_text, promo_media, business_name, uid, categor
       Utils.uploadImage(image_path, `${_todayMil+uid}.jpg` ).then((response) => {
       firebase.database().ref(`/posts`).once('value', snapshot => {
       const new_post = { text: promo_text, image: response, businessID: uid, date: _todayISO,
-        name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
+        name: business_name, icon: user_icon, likedBy: '', sharedBy: '', category: category };
       snapshot.ref.push(new_post).then(() => {
         dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
         Alert.alert('Promotion Posted!','', {text: 'OK'})
@@ -178,7 +183,7 @@ export const createPromo = (promo_text, promo_media, business_name, uid, categor
     } else{
       firebase.database().ref(`/posts`).once('value', snapshot => {
       const new_post = { text: promo_text, image: '', businessID: uid, date: _todayISO,
-        name: business_name, icon: user_image, likedBy: '', sharedBy: '', category: category };
+        name: business_name, icon: user_icon, likedBy: '', sharedBy: '', category: category };
       snapshot.ref.push(new_post).then(() => {
         dispatch({ type: CREATE_PROMO_UPDATE, payload: {prop: 'loading', value: false}});
         Alert.alert('Promotion Posted!','', {text: 'OK'})
@@ -197,6 +202,10 @@ export const createPromo = (promo_text, promo_media, business_name, uid, categor
 
 export const createCoupon = (coupon_state, business_name, uid, category, user_image) => {
   return (dispatch) => {
+    var user_icon = user_image;
+    if(!user_icon){
+      user_icon = '';
+    }
     const image_path = coupon_state.coupon_media;
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'loading', value: true }});
     dispatch({ type: CREATE_COUPON_UPDATE, payload: { prop: 'error', value: '' }});
@@ -218,7 +227,7 @@ export const createCoupon = (coupon_state, business_name, uid, category, user_im
       }
       const expire_coupon = expiration_date.toISOString();
       const new_coupon = { text: coupon_state.coupon_text , image: response , businessID: uid, category: category,
-        date: post_date, name: business_name, icon: user_image, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
+        date: post_date, name: business_name, icon: user_icon, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
         pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
       snapshot.ref.push(new_coupon).then(() => {
         dispatch({ type: CREATE_COUPON_UPDATE, payload: {prop: 'loading', value: false}});
@@ -250,7 +259,7 @@ export const createCoupon = (coupon_state, business_name, uid, category, user_im
     }
     const expire_coupon = expiration_date.toISOString();
     const new_coupon = { text: coupon_state.coupon_text , image: '', businessID: uid, category: category,
-      date: post_date, name: business_name, icon: user_image, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
+      date: post_date, name: business_name, icon: user_icon, likedBy: '', sharedBy: '', expires: expire_coupon, expired: false,
       pointsValue: coupon_state.points_value, title: coupon_state.coupon_title, claimLimit: coupon_state.claim_limit, claimedBy: '' };
     snapshot.ref.push(new_coupon).then(() => {
       dispatch({ type: CREATE_COUPON_UPDATE, payload: {prop: 'loading', value: false}});
@@ -283,6 +292,68 @@ export const likeItem = (uid, pid, isCoupon) => {
   });};}
 
 };
+
+export const shareItem = (uid, pid, isCoupon, image, text, businessName) => {
+  const like_obj = {[uid]: 1};
+  var shareContent = {
+    contentType: 'link',
+    contentUrl: 'https://firebasestorage.googleapis.com/v0/b/puntos-capstone2017.appspot.com/o/logo%2FLogoSmall.png?alt=media&token=08d5bd23-ddfe-435c-8a35-b9cce394c13c',
+    quote: '',
+    title: ''
+  };
+  const share_obj = {[uid]: 1};
+  return (dispatch) => {
+  if (isCoupon){
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Get the puntOs app now and start saving with this coupon by ' + businessName ;
+    if(image){
+      shareContent.contentUrl = image;
+    }
+    ShareDialog.canShow(shareContent).then((canShow)=> {
+      if(canShow){
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/Coupons/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              Alert.alert('Coupon Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+        }}).catch((error)=>{
+          Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+        });
+      }
+    })
+  } else {
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Never miss a beat!' + '\n' + 'Get the puntOs app now and follow your favorite businesses for promotions, events and coupons!' +'\n'+ businessName ;
+    if(image){
+      shareContent.contentUrl = image;
+    }
+    ShareDialog.canShow(shareContent).then((canShow)=> {
+      if(canShow){
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/posts/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              Alert.alert('Promo Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+      }
+    }).catch((error)=>{
+      Alert.alert('Error!', 'Could not share promo.', {text: 'OK'});
+    });
+  }
+  });}
+  };
+};
+
+
 
 export const unlikeItem = (uid, pid, isCoupon) => {
   if(isCoupon){
@@ -370,7 +441,7 @@ export const getPosts = (uid) => {
         promoList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
         counter++;
       });
-      console.log(promoList)
+
       dispatch({ type: PROMOS_UPDATE, payload: promoList});
   });
 };
@@ -494,3 +565,20 @@ export const linkAccount = (email, password, uid) => {
   });
 };
 };
+
+export const resetLocation = (uid) => {
+  return (dispatch) => {
+    navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      firebase.database().ref(`/users/${uid}`).on('value', snapshot => {
+        snapshot.ref.update({longitude: longitude, latitude: latitude}).then(()=>{
+          Alert.alert('Success!','Your business was relocated in our system.',{text: 'OK'});
+        }).catch(()=>{
+          Alert.alert('Error!','We were unable to relocate your business, try again later.',{text: 'OK'});
+        });
+      });
+    });
+    };
+  };

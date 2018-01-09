@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Text, View, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Actions, Router, Scene } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -10,6 +10,15 @@ class UserNavBar extends Component {
     componentWillMount() {
         this.props.getUserProfile(this.props.uid);
       }
+
+    renderPoints(){
+      if(this.props.user.points){
+        return this.props.user.points;
+      }
+      else{
+        return 0;
+      }
+    }
 
     render() {
         return (
@@ -23,11 +32,15 @@ class UserNavBar extends Component {
                 </TouchableWithoutFeedback>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center'}} >
-                  <Text style={[styles.textStyle, {alignSelf: 'center'} ]}>{this.props.user.points} P</Text>
+                  <Text style={[styles.textStyle, {alignSelf: 'center'} ]}>{this.renderPoints()} P</Text>
                 </View>
+                <TouchableOpacity style={{ flex: 1, justifyContent: 'center'}} onPress={() => {
+                  Actions.userStats();
+              }}>
                 <View style={{ flex: 1, justifyContent: 'center'}} >
                   <Text style={[styles.textStyle, {alignSelf: 'flex-end', paddingRight:5} ]}>Lv.{this.props.user.level}</Text>
                 </View>
+                </TouchableOpacity>
                 </View>
             </View>
         )

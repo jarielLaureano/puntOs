@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, getUserProfile, getFollowing, userFollowBusiness, userUnfollowBusiness } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate, verifyCheckin, getUserProfile, getFollowing, userFollowBusiness, userUnfollowBusiness } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
 import CouponsList from './CouponsList';
 import PostList from './PostList';
-import { Button } from './common';
+import { Button, Spinner } from './common';
 import firebase from 'firebase';
 //import PopupDialog, { DialogTitle, SlideAnimation } from 'react-native-popup-dialog';
 
@@ -27,6 +27,7 @@ class UserBusinessProfile extends Component {
     this.props.getReviews(businessID);
     this.props.getCouponsToday(businessID);
     this.props.getPosts(businessID);
+    this.props.verifyCheckin(this.props.user_id, this.props.uid);
   }
 
   componentWillUpdate(){
@@ -79,6 +80,9 @@ class UserBusinessProfile extends Component {
         </TouchableOpacity>
       );
     }
+  componentWillUnmount() {
+    this.props.userMainUpdate({ prop: 'cameraActive', value: true });
+    this.props.userMainUpdate({ prop: 'hasCheckedIn', value: false });
   }
 
   renderContent(){
@@ -94,17 +98,9 @@ class UserBusinessProfile extends Component {
       </View>);
     } else if(businessProfileState.tab_selected === 'Reviews'){
         return (<View style= {{ flex: 8, flexDirection: 'column' }}>
-      <ReviewList />
-        <Button
-            overStyle={styles.reviewButtonOverStyle}
-            onPress={() => {
-                this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
-                Actions.PostReviewView()
-            }}
-        >
-            Make Review
-        </Button>
-      </View>);
+        <ReviewList />
+        </View>
+      );
     }
   }
 
@@ -209,10 +205,11 @@ class UserBusinessProfile extends Component {
   );
   }
 
+
   callCheckin(){
-    //console.log(this.props.uid)
-    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid);
+    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid, this.props.name);
   }
+
   render() {
     const { user, coupon_count, checkin_count, scene, businessProfileState, following, user_id, uid } = this.props;
     return (
@@ -223,12 +220,10 @@ class UserBusinessProfile extends Component {
             <View style={{ flex: 1, justifyContent: 'center'}} >
             <Icon name='ios-arrow-back' size= {30} color='#0084b4' onPress={()=> Actions.pop()} style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
             </View>
-            <View style={{ flex: 1, justifyContent: 'center'}}>
-            <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
             </View>
-            </View>
-            <View style={{ flex: 5, flexDirection: 'row' }}>
+            <View style={{ flex: 5, flexDirection: 'row', marginBottom: 10 }}>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
+              {/* {this.renderReview()} */}
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>{coupon_count}</Text>
               <Text style={{ alignSelf: 'center' }}>coupons</Text>
               </View>
@@ -236,6 +231,7 @@ class UserBusinessProfile extends Component {
               {this.renderIcon(user.image)}
               </View>
               <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column'}}>
+              {/* {this.renderCheckin()} */}
               <Text style={{ alignSelf: 'center', fontSize: 30 }}>{checkin_count}</Text>
               <Text style={{ alignSelf: 'center'}}>visits</Text>
               </View>
@@ -265,9 +261,28 @@ class UserBusinessProfile extends Component {
         </View>
           {this.renderTabs()}
           {this.renderContent()}
+          <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#0084b4'}}>
+             <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
+                if(this.props.hasCheckedIn){
+                    this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
+                    Actions.PostReviewView();
+                }
+                else {
+                  Alert.alert('Notification:','Must Check-in to Business', 
+                  [{text: 'OK', onPress: () => {
+                   
+                  }}]);
+                }
+               }}>
+              <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} /> 
+              </View>
+             </TouchableOpacity>
+          </View>
         </View>
     );
   }
+
 }
 
 const styles = {
@@ -317,24 +332,30 @@ const mapStateToProps = state => {
       coupon_count,
       checkin_count,
       businessProfileState,
-      isCouponClaim 
-  } = state.businessMain;
-
-  const { user_id, name, following } = state.userMain
+      isCouponClaim
+    } = state.businessMain;
+  const { name, following } = state.userMain;
+  const user_id = firebase.auth().currentUser.uid;
+  const username  = state.userMain.user.name;
+  const { loading, hasCheckedIn } = state.userMain;
 
   return {
     user_id,
     name,
     following,
     user,
+    name,
     uid,
     metrics,
     scene,
     coupon_count,
     checkin_count,
     businessProfileState,
-    isCouponClaim 
-  };
+    isCouponClaim,
+    username,
+    loading,
+    hasCheckedIn
+ };
 };
 
 export default connect(mapStateToProps,{
@@ -351,4 +372,7 @@ export default connect(mapStateToProps,{
   getUserProfile,
   getFollowing,
   userFollowBusiness,
-  userUnfollowBusiness})(UserBusinessProfile);
+  userUnfollowBusiness,
+  userMainUpdate,
+  verifyCheckin
+ })(UserBusinessProfile);

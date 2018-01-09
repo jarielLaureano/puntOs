@@ -47,6 +47,15 @@ class RedeemCouponView extends Component {
         );
     }
 
+    renderPoints(){
+      if(this.props.user.points){
+        return this.props.user.points;
+      }
+      else{
+        return 0;
+      }
+    }
+
     renderValue(){
         const {
             pointsStatusContainer,
@@ -76,12 +85,16 @@ class RedeemCouponView extends Component {
             return (
                 <View style={pointsStatusContainer}>
                 <Text style={pointsStatusStyle}>Value:  {pointsValue}</Text>
-                <Text style={pointsStatusStyle}>Available: {user.points}</Text>
+                <Text style={pointsStatusStyle}>Available: {this.renderPoints()}</Text>
                 <Text style={pointsStatusStyle}>{ calculatePointsAfterClaim(user, pointsValue)}</Text>
                 <Text style={messageStyle}>{message}</Text>
                 <TouchableHighlight style={touchableStyle} onPress={() => {
                     const coupon = this.props.coupon
-                    if (user.points > pointsValue){
+                    var user_points = 0
+                    if(user.points){
+                      user_points = user.points;
+                    }
+                    if (user_points > pointsValue){
                         this.props.claimCoupon({ uid, coupon, user });
                         this.props.updateClaimBy(uid, coupon.pid);
                         if(coupon.claimedBy.length == coupon.claimLimit){
@@ -101,7 +114,11 @@ class RedeemCouponView extends Component {
 }
 
 const  calculatePointsAfterClaim =(user, pointsValue) => {
-      var result = user.points - pointsValue;
+      var user_points = 0;
+      if(user.points){
+        user_points = user.points;
+      }
+      var result = user_points - pointsValue;
         if(result > 0){
             return "After:    "+result;
         }

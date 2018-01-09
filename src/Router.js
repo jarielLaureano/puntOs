@@ -6,6 +6,7 @@ import PreSignUp from './components/PreSignUp';
 import BusinessSignUpForm from './components/BusinessSignUpForm';
 import UserSignUpForm from './components/UserSignUpForm';
 import SuccessBusinessView from './components/SuccessBusinessView';
+import SuccessUserView from './components/SuccessUserView';
 import SettingProfile from './components/SettingProfile';
 import BusinessMain from './components/BusinessMain';
 import BusinessProfile from './components/BusinessProfile';
@@ -29,7 +30,12 @@ import LinkAccount from './components/LinkAccount';
 import SwitchAccount from './components/SwitchAccount';
 import SwitchAccountUser from './components/SwitchAccountUser';
 import Leaderboard from './components/Leaderboard';
+import MyCoupons from './components/MyCoupons';
+import Favorites from './components/Favorites';
+import UserStats from './components/UserStats';
 import MenuContent from './components/MenuContent';
+import UserCheckinResult from './components/UserCheckinResult';
+import UserPreScanner from './components/UserPreScanner';
 
 const RouterComponent = () => {
   return (
@@ -74,6 +80,22 @@ const RouterComponent = () => {
           key='signUpSuccessBusiness'
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
           component={SuccessBusinessView}
+          back='false'
+          hideBackImage
+          panHandlers={null}
+        />
+        <Scene
+          key='signUpSuccessUser'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
+          component={SuccessUserView}
+          back='false'
+          hideBackImage
+          panHandlers={null}
+        />
+         <Scene
+          key='UserCheckinResult'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomWidth: 0 }}
+          component={UserCheckinResult}
           back='false'
           hideBackImage
           panHandlers={null}
@@ -179,7 +201,6 @@ const RouterComponent = () => {
         {/* Tab Container */}
         <Scene
           hideNavBar
-          hideBackImage
           back='false'
           key="tabbar"
           tabs={true}
@@ -214,11 +235,11 @@ const RouterComponent = () => {
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}
-          <Scene key="QR-Check-In" title="Check-In">
+          <Scene key="UserPreScanner" title="Check-In">
             <Scene
-              key='QRCheckInView'
-              component={QRCheckInView}
               icon={() => {return(<Icon name="compass" backgroundColor="white" size={30}/>)}}
+              key='UserPreScanner'
+              component={UserPreScanner}
             />
           </Scene>
           {/* User Notifications Tab and its scenes */}
@@ -227,6 +248,7 @@ const RouterComponent = () => {
               key='NotificationsView'
               component={NotificationsView}
               icon={() => {return(<Icon name="bell" backgroundColor="white" size={30}/>)}}
+              hideNavBar='false'
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
@@ -235,6 +257,7 @@ const RouterComponent = () => {
               key='UserProfile'
               component={UserProfile}
               icon={() => {return(<Icon name="user" backgroundColor="white" size={30}/>)}}
+              hideNavBar='false'
             />
           </Scene>
         </Scene>
@@ -255,10 +278,18 @@ const RouterComponent = () => {
           title="UserBusinessProfile"
         />
         <Scene
+          key="QRCheckInView"
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
+          navBarButtonColor='white'
+          onBack={() => Actions.burgerMenu('UserPreScanner')}
+          component={QRCheckInView}
+          title="QR Scanner"
+        />
+        <Scene
           key="RedeemCouponView"
           navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray'}}
           navBarButtonColor='white'
-          onBack={() => Actions.UserBusinessProfile()}
+          onBack={() => Actions.pop()}
           component={RedeemCouponView}
           title="RedeemCouponView"
         />
@@ -277,6 +308,30 @@ const RouterComponent = () => {
           onBack={() => Actions.pop()}
           component={Leaderboard}
           title='Leaderboard'
+        />
+        <Scene
+          key='myCoupons'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={MyCoupons}
+          title='My Coupons'
+        />
+        <Scene
+          key='Favorites'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={Favorites}
+          title='Favorites'
+        />
+        <Scene
+          key='userStats'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={UserStats}
+          title='My Stats'
         />
       </Scene>
     </Router>

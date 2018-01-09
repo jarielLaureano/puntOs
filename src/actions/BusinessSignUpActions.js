@@ -17,6 +17,20 @@ export const businessSignUpReset = (dispatch) => {
   };
 };
 
+export const getLocation = (dispatch) => {
+  return (dispatch) => {
+    dispatch({ type: BUSINESS_SIGNUP_UPDATE, payload: { prop: 'loading', value: true }});
+    navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      dispatch({ type: BUSINESS_SIGNUP_UPDATE, payload: { prop: 'latitude', value: latitude }});
+      dispatch({ type: BUSINESS_SIGNUP_UPDATE, payload: { prop: 'longitude', value: longitude }});
+      dispatch({ type: BUSINESS_SIGNUP_UPDATE, payload: { prop: 'loading', value: false }});
+    });
+    };
+};
+
 export const businessSignUp = (props) => {
       return (dispatch) => {
       dispatch({ type: SIGNUP_BUSINESS });
@@ -33,7 +47,6 @@ export const businessSignUp = (props) => {
                 signUpBusinessFail(dispatch, 'Could not send verification email. Try Again.');
                 axios.get(DELETE_USER+`?uid=${user.uid}`);
               });}).catch((response) => {
-              console.log(response)
               if( response.code === 'auth/invalid-email'){
                 signUpBusinessFail(dispatch, 'Invalid Email')
             }

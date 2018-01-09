@@ -12,9 +12,11 @@
     "firebase": "^4.8.1",
     "firebase-admin": "~5.4.2",
     "firebase-functions": "^0.7.1",
+    "google-cloud": "^0.57.0",
     "haversine": "^1.1.0",
     "moment": "^2.4.0",
-    "nodemailer": "^4.0.1"
+    "nodemailer": "^4.0.1",
+    "qrcode": "^1.2.0"
   },
   "private": true
 }

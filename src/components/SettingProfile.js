@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 class SettingProfile extends Component {
   componentWillMount() {
     this.props.getProfile(this.props.uid);
+    //Actions.refresh({ key: 'settingProfile', hideNavBar: true });
   }
 
     componentWillUpdate(){

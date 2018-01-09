@@ -43,7 +43,6 @@ class UserPromoList extends Component {
               <TouchableOpacity onPress={() => {
                 //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Promos'});
                 //this.props.pfilter='Promos';
-                console.log("changing pfilter to Promos...");
                 pri_filter = 'Promos';
                 //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
                 this.filter(pri_filter, sec_filter);
@@ -57,7 +56,7 @@ class UserPromoList extends Component {
               <TouchableOpacity onPress={() => {
                 //this.props.userPrimaryFilterUpdate({prop:'primaryFilterSelected', value: 'Coupons'});
                 //this.props.pfilter='Coupons';
-                console.log("changing pfilter to Coupons...");
+
                 pri_filter = 'Coupons';
                 //console.log("changed pfilter to: " + this.props.userPrimaryFilterState.primaryFilterSelected);
                 this.filter(pri_filter, sec_filter);
@@ -151,7 +150,6 @@ class UserPromoList extends Component {
   }
 
   renderContent() {
-    console.log(this.props.promos)
     return (
       <FlatList
         data={this.props.promos}
@@ -226,13 +224,10 @@ const styles = {
 
 const mapStateToProps = state => {
   var { uid, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter, following } = state.userMain;
-  console.log(state.userMain)
   const promos = _.map(state.userMain.promos, (val, key) => {
     return {...val, key};
   });
   return { uid, promos, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter, following };
 }
-
-
 
 export default connect(mapStateToProps, { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate, getFollowing })(UserPromoList);
