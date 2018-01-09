@@ -243,7 +243,6 @@ const RouterComponent = () => {
             <Scene
               key='NotificationsView'
               component={NotificationsView}
-              hideNavBar='false'
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
@@ -251,7 +250,6 @@ const RouterComponent = () => {
             <Scene
               key='UserProfile'
               component={UserProfile}
-              hideNavBar='false'
             />
           </Scene>
         </Scene>

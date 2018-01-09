@@ -33,7 +33,7 @@ class UserBusinessProfile extends Component {
     LayoutAnimation.spring();
   }
 
-  
+
 
   componentWillUnmount() {
     this.props.userMainUpdate({ prop: 'cameraActive', value: true });
@@ -211,14 +211,14 @@ class UserBusinessProfile extends Component {
                     Actions.PostReviewView();
                 }
                 else {
-                  Alert.alert('Notification:','Must Check-in to Business', 
+                  Alert.alert('Notification:','Must Check-in to Business',
                   [{text: 'OK', onPress: () => {
-                   
+
                   }}]);
                 }
                }}>
               <View style={{ flex: 1, alignSelf: 'stretch', justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} /> 
+              <Icon name='ios-create' size= {20} color='white' style={{ alignSelf: 'center', marginRight: 5 }} />
               </View>
              </TouchableOpacity>
           </View>
@@ -268,10 +268,9 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
-  const { name } = state.userMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { loading, hasCheckedIn } = state.userMain;
+  const { loading, hasCheckedIn, name } = state.userMain;
 
   return {
     user_id,
