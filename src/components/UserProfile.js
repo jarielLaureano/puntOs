@@ -26,11 +26,11 @@ class UserProfile extends Component {
     this.props.getUserProfile(currentUser);
     this.props.getFollowing(currentUser);
   }
-
+/*
   componentWillUpdate(){
     LayoutAnimation.spring();
-  }
-  
+  }*/
+
 
   setSelected(key){
     this.props.userMainUpdate({prop: 'photoSelectedKey', value: key});

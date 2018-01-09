@@ -29,10 +29,10 @@ class UserBusinessProfile extends Component {
     this.props.getPosts(businessID);
     this.props.verifyCheckin(this.props.user_id, this.props.uid);
   }
-
+/*
   componentWillUpdate(){
     LayoutAnimation.spring();
-  }
+  }*/
 
   follow() {
     var userID = firebase.auth().currentUser.uid;
@@ -80,6 +80,8 @@ class UserBusinessProfile extends Component {
         </TouchableOpacity>
       );
     }
+  }
+
   componentWillUnmount() {
     this.props.userMainUpdate({ prop: 'cameraActive', value: true });
     this.props.userMainUpdate({ prop: 'hasCheckedIn', value: false });
@@ -214,7 +216,7 @@ class UserBusinessProfile extends Component {
     const { user, coupon_count, checkin_count, scene, businessProfileState, following, user_id, uid } = this.props;
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, backgroundColor:'#fff' }}>
+        <View style={{ flex:6, backgroundColor:'#fff' }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
@@ -334,13 +336,9 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
-<<<<<<< HEAD
-=======
-  const { name, following } = state.userMain;
->>>>>>> upstream/dev
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { loading, hasCheckedIn, name } = state.userMain;
+  const { loading, hasCheckedIn, name, following } = state.userMain;
 
   return {
     user_id,

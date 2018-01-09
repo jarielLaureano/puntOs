@@ -29,7 +29,7 @@ class UserPromoList extends Component {
     //console.log("Filtering by " + pf);
     var fol = this.props.following;
     var loc = 0;
-    this.props.userGetPromos(this.props.uid, pf, sf, fol, loc);
+    this.props.userGetPromos(this.props.uid, pf, sf, fol);
   }
 
   renderFilterCarousel() {

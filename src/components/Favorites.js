@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
+import UserFollowingView from './UserFollowingView';
 import { View, Text } from 'react-native';
 
 class Favorites extends Component {
 
     render() {
         return (
-            <View>
-            <Text>Favorites View</Text>
-            </View>
+            <UserFollowingView />
         );
     }
 }
