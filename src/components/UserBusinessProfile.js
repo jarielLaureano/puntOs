@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, LayoutAnimation, TouchableWithoutFeedback, Tabbar, Alert } from 'react-native';
 import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate, verifyCheckin } from '../actions';
+import { checkin, businessProfileUpdate, getBusinessProfile, getReviews, getCheckins, getCoupons, getCheckinsToday, getCouponsToday, getPosts, postReviewChange, userMainUpdate, verifyCheckin, verifyForPreviouslyReview } from '../actions';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import ReviewList from './ReviewList';
@@ -38,6 +38,7 @@ class UserBusinessProfile extends Component {
   componentWillUnmount() {
     this.props.userMainUpdate({ prop: 'cameraActive', value: true });
     this.props.userMainUpdate({ prop: 'hasCheckedIn', value: false });
+    this.props.userMainUpdate({ prop: 'hasReviewed', value: false });
   }
 
   component
@@ -210,8 +211,7 @@ class UserBusinessProfile extends Component {
           <View style={{ flexDirection: 'row', height: 50, backgroundColor: '#0084b4'}}>
              <TouchableOpacity style={{ flex:1, alignSelf: 'stretch', borderWidth: 1, borderColor: 'white'}} onPress={() =>  {
                 if(this.props.hasCheckedIn){
-                    this.props.postReviewChange( {prop: "businessID", value: this.props.uid});
-                    Actions.PostReviewView();
+                  this.props.verifyForPreviouslyReview(this.props.user_id, this.props.uid, this.props.businessName);
                 }
                 else {
                   Alert.alert('Notification:','Must Check-in to Business', 
@@ -273,7 +273,7 @@ const mapStateToProps = state => {
     } = state.businessMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
-  const { loading, hasCheckedIn } = state.userMain;
+  const { loading, hasCheckedIn, hasReviewed } = state.userMain;
 
   return {
     user_id,
@@ -287,7 +287,8 @@ const mapStateToProps = state => {
     isCouponClaim,
     username,
     loading,
-    hasCheckedIn
+    hasCheckedIn,
+    hasReviewed
  };
 };
 export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getReviews,
@@ -299,5 +300,6 @@ export default connect(mapStateToProps,{ checkin, businessProfileUpdate, getRevi
   getPosts,
   postReviewChange,
   userMainUpdate,
-  verifyCheckin
+  verifyCheckin,
+  verifyForPreviouslyReview
  })(UserBusinessProfile);
