@@ -1,0 +1,33 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/ios/build/Build/Products/Debug-iphonesimulator/InputMask.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "InputMask-Swift.h",
+          'external-contents': "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/ios/build/Build/Products/Debug-iphonesimulator/InputMask.framework/Headers/InputMask-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "InputMask.h",
+          'external-contents': "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/InputMask.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/ios/build/Build/Products/Debug-iphonesimulator/InputMask.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/ios/build/Build/Intermediates.noindex/InputMask.build/Debug-iphonesimulator/InputMask.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}

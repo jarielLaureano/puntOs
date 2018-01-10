@@ -6,7 +6,7 @@ import StarRating from 'react-native-star-rating';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import { unlinkAccount, businessMainUpdate, getBusinessProfile, getCheckinsToday,
-  getCouponsToday, updateProfilePic, logoutUser } from '../actions';
+  getCouponsToday, updateProfilePic, logoutUser, resetLocation } from '../actions';
 import { Actions } from 'react-native-router-flux';
 
 import BusinessDashboard from './BusinessDashboard';
@@ -84,18 +84,34 @@ toggleInfo(){
   this.props.businessMainUpdate({prop: 'info', value: !this.props.info});
 }
 
+renderQRID(qrcode){
+  if (qrcode) {
+      return (
+        <Image
+        style={styles.qrStyle}
+        source={{uri: qrcode }}
+        />
+      );
+  } else {
+    return (
+      <Text>No QRID</Text>
+    );
+  }
+}
+
 renderInfo(){
   return (
     <Modal transparent={true} animationType={'slide'} visible={this.props.info} style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View style={{ flex: 10, flexDirection: 'column', alignSelf: 'stretch' }}>
       <TouchableWithoutFeedback onPress={() => {this.toggleInfo()}}>
-        <View style={{flex:6}}></View>
+        <View style={{flex:2}}></View>
       </TouchableWithoutFeedback>
         <View style={{ flex: 4, justifyContent: 'center' , backgroundColor: '#fff', shadowColor: '#000',
         shadowOffset: { width: 0, height: -2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1, paddingTop: -10, paddingBottom: 10 }}>
         <TouchableWithoutFeedback onPress={() => {this.toggleInfo()}}>
         <Icon name='ios-arrow-down' size= {30} color='grey' style={{ alignSelf: 'center' }} />
         </TouchableWithoutFeedback>
+          {this.renderQRID(this.props.user.qrid)}
           <Text style={{fontSize: 25, color: '#000', paddingLeft:5, fontWeight: 'bold', marginBottom: 5}}>Your Info</Text>
           <Text style={{ fontSize: 22, paddingLeft: 5, marginBottom: 5, fontWeight: 'bold' }}>Address</Text>
           <Text style={{ fontSize: 20, paddingLeft: 5, marginBottom: 5 }}> {this.props.user.addressLine},{this.props.user.city} {this.props.user.country}</Text>
@@ -151,13 +167,20 @@ renderSettings(){
     <Modal transparent={true} animationType={'slide'} visible={this.props.settings} style={{ justifyContent: 'flex-end', margin: 0 }}>
       <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'stretch' }}>
         <TouchableWithoutFeedback onPress={() => {this.toggleSettings()}}>
-        <View style={{flex:9}}></View>
+        <View style={{flex:7}}></View>
         </TouchableWithoutFeedback>
         <View style={{ flex: 2, justifyContent: 'center' , backgroundColor: '#fff', shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },shadowOpacity: 0.1,shadowRadius: 2,elevation: 1, paddingTop: -10, paddingBottom: 10 }}>
         <TouchableWithoutFeedback onPress={() => {this.toggleSettings()}}>
         <Icon name='ios-arrow-down' size= {30} color='grey' style={{ alignSelf: 'center' }} />
         </TouchableWithoutFeedback>
+        <TouchableOpacity onPress={() => {
+          Alert.alert('Reset Business Location?','By choosing \'ok\' your business\' location will be reset to your CURRENT location. This can help with check-in accuracy inconsistency.',
+          [{text: 'Cancel', onPress: () => this.toggleSettings(), style: 'cancel'},
+          {text: 'OK', onPress: () => {this.props.resetLocation(this.props.uid);this.toggleSettings()}}]);
+        }}>
+          <Text style={{fontSize: 20, color: '#000', paddingLeft:5, paddingTop: 2, paddingBottom: 2 }}>Reset Business Location</Text>
+        </TouchableOpacity>
         {this.renderLinkUser()}
         <TouchableOpacity onPress={() => {
           Alert.alert('Sign out?','',
@@ -342,12 +365,12 @@ renderSettings(){
             <View style={{ flex: 1, flexDirection: 'row', paddingTop: 20 }}>
             <View style={{ flex: 1, justifyContent: 'center'}} >
               <TouchableWithoutFeedback onPress={()=> this.toggleInfo()}>
-                <Icon name='ios-information-circle' size= {20} color='#0084b4' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
+                <Icon name='ios-information-circle' size= {25} color='#0084b4' style={{ alignSelf: 'flex-start', paddingLeft: 5 }} />
               </TouchableWithoutFeedback>
             </View>
             <View style={{ flex: 1, justifyContent: 'center'}}>
               <TouchableWithoutFeedback onPress={()=> this.toggleSettings()}>
-                <Icon name='ios-settings' size= {20} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
+                <Icon name='ios-settings' size= {25} color='#0084b4' style={{ alignSelf: 'flex-end', paddingRight: 5 }} />
               </TouchableWithoutFeedback>
             </View>
             </View>
@@ -432,6 +455,16 @@ borderColor: 'black',
 alignSelf: 'center',
 resizeMode: 'contain'
 },
+qrStyle: {
+height: 150,
+width: 150,
+borderRadius: 5,
+borderWidth: 1,
+borderColor: 'black',
+alignSelf: 'center',
+resizeMode: 'contain',
+marginBottom: 20
+},
 errorTextStyle: {
   fontSize: 20,
   alignSelf: 'center',
@@ -446,4 +479,5 @@ const mapStateToProps = state => {
      photos, photoSelectedKey, showPhotos, photoSelected, uploadLoading, uploadError, settings, info };
 };
 
-export default connect(mapStateToProps,{unlinkAccount, businessMainUpdate, getBusinessProfile, getCheckinsToday, getCouponsToday, updateProfilePic, logoutUser})(BusinessMain);
+export default connect(mapStateToProps,{unlinkAccount, businessMainUpdate, getBusinessProfile, getCheckinsToday,
+  getCouponsToday, updateProfilePic, logoutUser, resetLocation})(BusinessMain);

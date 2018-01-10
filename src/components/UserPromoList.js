@@ -4,15 +4,15 @@ import { View, FlatList, ScrollView, TouchableWithoutFeedback, Text, TouchableOp
 import { connect } from 'react-redux';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate } from '../actions';
-import UserPromoItem from './UserPromoItem'
+import { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate, getFollowing } from '../actions';
+import UserPromoItem from './UserPromoItem';
 import { Card, CardSection } from './common/';
 var pri_filter = 'Promos';
 var sec_filter = 'All';
 
 class UserPromoList extends Component {
   componentWillMount() {
-
+    this.props.getFollowing(this.props.uid);
     this.props.userGetPromos(
       this.props.uid,
       this.props.userPrimaryFilterState.primaryFilterSelected,
@@ -24,8 +24,12 @@ class UserPromoList extends Component {
 
   }
 
-  filter(sf, pf) {
-    this.props.userGetPromos(this.props.uid, sf, pf);
+  filter(pf, sf) {
+    //console.log("at Filter function")
+    //console.log("Filtering by " + pf);
+    var fol = this.props.following;
+    var loc = 0;
+    this.props.userGetPromos(this.props.uid, pf, sf, fol);
   }
 
   renderFilterCarousel() {
@@ -219,13 +223,11 @@ const styles = {
 };
 
 const mapStateToProps = state => {
-  var { uid, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter } = state.userMain;
+  var { uid, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter, following } = state.userMain;
   const promos = _.map(state.userMain.promos, (val, key) => {
     return {...val, key};
   });
-  return { uid, promos, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter };
+  return { uid, promos, userPrimaryFilterState, userSecondaryFilterState, pfilter, sfilter, following };
 }
 
-
-
-export default connect(mapStateToProps, { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate })(UserPromoList);
+export default connect(mapStateToProps, { userGetPromos, userPrimaryFilterUpdate, userSecondaryFilterUpdate, getFollowing })(UserPromoList);

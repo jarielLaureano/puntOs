@@ -6,6 +6,8 @@ import {
   USER_REVIEWS_UPDATE,
   USER_MAIN_SET_PROFILE,
   USER_SOCIALS_UPDATE,
+  LEADERBOARD_UPDATE,
+  GET_FOLLOWING,
   USER_PRIMARY_FILTER_UPDATE,
   USER_SECONDARY_FILTER_UPDATE } from '../actions/types';
 
@@ -39,6 +41,8 @@ const INITIAL_STATE = {
     sfilter: 'All',
     points: 0,
     level: 0,
+    following: {},
+    lbentries: {},
     switchLoading: false,
     switchPassword: '',
     pointsToNext: 0,
@@ -57,7 +61,12 @@ const INITIAL_STATE = {
     photos: [],
     showPhotos: false,
     checkinSuccessful: '',
-    checkinError: ''
+    checkinError: '',
+    inviteEmail: '',
+    inviteLoading: '',
+    rank: 0,
+    promoCode: '',
+    promoLoading: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -100,6 +109,7 @@ export default (state = INITIAL_STATE, action) => {
         points: action.payload.points,
         level: action.payload.level,
         checkin_count: action.payload.checkin_count,
+        following: action.payload.following
       }
       return new_state;
     }
@@ -112,6 +122,17 @@ export default (state = INITIAL_STATE, action) => {
     {
     const new_socials = action.payload;
     return { ...state, socials: new_socials};
+    }
+    case LEADERBOARD_UPDATE:
+    {
+      const new_lbentries = action.payload;
+      return { ...state, lbentries: new_lbentries }
+    }
+    case GET_FOLLOWING:
+    {
+      const new_following = action.payload;
+      console.log('In follow reducer: ' + new_following);
+      return { ...state, following: new_following };
     }
     default:
       return state;

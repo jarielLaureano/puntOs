@@ -297,27 +297,60 @@ export const shareItem = (uid, pid, isCoupon, image, text, businessName) => {
   const like_obj = {[uid]: 1};
   var shareContent = {
     contentType: 'link',
-    contentUrl: undefined,
-    contentDescription: ''
+    contentUrl: 'https://firebasestorage.googleapis.com/v0/b/puntos-capstone2017.appspot.com/o/logo%2FLogoSmall.png?alt=media&token=08d5bd23-ddfe-435c-8a35-b9cce394c13c',
+    quote: '',
+    title: ''
   };
+  const share_obj = {[uid]: 1};
+  return (dispatch) => {
   if (isCoupon){
-    shareContent.contentDescription = 'Get the puntOs app now and start saving with this coupon by ' + businessName;
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Get the puntOs app now and start saving with this coupon by ' + businessName ;
     if(image){
       shareContent.contentUrl = image;
     }
     ShareDialog.canShow(shareContent).then((canShow)=> {
       if(canShow){
-        ShareDialog.show(shareContent);
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/Coupons/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              Alert.alert('Coupon Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+        }}).catch((error)=>{
+          Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+        });
       }
     })
-      //firebase.database().ref(`/Coupons/${pid}`).child('likedBy').update(like_obj).catch((error) => {
-    //  Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-    } else {
-  return (dispatch) => {
-    //firebase.database().ref(`/posts/${pid}`).child('likedBy').update(like_obj).catch((error) => {
-    //Alert.alert('Could not process like at this time', 'Sorry', {text: 'OK'});
-  };};
-
+  } else {
+    shareContent.title = businessName;
+    shareContent.quote = text + '\n' + 'Never miss a beat!' + '\n' + 'Get the puntOs app now and follow your favorite businesses for promotions, events and coupons!' +'\n'+ businessName ;
+    if(image){
+      shareContent.contentUrl = image;
+    }
+    ShareDialog.canShow(shareContent).then((canShow)=> {
+      if(canShow){
+        ShareDialog.show(shareContent).then((response)=>{
+          if(response.isCancelled){
+            Alert.alert('Share was cancelled', '', {text: 'OK'});
+          }
+          else {
+            firebase.database().ref(`/posts/${pid}`).child('sharedBy').update(share_obj).then(()=>{
+              Alert.alert('Promo Shared!', 'You can review the post in your facebook app.', {text: 'OK'});
+            }).catch((error) => {
+              Alert.alert('Error!', 'Could not share coupon.', {text: 'OK'});
+          });
+      }
+    }).catch((error)=>{
+      Alert.alert('Error!', 'Could not share promo.', {text: 'OK'});
+    });
+  }
+  });}
+  };
 };
 
 
@@ -408,7 +441,7 @@ export const getPosts = (uid) => {
         promoList.splice(0,0,{...child_node.val(), id: counter, pid: child_key});
         counter++;
       });
-  
+
       dispatch({ type: PROMOS_UPDATE, payload: promoList});
   });
 };
@@ -431,8 +464,10 @@ export const validateCoupon = (coupon_code, uid) => {
     if(!redeemObj){
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon code not found'}});
-    }
-    else if(redeemObj.used){
+    } else if(redeemObj.businessID === uid){
+      dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
+      dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon not from this business.'}});
+    } else if(redeemObj.used){
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon code already used'}});
     }
@@ -532,3 +567,20 @@ export const linkAccount = (email, password, uid) => {
   });
 };
 };
+
+export const resetLocation = (uid) => {
+  return (dispatch) => {
+    navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      firebase.database().ref(`/users/${uid}`).on('value', snapshot => {
+        snapshot.ref.update({longitude: longitude, latitude: latitude}).then(()=>{
+          Alert.alert('Success!','Your business was relocated in our system.',{text: 'OK'});
+        }).catch(()=>{
+          Alert.alert('Error!','We were unable to relocate your business, try again later.',{text: 'OK'});
+        });
+      });
+    });
+    };
+  };

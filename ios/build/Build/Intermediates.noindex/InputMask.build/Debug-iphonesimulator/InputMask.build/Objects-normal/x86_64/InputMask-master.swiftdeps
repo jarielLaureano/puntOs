@@ -1,0 +1,22 @@
+version: "Apple Swift version 4.0.3 (swiftlang-900.0.74.1 clang-900.0.39.2)"
+options: "298edaeeb9f5297f1eacdac26327188d"
+build_time: [1515262704, 799384000]
+inputs:
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/RNMask.swift": [1505330881, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State/ValueState.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Mask.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State/FixedState.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State/OptionalValueState.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State/EOLState.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Helper/String.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/View/MaskedTextFieldDelegate.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Helper/CaretStringIterator.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Helper/Compiler.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/Next.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/View/PolyMaskTextFieldDelegate.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/CaretString.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Helper/NSCharacterSet.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State/FreeState.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/View/InterfaceBuilderSupport.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Helper/FormatSanitizer.swift": [1501356032, 0]
+  "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/Model/State.swift": [1501356032, 0]

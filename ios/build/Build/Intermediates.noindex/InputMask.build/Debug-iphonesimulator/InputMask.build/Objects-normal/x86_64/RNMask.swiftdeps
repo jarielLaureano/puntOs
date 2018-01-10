@@ -1,0 +1,202 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "RNMask"
+provides-nominal:
+- "9InputMask6RNMaskC"
+provides-member:
+- ["9InputMask6RNMaskC", ""]
+provides-dynamic-lookup:
+- "maskValue"
+- "unmaskValue"
+depends-top-level:
+- !private "BooleanLiteralType"
+- !private "CaretString"
+- !private "Mask"
+- "NSObject"
+- "RNMask"
+- "String"
+depends-member:
+- !private ["s23BidirectionalCollectionP", "endIndex"]
+- !private ["s7CVarArgP", "CaretString"]
+- !private ["s7CVarArgP", "Mask"]
+- !private ["s7CVarArgP", "endIndex"]
+- !private ["s7CVarArgP", "init"]
+- ["s7CVarArgP", ""]
+- !private ["9InputMask11CaretStringV", "init"]
+- !private ["9InputMask11CaretStringV", "string"]
+- !private ["s10CollectionP", "endIndex"]
+- !private ["s10ComparableP", "endIndex"]
+- !private ["s28CustomDebugStringConvertibleP", "CaretString"]
+- !private ["s28CustomDebugStringConvertibleP", "Mask"]
+- !private ["s28CustomDebugStringConvertibleP", "Result"]
+- !private ["s28CustomDebugStringConvertibleP", "apply"]
+- !private ["s28CustomDebugStringConvertibleP", "endIndex"]
+- !private ["s28CustomDebugStringConvertibleP", "extractedValue"]
+- !private ["s28CustomDebugStringConvertibleP", "formattedText"]
+- !private ["s28CustomDebugStringConvertibleP", "getOrCreate"]
+- !private ["s28CustomDebugStringConvertibleP", "init"]
+- !private ["s28CustomDebugStringConvertibleP", "string"]
+- ["s28CustomDebugStringConvertibleP", ""]
+- !private ["s29CustomPlaygroundQuickLookableP", "endIndex"]
+- !private ["s17CustomReflectableP", "endIndex"]
+- !private ["s23CustomStringConvertibleP", "CaretString"]
+- !private ["s23CustomStringConvertibleP", "Mask"]
+- !private ["s23CustomStringConvertibleP", "Result"]
+- !private ["s23CustomStringConvertibleP", "apply"]
+- !private ["s23CustomStringConvertibleP", "endIndex"]
+- !private ["s23CustomStringConvertibleP", "extractedValue"]
+- !private ["s23CustomStringConvertibleP", "formattedText"]
+- !private ["s23CustomStringConvertibleP", "getOrCreate"]
+- !private ["s23CustomStringConvertibleP", "init"]
+- !private ["s23CustomStringConvertibleP", "string"]
+- ["s23CustomStringConvertibleP", ""]
+- !private ["s9DecodableP", "endIndex"]
+- !private ["s9EncodableP", "endIndex"]
+- !private ["s9EquatableP", "CaretString"]
+- !private ["s9EquatableP", "Mask"]
+- !private ["s9EquatableP", "endIndex"]
+- !private ["s9EquatableP", "init"]
+- ["s9EquatableP", ""]
+- !private ["s43ExpressibleByExtendedGraphemeClusterLiteralP", "endIndex"]
+- !private ["s26ExpressibleByStringLiteralP", "endIndex"]
+- !private ["s33ExpressibleByUnicodeScalarLiteralP", "endIndex"]
+- !private ["s8HashableP", "CaretString"]
+- !private ["s8HashableP", "Mask"]
+- !private ["s8HashableP", "endIndex"]
+- !private ["s8HashableP", "init"]
+- ["s8HashableP", ""]
+- !private ["s25LosslessStringConvertibleP", "endIndex"]
+- !private ["9InputMask0B0C", "Result"]
+- !private ["9InputMask0B0C", "apply"]
+- !private ["9InputMask0B0C", "getOrCreate"]
+- !private ["s10MirrorPathP", "endIndex"]
+- !private ["So8NSCodingP", "endIndex"]
+- !private ["So9NSCopyingP", "endIndex"]
+- !private ["So21NSItemProviderReadingP", "endIndex"]
+- !private ["So21NSItemProviderWritingP", "endIndex"]
+- !private ["So16NSMutableCopyingP", "endIndex"]
+- !private ["So8NSObjectC", "CaretString"]
+- !private ["So8NSObjectC", "Mask"]
+- ["So8NSObjectC", "String"]
+- !private ["So8NSObjectC", "endIndex"]
+- ["So8NSObjectC", "init"]
+- ["So8NSObjectC", "maskValue"]
+- ["So8NSObjectC", "unmaskValue"]
+- ["So8NSObjectC", ""]
+- !private ["So16NSObjectProtocolP", "CaretString"]
+- !private ["So16NSObjectProtocolP", "Mask"]
+- !private ["So16NSObjectProtocolP", "endIndex"]
+- !private ["So16NSObjectProtocolP", "init"]
+- ["So16NSObjectProtocolP", ""]
+- !private ["So14NSSecureCodingP", "endIndex"]
+- !private ["So8NSStringC", "endIndex"]
+- !private ["9InputMask6RNMaskC", "CaretString"]
+- !private ["9InputMask6RNMaskC", "Mask"]
+- ["9InputMask6RNMaskC", "String"]
+- ["9InputMask6RNMaskC", "deinit"]
+- ["9InputMask6RNMaskC", "init"]
+- ["9InputMask6RNMaskC", "maskValue"]
+- ["9InputMask6RNMaskC", "unmaskValue"]
+- !private ["s26RangeReplaceableCollectionP", "endIndex"]
+- !private ["9InputMask0B0C6ResultV", "extractedValue"]
+- !private ["9InputMask0B0C6ResultV", "formattedText"]
+- !private ["s8SequenceP", "endIndex"]
+- !private ["SS", "endIndex"]
+- !private ["s14StringProtocolP", "endIndex"]
+- !private ["s16TextOutputStreamP", "endIndex"]
+- !private ["s20TextOutputStreamableP", "endIndex"]
+- !private ["s23_BidirectionalIndexableP", "endIndex"]
+- !private ["s51_ExpressibleByBuiltinExtendedGraphemeClusterLiteralP", "endIndex"]
+- !private ["s34_ExpressibleByBuiltinStringLiteralP", "endIndex"]
+- !private ["s39_ExpressibleByBuiltinUTF16StringLiteralP", "endIndex"]
+- !private ["s41_ExpressibleByBuiltinUnicodeScalarLiteralP", "endIndex"]
+- !private ["s33_ExpressibleByStringInterpolationP", "endIndex"]
+- !private ["s35_HasCustomAnyHashableRepresentationP", "endIndex"]
+- !private ["s10_IndexableP", "endIndex"]
+- !private ["s14_IndexableBaseP", "endIndex"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "CaretString"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "Mask"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "endIndex"]
+- !private ["10Foundation27_KeyValueCodingAndObservingP", "init"]
+- ["10Foundation27_KeyValueCodingAndObservingP", ""]
+- !private ["s21_ObjectiveCBridgeableP", "endIndex"]
+- !private ["s26_RangeReplaceableIndexableP", "endIndex"]
+- !private ["s16_SwiftStringViewP", "endIndex"]
+depends-nominal:
+- !private "s23BidirectionalCollectionP"
+- "s7CVarArgP"
+- !private "9InputMask11CaretStringV"
+- !private "s10CollectionP"
+- !private "s10ComparableP"
+- "s28CustomDebugStringConvertibleP"
+- !private "s29CustomPlaygroundQuickLookableP"
+- !private "s17CustomReflectableP"
+- "s23CustomStringConvertibleP"
+- !private "s9DecodableP"
+- !private "s9EncodableP"
+- "s9EquatableP"
+- !private "s43ExpressibleByExtendedGraphemeClusterLiteralP"
+- !private "s26ExpressibleByStringLiteralP"
+- !private "s33ExpressibleByUnicodeScalarLiteralP"
+- "s8HashableP"
+- !private "s25LosslessStringConvertibleP"
+- !private "9InputMask0B0C"
+- !private "s10MirrorPathP"
+- !private "So8NSCodingP"
+- !private "So9NSCopyingP"
+- !private "So21NSItemProviderReadingP"
+- !private "So21NSItemProviderWritingP"
+- !private "So16NSMutableCopyingP"
+- "So8NSObjectC"
+- "So16NSObjectProtocolP"
+- !private "So14NSSecureCodingP"
+- !private "So8NSStringC"
+- "9InputMask6RNMaskC"
+- !private "s26RangeReplaceableCollectionP"
+- !private "9InputMask0B0C6ResultV"
+- !private "s8SequenceP"
+- !private "SS"
+- !private "s14StringProtocolP"
+- !private "s16TextOutputStreamP"
+- !private "s20TextOutputStreamableP"
+- !private "s23_BidirectionalIndexableP"
+- !private "s51_ExpressibleByBuiltinExtendedGraphemeClusterLiteralP"
+- !private "s34_ExpressibleByBuiltinStringLiteralP"
+- !private "s39_ExpressibleByBuiltinUTF16StringLiteralP"
+- !private "s41_ExpressibleByBuiltinUnicodeScalarLiteralP"
+- !private "s33_ExpressibleByStringInterpolationP"
+- !private "s35_HasCustomAnyHashableRepresentationP"
+- !private "s10_IndexableP"
+- !private "s14_IndexableBaseP"
+- "10Foundation27_KeyValueCodingAndObservingP"
+- !private "s21_ObjectiveCBridgeableP"
+- !private "s26_RangeReplaceableIndexableP"
+- !private "s16_SwiftStringViewP"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Dispatch.apinotesc"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Metal.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreFoundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Swift.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/SwiftOnoneSupport.swiftmodule"
+- "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/node_modules/react-native-text-input-mask/ios/RNTextInputMask/InputMask/InputMask/Classes/InputMask.h"
+- "/Users/hectorgarcia/Documents/Agosto2017/Capstone-2017/ReactProject/puntOs/ios/build/Build/Intermediates.noindex/InputMask.build/Debug-iphonesimulator/InputMask.build/unextended-module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/usr/include/objc/ObjectiveC.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/OpenGLES.framework/Headers/OpenGLES.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/CoreImage.framework/Headers/CoreImage.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/QuartzCore.framework/Headers/QuartzCore.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/Metal.framework/Headers/Metal.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/usr/include/Darwin.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/Foundation.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/CoreGraphics.framework/Headers/CoreGraphics.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIKit.apinotes"
+- "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator11.2.sdk/System/Library/Frameworks/CoreText.framework/Headers/CoreText.apinotes"
+interface-hash: "bf51b3e40f578681bc1fad07c8386a60"

@@ -28,6 +28,8 @@ export const USER_PROMOS_UPDATE = "user_promos_update";
 export const USER_SOCIALS_UPDATE = "user_socials_update";
 export const USER_PRIMARY_FILTER_UPDATE = "user_primary_filter_update";
 export const USER_SECONDARY_FILTER_UPDATE = "user_secondary_filter_update";
+export const LEADERBOARD_UPDATE = "user_leaderboard_update";
+export const GET_FOLLOWING = "get_following";
 
 export const POST_DETAIL_UPDATE = 'post_detail_update';
 export const POST_DETAIL_FETCH = 'post_detail_fetch';

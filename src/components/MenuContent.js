@@ -136,6 +136,34 @@ class MenuContent extends Component {
             </View>
             </TouchableOpacity>
         </View>
+        <View style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose();Actions.inviteFriends();}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.itemIconStyle}>
+                <Icon name='md-mail' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
+              </View>
+              <View style={styles.itemTextStyle}>
+                  <Text style={{ alignSelf: 'flex-start', fontSize: 15}}>
+                    Invite Friends
+                  </Text>
+              </View>
+            </View>
+            </TouchableOpacity>
+        </View>
+        <View style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => {Actions.drawerClose();Actions.getPoints();}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={styles.itemIconStyle}>
+                <Icon name='md-ribbon' size= {25} color='#fff' style={{ alignSelf: 'center' }} />
+              </View>
+              <View style={styles.itemTextStyle}>
+                  <Text style={{ alignSelf: 'flex-start', fontSize: 15}}>
+                    Get Points
+                  </Text>
+              </View>
+            </View>
+            </TouchableOpacity>
+        </View>
         {this.renderSwitch()}
         <View style={styles.itemContainer}>
             <TouchableOpacity onPress={() => {
@@ -155,7 +183,7 @@ class MenuContent extends Component {
             </View>
             </TouchableOpacity>
         </View>
-        <View style={{ flex: 5 }}>
+        <View style={{ flex: 3 }}>
         </View>
       </View >
     );

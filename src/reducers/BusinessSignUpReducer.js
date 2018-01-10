@@ -15,7 +15,10 @@ const INITIAL_STATE = {
   loading: '',
   type: 'Business',
   step: 1,
-  size: 'Small'
+  size: 'Small',
+  latitude: '',
+  longitude: '',
+  latitude: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
