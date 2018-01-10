@@ -172,42 +172,6 @@ class UserBusinessProfile extends Component {
       );
       }
 
-  renderTheTabs() {
-    const { businessProfileState } = this.props;
-    var selectedStyle = { alignSelf: 'center', fontWeight: 'bold', color: '#fff', fontSize: 18 };
-    var notSelectedStyle = { alignSelf: 'center', color: '#fff', fontSize: 15 };
-    var promo_tab = null;
-    var coupon_tab = null;
-    var review_tab = null;
-    if (businessProfileState.tab_selected === 'Promos'){
-      promo_tab = selectedStyle;
-      coupon_tab = notSelectedStyle;
-      review_tab = notSelectedStyle;
-    } else if( businessProfileState.tab_selected === 'Coupons'){
-      promo_tab = notSelectedStyle;
-      coupon_tab = selectedStyle;
-      review_tab = notSelectedStyle;
-    } else if(businessProfileState.tab_selected === 'Reviews'){
-      promo_tab = notSelectedStyle;
-      coupon_tab = notSelectedStyle;
-      review_tab = selectedStyle;
-    }
-    return(
-    <View style={{ flex:1, flexDirection: 'row', borderColor: '#000', borderBottomWidth: 0.5, backgroundColor: '#299cc5' }}>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Coupons'})} style={coupon_tab} >Coupons</Text>
-    </View>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Promos'})} style={promo_tab} >Promos</Text>
-    </View>
-    <View style={{ flex: 1, justifyContent: 'center'}}>
-    <Text onPress={()=> this.props.businessProfileUpdate({prop:'tab_selected', value: 'Reviews'})} style={review_tab} >Reviews</Text>
-    </View>
-    </View>
-  );
-  }
-
-
   callCheckin(){
     this.props.checkin(firebase.auth().currentUser.uid,this.props.uid, this.props.name);
   }
@@ -290,7 +254,7 @@ class UserBusinessProfile extends Component {
 const styles = {
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#fff'
+  backgroundColor: '#e3e3e3'
 },
 textStyle:{
   fontSize: 25,

@@ -10,6 +10,7 @@ import SuccessUserView from './components/SuccessUserView';
 import SettingProfile from './components/SettingProfile';
 import BusinessMain from './components/BusinessMain';
 import BusinessProfile from './components/BusinessProfile';
+import TabIcon from './components/TabIcon';
 import ValidateCoupon from './components/ValidateCoupon';
 import CouponsView from './components/CouponsView';
 import CreateCoupon from './components/CreateCoupon';
@@ -36,8 +37,20 @@ import UserStats from './components/UserStats';
 import MenuContent from './components/MenuContent';
 import UserCheckinResult from './components/UserCheckinResult';
 import UserPreScanner from './components/UserPreScanner';
+import InviteFriends from './components/InviteFriends';
+import GetPoints from './components/GetPoints';
 
 const RouterComponent = () => {
+
+  state = {tabSelected: 'UserMain'};
+
+  /*renderSelected(tab){
+    if(tab === this.state.tabSelected){
+      return '#0084b4';
+    } else {
+      return 'grey';
+    }
+  }*/
   return (
     <Router>
       <Scene key='root' >
@@ -207,12 +220,15 @@ const RouterComponent = () => {
           tabBarStyle=
           {{
             backgroundColor: 'white',
-            borderTopColor: '#ababab',
             borderTopWidth: 2,
             height: 60,
             flexDirection: 'row',
             justifyContent: 'space-around',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginBottom: -10,
+            paddingTop: 5,
+            borderTopColor: '#000',
+            borderTopWidth:0.5
           }}
           tabBarPosition="bottom"
           navBar = {UserNavBar}
@@ -222,23 +238,26 @@ const RouterComponent = () => {
           <Scene key="Main" title="Promo Feed">
             <Scene
               key='UserMain'
+              title='UserMain'
               component={UserMain}
-              icon={() => {return(<Icon name="bullhorn" backgroundColor="white" size={25}/>)}}
+              icon={TabIcon}
             />
           </Scene>
           {/* User Social Feed Tab and its scenes */}
           <Scene key="Social Feed" title="Social Feed">
             <Scene
               key='UserSocialFeed'
+              title='SocialFeed'
               component={UserSocialFeed}
-              icon={() => {return(<Icon name="comments" backgroundColor="white" size={25}/>)}}
+              icon={TabIcon}
             />
           </Scene>
           {/* User QR Check In Tab and its scenes */}
           <Scene key="UserPreScanner" title="Check-In">
             <Scene
-              icon={() => {return(<Icon name="compass" backgroundColor="white" size={25}/>)}}
+              icon={TabIcon}
               key='UserPreScanner'
+              title='Check-In'
               component={UserPreScanner}
             />
           </Scene>
@@ -246,16 +265,18 @@ const RouterComponent = () => {
           <Scene key="Notifications" title="Notifications">
             <Scene
               key='NotificationsView'
+              title='Notifications'
               component={NotificationsView}
-              icon={() => {return(<Icon name="bell" backgroundColor="white" size={25}/>)}}
+              icon={TabIcon}
             />
           </Scene>
           {/* User Profile Tab and its scenes */}
           <Scene key="Profile" title="My Profile">
             <Scene
               key='UserProfile'
+              title='MyProfile'
               component={UserProfile}
-              icon={() => {return(<Icon name="user" backgroundColor="white" size={25}/>)}}
+              icon={TabIcon}
             />
           </Scene>
         </Scene>
@@ -331,9 +352,25 @@ const RouterComponent = () => {
           component={UserStats}
           title='My Stats'
         />
+        <Scene
+          key='inviteFriends'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={InviteFriends}
+          title='Invite Friends'
+        />
+        <Scene
+          key='getPoints'
+          navigationBarStyle={{ backgroundColor: '#0084b4', borderBottomColor: 'gray' }}
+          navBarButtonColor='white'
+          onBack={() => Actions.pop()}
+          component={GetPoints}
+          title='Get Points'
+        />
       </Scene>
     </Router>
   );
-};
+}
 
 export default RouterComponent;

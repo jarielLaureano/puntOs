@@ -64,7 +64,7 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, createCouponState: new_state};
     }
     case BUSINESS_PROFILE_UPDATE:
-    { 
+    {
       const new_state = { ...state.businessProfileState, [action.payload.prop]: action.payload.value };
       return { ...state, businessProfileState: new_state};
     }
@@ -75,17 +75,19 @@ export default (state = INITIAL_STATE, action) => {
     }
     case REVIEWS_UPDATE:
     {
-    const new_reviews = {...state.reviews, ...action.payload};
+    //const new_reviews = {...state.reviews, ...action.payload};
+    const new_reviews = action.payload;
     return { ...state, reviews: new_reviews};
     }
     case PROMOS_UPDATE:
     {
-    const new_promos = {...state.promos, ...action.payload};
+    //const new_promos = {...state.promos, ...action.payload};
+    const new_promos = action.payload;
     return { ...state, promos: new_promos};
     }
     case COUPONS_UPDATE:
     {
-    const new_coupons = {...state.coupons, ...action.payload};
+    const new_coupons = action.payload;
     return { ...state, coupons: new_coupons};
     }
     case BUSINESS_METRICS_UPDATE:

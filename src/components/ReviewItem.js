@@ -9,7 +9,7 @@ class ReviewItem extends Component {
     const post_date = moment(new Date(date));
     const _today = moment(new Date());
     const minutes_diff = _today.diff(post_date, 'minutes');
-    
+
     if( minutes_diff < 59) {
       return minutes_diff + 'm ago';
     } else if ( minutes_diff < 1439 ) {
@@ -81,14 +81,14 @@ containerStyle: {
   borderRightWidth: 0,
   borderLeftWidth: 0,
   borderWidth: 0.5,
-  marginBottom: 5,
   borderColor: '#ddd',
   borderBottomWidth: 0,
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,
   shadowRadius: 2,
-  elevation: 1
+  elevation: 1,
+  marginTop: 5
 }
 };
 

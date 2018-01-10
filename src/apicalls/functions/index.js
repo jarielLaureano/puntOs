@@ -11,6 +11,7 @@ var haversine = require('haversine');
 var moment = require('moment');
 var QRCode = require('qrcode');
 var stream = require('stream');
+var uuid = require('react-native-uuid');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -493,4 +494,142 @@ exports.approveBusinessAccount = functions.https.onRequest((req, res) => {
         res.status(200).send('Reviews Aggregated');
       });
 
+    });
+
+exports.getPoints = functions.https.onRequest((req,res) => {
+  const uid = req.query.uid;
+  const code = req.query.code;
+  const email = req.query.email;
+  const response = {gotPoints: false, message: '', points: 0};
+  var hasUsed = false;
+  var inviteObj = {};
+  admin.database().ref(`/invites/`).orderByChild('invitedEmail').equalTo(email).once('value',invites => {
+    const invites_obj = invites.val();
+    console.log(invites_obj)
+    if(invites_obj){
+    invites.forEach(invite => {
+      if(invite.val().used){
+        hasUsed = true;
+      } else if(invite.code === code){
+        invite_obj = invite.val();
+        invite_obj['key'] = invite.key;
+      }
+    });
+
+    if(hasUsed){
+      response.message = 'You have used an invitation promo code before. Cannot redeem multiple invitation codes. Sorry.';
+      return res.status(200).send(response);
+    } else {
+      if(invite_obj){
+        const inviter = invite_obj.inviterId;
+        const invite_id = invite_obj.key;
+        const inviter_name = invite_obj.inviterName;
+        admin.database().ref(`users/${uid}`).once('value', user => {
+          const current = user.val().points;
+          const new_points = current + 200;
+          user.ref.update({points: new_points});
+        });
+        admin.database().ref(`userRewards/${uid}`).once('value', user => {
+          const current = user.val().points;
+          const new_points = current + 200;
+          user.ref.update({points: new_points});
+        });
+        admin.database().ref(`users/${inviter}`).once('value', user => {
+          const current = user.val().points;
+          const new_points = current + 200;
+          user.ref.update({points: new_points});
+        });
+        admin.database().ref(`userRewards/${inviter}`).once('value', user => {
+          const current = user.val().points;
+          const new_points = current + 200;
+          user.ref.update({points: new_points});
+        });
+        admin.database().ref(`/invites/${invite_id}`).update({used: true}).then(()=>{
+          response.message = 'Your invite promo code from '+ inviter_name + 'was processed! Invite more people and get 200 points!' ;
+          response.gotPoints = true;
+          response.points = '200';
+          return res.status(200).send(response);
+        }).catch((error)=>{
+          console.log(error)
+          response.message = 'An error ocurred! Please try again later.';
+          return res.status(200).send(response);
+        })
+
+      } else {
+        response.message = 'Your code does not match any of the invites we got on system. Please re-check your code and try again.';
+        return res.status(200).send(response);
+      }
+    }
+  } else {
+    response.message = 'Your email has no promo codes registered.';
+    return res.status(200).send(response);
+  }
+  }).catch((error)=>{
+    console.log(error)
+    response.message = 'An error ocurred! Please try again later.';
+    return res.status(200).send(response);
+  });
+});
+
+    exports.sendInviteEmail = functions.https.onRequest((req,res) => {
+      const uid = req.query.uid;
+      const username = req.query.username;
+      const email = req.query.email;
+      const code = uuid.v1().substring(0,8);
+      const response = {inviteSent: false, message: ''};
+      admin.auth().getUserByEmail(email).then(user => {
+        //console.log(user)
+        if(user.email){
+          response.message = 'This email is already registered in our systems.';
+          return res.status(200).send(response);
+        }
+      }).catch((error)=>{
+          if(error.errorInfo.code === 'auth/user-not-found'){
+            const invite_mail_struct = {
+               from: username + '-puntos User <noreply@firebase.com>',
+               to: email,
+               subject: 'Download the puntOs App!',
+               html: `<img src="https://firebasestorage.googleapis.com/v0/b/puntos-capstone2017.appspot.com/o/logo%2FLogoSmall.png?alt=media&token=08d5bd23-ddfe-435c-8a35-b9cce394c13c" align="middle"></img>
+                      <br>
+                      <p>You've been invited to the puntOs app by ${username}! You and your inviter will Get a bonus 200 points if you register!
+                      </p>
+                      <p>Follow the steps below to get your points now!
+                      <ol>
+                        <li>Download the puntOs app.</li>
+                        <li>Register as a user.(Business accounts do not get points on the app)</li>
+                        <li>Verify your email.</li>
+                        <li>Log into the application and go to the burger menu and click \'Get Points\'.</li>
+                        <li>Submit the code: ${code}</li>
+                        <li>You should receive your points instantly!</li>
+                      </ol>
+                      `
+            };
+            const _today = new Date().toISOString();
+            const invite_obj = {inviterId: uid, inviterName: username, invitedEmail: email, code: code, used: false, inviteDate: _today};
+            admin.database().ref(`/invites/`).orderByChild('inviterId').equalTo(uid).once('value', invites=>{
+              invites.forEach(invite => {
+                if(invite.val().invitedEmail === email){
+                  response.message = 'You already invited this email.';
+                  return res.status(200).send(response);
+                }
+              });
+              admin.database().ref('/invites/').push(invite_obj).then(()=>{
+                transport.sendMail(invite_mail_struct)
+                   .then(() => {
+                     console.log(`email sent to ${snapshot.val().email}`)
+                   }).catch((error) => console.error(error));
+                   response.message = 'Make sure your friend registers! You will get 200 points!';
+                   response.inviteSent = true;
+                   return res.status(200).send(response);
+              });
+            }).catch(()=>{
+              response.message = 'An error ocurred while trying to send the invite.';
+              return res.status(200).send(response);
+            });
+          } else {
+          //console.log(error)
+          response.message = 'An error ocurred while trying to send the invite.';
+          return res.status(200).send(response);
+        }
+      });
     });

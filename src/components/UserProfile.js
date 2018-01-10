@@ -145,7 +145,7 @@ class UserProfile extends Component {
   render() {
     return (
       <View style={styles.backgroundStyle}>
-        <View style={{ flex:4, backgroundColor:'#fff' }}>
+        <View style={{ flex:4, backgroundColor:'#fff', paddingTop: 20 }}>
           <View style={{ flex: 1, flexDirection: 'column' }}>
             {this.renderPhotosModal()}
             <View style={{ flex: 5, flexDirection: 'row' }}>
@@ -274,8 +274,7 @@ class UserProfile extends Component {
 const styles ={
 backgroundStyle: {
   flex: 1,
-  backgroundColor: '#fff',
-  paddingTop: 20
+  backgroundColor: '#e3e3e3'
 },
 textStyle:{
   fontSize: 25,

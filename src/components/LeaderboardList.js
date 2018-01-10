@@ -8,9 +8,9 @@ import LeaderboardItem from './LeaderboardItem';
 class LeaderboardList extends Component {
 
     componentWillMount() {
-        this.props.getLeaderboard();
+        this.props.getLeaderboard(this.props.uid);
       }
-    
+
     render() {
         console.log(this.props.lbentries);
         return (
