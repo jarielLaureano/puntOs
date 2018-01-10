@@ -207,7 +207,8 @@ export const userGetPromos = (uid, pf, sf, fol) => {
         }
         //FILTERING BY LOCATION
         else if (sf == 'Location') {
-
+          console.log('Filtering by location...');
+          return dispatch(userGetCouponsByLocation(uid, pf, sf, fol));
         }
         //
         else {
@@ -231,18 +232,18 @@ export const userGetPromos = (uid, pf, sf, fol) => {
 //Filter promos by user location, locations near user first
 export const userGetPromosByLocation = (uid, pf, sf, fol) => {
   return (dispatch) => {
-  console.log('at user get promos by location');
+  //console.log('at user get promos by location');
   navigator.geolocation.getCurrentPosition(
     (position) => {
-    console.log("Getting user location...");
-    console.log('Getting User lat...');
+    //console.log("Getting user location...");
+    //console.log('Getting User lat...');
     var lat1 = position.coords.latitude; //user latitude
-    console.log('User lat ' + lat1);
-    console.log('Getting User long...');
+    //console.log('User lat ' + lat1);
+    //console.log('Getting User long...');
     var lon1 = position.coords.longitude; //user longitude
-    console.log('User long ' + lon1);
-    console.log('User Location OK');
-    console.log('Entering user get promos by location');
+    //console.log('User long ' + lon1);
+    //console.log('User Location OK');
+    //console.log('Entering user get promos by location');
     firebase.database().ref(`/users`).on('value', snapshot => {
       var businessList = [];
       var counter = 0;
@@ -256,10 +257,10 @@ export const userGetPromosByLocation = (uid, pf, sf, fol) => {
           //businessList.splice(0,0,{...business});
           lat2 = business.latitude;
           lon2 = business.longitude;
-          console.log('business lat ' + lat2);
-          console.log('business long ' + lon2);
+          //console.log('business lat ' + lat2);
+          //console.log('business long ' + lon2);
           const d = haversine({latitude: lat2, longitude: lon2}, {latitude: lat1, longitude: lon1}, {unit: 'meter'})*3.28084;
-          console.log('distance from business: ' + d);
+          //console.log('distance from business: ' + d);
           businessList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key, disFromUser: d});
         }
       }
@@ -267,30 +268,155 @@ export const userGetPromosByLocation = (uid, pf, sf, fol) => {
     firebase.database().ref(`posts/`).on('value', snapshot2 => {
       let promoList = [];
       let counter2 = 0;
-      console.log(businessList)
+      //console.log(businessList)
       snapshot2.forEach(child_node2 => {
         counter2++;
         for (var i = 0, l = businessList.length; i < l; i++) {
           var obj = businessList[i];
-          console.log(child_node2.val().businessID)
-          console.log(obj.pid)
+          //console.log(child_node2.val().businessID)
+          //console.log(obj.pid)
           if ( child_node2.val().businessID === obj.pid) {
             promoList.splice(0,0,{ ...child_node2.val(), id: counter2, dfu: obj.disFromUser})
           }
         }
       })
-      console.log('list before sorting by distance from usr: ');
-      console.log(promoList)
-      //promoList = sortObj(promoList, 'dfu');
-      console.log('list after sorting by distance from usr ');
-      console.log(promoList)
-        console.log('Dispatching')
+      //console.log('list before sorting by distance from usr: ');
+      //console.log(promoList)
+      promoList = sortObj(promoList, 'dfu');
+      //console.log('list after sorting by distance from usr ');
+      //console.log(promoList)
+      //  console.log('Dispatching')
       dispatch({ type: USER_PROMOS_UPDATE, payload: promoList });
     });
     });
           });
 };
 };
+
+//Filter coupons by user location, locations near user first
+export const userGetCouponsByLocation = (uid, pf, sf, fol) => {
+  return (dispatch) => {
+  //console.log('at user get promos by location');
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+    //console.log("Getting user location...");
+    //console.log('Getting User lat...');
+    var lat1 = position.coords.latitude; //user latitude
+    //console.log('User lat ' + lat1);
+    //console.log('Getting User long...');
+    var lon1 = position.coords.longitude; //user longitude
+    //console.log('User long ' + lon1);
+    //console.log('User Location OK');
+    //console.log('Entering user get promos by location');
+    firebase.database().ref(`/users`).on('value', snapshot => {
+      var businessList = [];
+      var counter = 0;
+      snapshot.forEach(child_node => {
+        var child_key = child_node.key;
+        var business = child_node.val();
+        var lat2 = 0; //business latitude
+        var lon2 = 0; //business longitude
+        if (business.type == 'Business') {
+          counter++;
+          //businessList.splice(0,0,{...business});
+          lat2 = business.latitude;
+          lon2 = business.longitude;
+          //console.log('business lat ' + lat2);
+          //console.log('business long ' + lon2);
+          const d = haversine({latitude: lat2, longitude: lon2}, {latitude: lat1, longitude: lon1}, {unit: 'meter'})*3.28084;
+          //console.log('distance from business: ' + d);
+          businessList.splice(0,0,{ ...child_node.val(), id: counter, pid: child_key, disFromUser: d});
+        }
+      }
+    );
+    firebase.database().ref(`Coupons/`).on('value', snapshot2 => {
+      let couponList = [];
+      let counter2 = 0;
+      //console.log(businessList)
+      snapshot2.forEach(child_node2 => {
+        counter2++;
+        for (var i = 0, l = businessList.length; i < l; i++) {
+          var obj = businessList[i];
+          //console.log(child_node2.val().businessID)
+          //console.log(obj.pid)
+          if ( child_node2.val().businessID === obj.pid) {
+            couponList.splice(0,0,{ ...child_node2.val(), id: counter2, dfu: obj.disFromUser})
+          }
+        }
+      })
+      //console.log('list before sorting by distance from usr: ');
+      //console.log(promoList)
+      promoList = sortObj(couponList, 'dfu');
+      //console.log('list after sorting by distance from usr ');
+      //console.log(promoList)
+      //  console.log('Dispatching')
+      dispatch({ type: USER_PROMOS_UPDATE, payload: couponList });
+    });
+    });
+          });
+};
+};
+
+export const inviteFriend = (email, uid, name) => {
+  return (dispatch) => {
+    const email_invite = encodeURIComponent(email.trim());
+    const username = encodeURIComponent(name.trim());
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/sendInviteEmail?uid=' + uid + '&username=' + username + '&email=' + email;
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteLoading', value: true }});
+    //console.log(req_url)
+    axios.get(req_url)
+      .then(response => {
+
+        if(response.data.inviteSent){
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteLoading', value: false }});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteEmail', value: '' }});
+         Alert.alert('Invite Sent!',response.data.message,
+         {text: 'OK'});
+      } else {
+        dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteLoading', value: false }});
+        dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteEmail', value: '' }});
+        Alert.alert('Error!',response.data.message,
+        {text: 'OK'});
+      }
+  }).catch((error)=>{
+    //console.log(error)
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteLoading', value: false }});
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'inviteEmail', value: '' }});
+    Alert.alert('Error!','Failed request. Try again later.',
+    {text: 'OK'});
+  });
+};
+};
+
+export const getPoints = (uid, code, email) => {
+  return (dispatch) => {
+    const code_trimmed = encodeURIComponent(code.trim());
+    const req_url = 'https://us-central1-puntos-capstone2017.cloudfunctions.net/getPoints?uid=' + uid + '&code=' + code_trimmed + '&email=' + email;
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoLoading', value: true }});
+    //console.log(req_url)
+    axios.get(req_url)
+      .then(response => {
+        if(response.data.gotPoints){
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoLoading', value: false }});
+         dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoCode', value: '' }});
+         Alert.alert('Congratulations!','You just collected ' + response.data.points + '! Keep it up!',
+         {text: 'OK'});
+      } else {
+        dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoLoading', value: false }});
+        dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoCode', value: '' }});
+        Alert.alert('Error!',response.data.message,
+        {text: 'OK'});
+      }
+  }).catch((error)=>{
+    console.log(error)
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoLoading', value: false }});
+    dispatch({ type: USER_MAIN_UPDATE, payload: { prop: 'promoCode', value: '' }});
+    Alert.alert('Error!','Failed request. Try again later.',
+    {text: 'OK'});
+  });
+};
+};
+
 
 //---------------------------------------------------------------//
 //                                                               //
@@ -453,7 +579,7 @@ export const getSocialPosts = () => {
   };
 };
 
-export const getLeaderboard = () => {
+export const getLeaderboard = (uid) => {
   return (dispatch) => {
     let leaderList = [];
     firebase.database().ref(`/users`).orderByChild(`points`).on('value', snapshot => {
@@ -462,13 +588,20 @@ export const getLeaderboard = () => {
         var child_key = child_node.key;
         if (child_node.val().type == 'user') {
           counter++;
-          leaderList.splice(0,0,{...child_node.val()});
+          leaderList.splice(0,0,{...child_node.val(), key: child_key});
         }
       });
       leaderList = sortObj(leaderList, 'points');
       leaderList.reverse();
       console.log("Leaderboard list:");
       console.log(leaderList);
+      var count = 0;
+      leaderList.forEach(user => {
+        if(user.key === uid){
+          dispatch({ type: USER_MAIN_UPDATE, payload: {prop: 'rank', value: count+1} });
+        }
+        count++;
+      })
       dispatch({ type: LEADERBOARD_UPDATE, payload: leaderList });
     });
   };

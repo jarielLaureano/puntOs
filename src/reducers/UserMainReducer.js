@@ -60,7 +60,12 @@ const INITIAL_STATE = {
     photos: [],
     showPhotos: false,
     checkinSuccessful: '',
-    checkinError: ''
+    checkinError: '',
+    inviteEmail: '',
+    inviteLoading: '',
+    rank: 0,
+    promoCode: '',
+    promoLoading: ''
 };
 
 export default (state = INITIAL_STATE, action) => {

@@ -263,6 +263,7 @@ class BusinessSignUpForm extends Component {
         secureTextEntry={false}
         placeholder='Country'
         placeholderTextColor='gray'
+        maxLength={20}
         selectionColor='#0084b4'
         overStyle={{ borderBottomColor: '#0084b4', color: '#0084b4' }}
         value={country}
@@ -386,7 +387,7 @@ class BusinessSignUpForm extends Component {
         />
       </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row', alignSelf: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, flexDirection: 'column', alignSelf: 'center', alignItems: 'center' }}>
         <Text style={styles.sizeTextStyle}>{size}</Text>
         {this.renderSizeValue()}
       </View>

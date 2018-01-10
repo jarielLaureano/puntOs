@@ -464,8 +464,10 @@ export const validateCoupon = (coupon_code, uid) => {
     if(!redeemObj){
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon code not found'}});
-    }
-    else if(redeemObj.used){
+    } else if(redeemObj.businessID === uid){
+      dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
+      dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon not from this business.'}});
+    } else if(redeemObj.used){
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'loading', value: false}});
       dispatch({ type: VALIDATE_STATE_UPDATE, payload: {prop: 'error', value: 'Coupon code already used'}});
     }
