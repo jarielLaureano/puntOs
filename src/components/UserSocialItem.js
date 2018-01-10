@@ -11,7 +11,7 @@ class UserSocialItem extends Component {
         const post_date = moment(new Date(date));
         const _today = moment(new Date());
         const minutes_diff = _today.diff(post_date, 'minutes');
-       
+
         if( minutes_diff < 59) {
           return minutes_diff + 'm ago';
         } else if ( minutes_diff < 1439 ) {

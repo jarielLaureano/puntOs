@@ -41,6 +41,15 @@ const INITIAL_STATE = {
     level: 0,
     switchLoading: false,
     switchPassword: '',
+    pointsToNext: 0,
+    levelPercentage: 0,
+    overallPoints: 0,
+    totalCoupons: 0,
+    lastCoupons: {},
+    totalCheckins: 0,
+    lastCheckins: {},
+    totalReviews: 0,
+    my_coupons: {},
     uploadLoading: false,
     uploadError: false,
     photoSelected: null,
@@ -96,14 +105,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case USER_PROMOS_UPDATE:
     {
-    
     const new_promos = action.payload;
     return { ...state, promos: new_promos };
     }
     case USER_SOCIALS_UPDATE:
     {
     const new_socials = action.payload;
-
     return { ...state, socials: new_socials};
     }
     default:

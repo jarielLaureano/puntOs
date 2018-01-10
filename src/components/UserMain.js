@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, BackHandler } from 'react-native';
 import { connect } from 'react-redux';
 import firebase from 'firebase';
-import { userMainUpdate, getUserProfile } from '../actions';
+import { userMainUpdate, getUserProfile, getStats, getMyCheckins, getMyCoupons, getMyReviewCount} from '../actions';
 import UserPromoList from './UserPromoList';
 import UserMainFilterHeader from './UserMainFilterHeader';
 import PostFeed from './PostFeed';
@@ -17,8 +17,10 @@ class UserMain extends Component {
   componentWillMount(){
     currentUser = firebase.auth().currentUser.uid;
     this.props.getUserProfile(currentUser);
-
-    
+    this.props.getStats(currentUser);
+    this.props.getMyCheckins(currentUser);
+    this.props.getMyCoupons(currentUser);
+    this.props.getMyReviewCount(currentUser);
     this.props.userMainUpdate({ prop: 'loading', value: true});
   }
 
@@ -30,7 +32,7 @@ class UserMain extends Component {
   backHandler () {
     return true;
   }
-  
+
 
   render() {
     if(this.props.loading){
@@ -55,4 +57,4 @@ const mapStateToProps = state => {
   return { user, uid, loading };
 };
 
-export default connect(mapStateToProps, { getUserProfile, userMainUpdate })(UserMain);
+export default connect(mapStateToProps, { getUserProfile, getStats, getMyCoupons, getMyCheckins, getMyReviewCount, userMainUpdate })(UserMain);

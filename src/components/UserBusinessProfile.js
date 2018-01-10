@@ -41,7 +41,6 @@ class UserBusinessProfile extends Component {
     this.props.userMainUpdate({ prop: 'hasReviewed', value: false });
   }
 
-  component
   renderContent(){
     const { businessProfileState } = this.props;
     if (businessProfileState.tab_selected === 'Promos'){
@@ -159,10 +158,8 @@ class UserBusinessProfile extends Component {
   }
 
 
-
   callCheckin(){
-    this.props.checkin(this.props.user_id, this.props.uid, this.props.username);
-    //this.props.userMainUpdate({ prop: 'loading', value: true });
+    this.props.checkin(firebase.auth().currentUser.uid,this.props.uid, this.props.name);
   }
 
   render() {
@@ -271,6 +268,7 @@ const mapStateToProps = state => {
       businessProfileState,
       isCouponClaim
     } = state.businessMain;
+  const { name } = state.userMain;
   const user_id = firebase.auth().currentUser.uid;
   const username  = state.userMain.user.name;
   const { loading, hasCheckedIn, hasReviewed } = state.userMain;
@@ -278,6 +276,7 @@ const mapStateToProps = state => {
   return {
     user_id,
     user,
+    name,
     uid,
     metrics,
     scene,
